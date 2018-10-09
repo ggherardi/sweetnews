@@ -47,13 +47,13 @@ class Controller {
 
 class Menu {
     constructor(menuItems) {
-        this.navbarId = "#navbar";
+        this.navbarId = placeholders.sidebarZone;
         this.menuItems = menuItems;
         this.activeClassName = "active";
     }
 
     static menuClick(menuItem) {
-        var view = views[menuItem.dataset["view"]];
+        var view = views.allViews[menuItem.dataset["view"]];
         mainContentController.setView(view);
         menu.setMenuItemActive(view);
     }
@@ -64,8 +64,8 @@ class Menu {
             var item = this.menuItems[key];
             var arePermissionsValid = item.needPermissions ? sharedStorage.loginContext.delega_codice >= item.needPermissions : true;
             if(arePermissionsValid && item.showInMenu == undefined || item.showInMenu) {          
-                this.html += `<li id='NavItem_${item.name}'>
-                                <span onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</span>
+                this.html += `<li id='navbar__${item.name}'>
+                                <a onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</a>
                             </li>`;   
             }                
         }
@@ -83,7 +83,7 @@ class Menu {
         if(prevItem){
             $(prevItem).removeClass(this.activeClassName);
         }
-        var currItem = $(`#NavItem_${view.name}`);
+        var currItem = $(`#navbar__${view.name}`);
         if(currItem){
             $(currItem).addClass(this.activeClassName);
         }

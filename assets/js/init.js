@@ -1,95 +1,43 @@
 /* Settings */
-var views = {
-    home: { title: "Home", name: "home" },
-    rentals: { title: "Noleggi", name: "rentals" },
-    restitutions: { title: "Restituzioni", name: "restitutions" },
-    bookings: { title: "Prenotazioni", name: "bookings" },
-    customers: { title: "Gestione clienti", name: "customers" },
-    storage: { title: "Magazzino", name: "storage" },
-    sales: { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
-    accounts: { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
-    settings: { title: "<img src='/images/white-cog.png' height='20'>", name: "settings", needPermissions: permissions.levels.proprietario },
-    login: { title: "Login", name: "login", showInMenu: false },
-    unauthorized: { title: "Unauthorized", name: "unauthorized", showInMenu: false }
-};
-
-var components = {
-    sidebar: { title: "Sidebar", name: "sidebar" }
-};
-
-/* Classes */
-var menu = new Menu(views);
-// var authenticationService = new AuthenticationService();
-var mainContentController = new Controller(placeholders.mainContentZone);
-var sidebarController = new Controller("#Sidebar");
-var navbarController = new Controller("#Navbar");
 
 /* Properties */
+var authenticationService = new AuthenticationService();
+var menu = new Menu(views.allViews);
+var mainContentController = new Controller(placeholders.mainContentZone);
+var sidebarController = new Controller(placeholders.sidebarZone);
+var menuLoader = new Loader(placeholders.sidebarZone)
+var mainContentLoader = new Loader(placeholders.mainContentZone)
 var CorrelationID;
 var Global_FilmPrices;
 var Browser;
 
 /* Document ready */
 $().ready(function() {
+    mainContentLoader.showLoader();
     initializeCrossBrowserSettings();
     authenticationService.authenticateUser()
         .done((data) => {
-            var res = JSON.parse(data);
-            if(res) {
-                initHomepage(res);
+            var data = JSON.parse(data);
+            if(data) {
+                initHomepage(data);
             } else {
-                initLogin();
+                initHomepageAnonymous();
             }
         })
         .fail((data) => {
             initLogin();
         });
+    mainContentLoader.hideLoader();
 })
-
-/* Cross Browser Settings */
-function initializeCrossBrowserSettings() {
-    detectBrowser();
-    setStylesCrossBrowser();
-}
-
-function detectBrowser() {
-    isIE = /*@cc_on!@*/false || !!document.documentMode;
-    isEdge = !isIE && !!window.StyleMedia;
-    if(navigator.userAgent.indexOf("Chrome") != -1 && !isEdge)
-    {
-        Browser = 'chrome';
-    }
-    else if(navigator.userAgent.indexOf("Safari") != -1 && !isEdge)
-    {
-        Browser = 'safari';
-    }
-    else if(navigator.userAgent.indexOf("Firefox") != -1 ) 
-    {
-        Browser = 'firefox';
-    }
-    else if((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) //IF IE > 10
-    {
-        Browser = 'ie';
-    }
-    else if(isEdge)
-    {
-        Browser = 'edge';
-    }
-    else 
-    {
-        Browser = 'other-browser';
-    }
-}
-
-function setStylesCrossBrowser() {
-    if(Browser == "edge") {
-        $(`body`).css(`font-family`, `Arial, Helvetica, sans-serif!important;`);
-    }
-}
 
 /* Init functions */
 function initHomepage(loginContext) {
     initUser(loginContext);
+    initMasterpageComponents();
+}
+
+function initHomepageAnonymous() {
+    initUser(loginContext = { delega_codice: 0 });
     initMasterpageComponents();
 }
 
@@ -101,18 +49,18 @@ function initUser(loginContext) {
 }
 
 function initMasterpageComponents() {
-    sidebarController.setComponent(components.sidebar)
+    sidebarController.setComponent(views.components.sidebar)
         .then(() => { menu.buildMenu() })
-        .done(initView)
+        .done(initHome)
 }
 
-function initView() {
-    mainContentController.setView(views.home);
-    menu.setMenuItemActive(views.home);
+function initHome() {
+    mainContentController.setView(views.allViews.home);
+    menu.setMenuItemActive(views.allViews.home);
 }
 
 function initLogin() {
-    mainContentController.setView(views.login);
+    mainContentController.setView(views.allViews.login);
 }
 
 /* Shared functions */
@@ -166,3 +114,45 @@ function base64ToArrayBuffer(base64) {
     link.download = fileName;
     return link;
 };
+
+
+/* Cross Browser Settings */
+function initializeCrossBrowserSettings() {
+    detectBrowser();
+    setStylesCrossBrowser();
+}
+
+function detectBrowser() {
+    isIE = /*@cc_on!@*/false || !!document.documentMode;
+    isEdge = !isIE && !!window.StyleMedia;
+    if(navigator.userAgent.indexOf("Chrome") != -1 && !isEdge)
+    {
+        Browser = 'chrome';
+    }
+    else if(navigator.userAgent.indexOf("Safari") != -1 && !isEdge)
+    {
+        Browser = 'safari';
+    }
+    else if(navigator.userAgent.indexOf("Firefox") != -1 ) 
+    {
+        Browser = 'firefox';
+    }
+    else if((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) //IF IE > 10
+    {
+        Browser = 'ie';
+    }
+    else if(isEdge)
+    {
+        Browser = 'edge';
+    }
+    else 
+    {
+        Browser = 'other-browser';
+    }
+}
+
+function setStylesCrossBrowser() {
+    if(Browser == "edge") {
+        $(`body`).css(`font-family`, `Arial, Helvetica, sans-serif!important;`);
+    }
+}

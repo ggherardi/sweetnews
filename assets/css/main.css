@@ -1,11 +1,26 @@
 @import url(font-awesome.min.css);
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,600italic|Roboto+Slab:400,700");
 
-/*
-	Editorial by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+/* Shared */
+.sitecolor
+{
+	color: #F56A6A;
+}
+
+.ta-center
+{
+	text-align: center;
+}
+
+.placeholder-center input::placeholder
+{
+	text-align: center;
+}
+
+button:focus
+{
+	outline: 0;
+}
 
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
@@ -3567,3 +3582,18 @@ input, select, textarea {
 			margin-top: 0;
 			padding-top: 0;
 		}
+
+	/* View */
+	#login
+    {
+        max-width: 400px;
+		margin: 0 auto;
+		margin-top: 50px;
+	}
+	
+	
+	#navbar > li.active {
+		transition: all 0.5;
+		color: #f56a6a;
+		text-align: right;
+	}
