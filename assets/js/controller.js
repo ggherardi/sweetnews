@@ -65,7 +65,7 @@ class Menu {
             var arePermissionsValid = item.needPermissions ? sharedStorage.loginContext.delega_codice >= item.needPermissions : true;
             if(arePermissionsValid && item.showInMenu == undefined || item.showInMenu) {          
                 this.html += `<li id='navbar__${item.name}'>
-                                <a onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</a>
+                                </span><a onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</a>
                             </li>`;   
             }                
         }
