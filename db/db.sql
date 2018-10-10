@@ -25,12 +25,11 @@ DROP TABLE IF EXISTS `delega`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `delega` (
-  `id_delega` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tipo_delega` int(11) NOT NULL,
   `id_utente` int(11) NOT NULL,
-  `codice` varchar(45) NOT NULL,
-  `nome` varchar(45) NOT NULL,
-  PRIMARY KEY (`id_delega`),
+  PRIMARY KEY (`id_tipo_delega`,`id_utente`),
   KEY `fk_delega_utente_idx` (`id_utente`),
+  CONSTRAINT `fk_delega_tipo_delega` FOREIGN KEY (`id_tipo_delega`) REFERENCES `tipo_delega` (`id_tipo_delega`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_delega_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -41,6 +40,7 @@ CREATE TABLE `delega` (
 
 LOCK TABLES `delega` WRITE;
 /*!40000 ALTER TABLE `delega` DISABLE KEYS */;
+INSERT INTO `delega` VALUES (3,1),(1,8);
 /*!40000 ALTER TABLE `delega` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,12 +58,13 @@ CREATE TABLE `dettaglio_utente_esterno` (
   `telefono_abitazione` varchar(45) DEFAULT NULL,
   `telefono_cellulare` varchar(45) DEFAULT NULL,
   `email` varchar(45) NOT NULL,
-  `data_nascita` varchar(45) DEFAULT NULL,
+  `data_nascita` date DEFAULT NULL,
   `liberatoria` blob,
   PRIMARY KEY (`id_dettaglio_utente_esterno`),
+  UNIQUE KEY `email_UNIQUE` (`email`),
   KEY `fk_dettaglio_utente_esterno_utente_idx` (`id_utente`),
   CONSTRAINT `fk_dettaglio_utente_esterno_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,6 +73,7 @@ CREATE TABLE `dettaglio_utente_esterno` (
 
 LOCK TABLES `dettaglio_utente_esterno` WRITE;
 /*!40000 ALTER TABLE `dettaglio_utente_esterno` DISABLE KEYS */;
+INSERT INTO `dettaglio_utente_esterno` VALUES (2,8,'Montione, Via Sergente Maggiore, 25','0360 3499391','3495121835',' mariorossi@armyspy.com','1977-12-10',NULL);
 /*!40000 ALTER TABLE `dettaglio_utente_esterno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +90,7 @@ CREATE TABLE `dettaglio_utente_interno` (
   PRIMARY KEY (`id_dettaglio_utente_interno`),
   KEY `fk_dettaglio_utente_interno_utente_idx` (`id_utente`),
   CONSTRAINT `fk_dettaglio_utente_interno_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,6 +99,7 @@ CREATE TABLE `dettaglio_utente_interno` (
 
 LOCK TABLES `dettaglio_utente_interno` WRITE;
 /*!40000 ALTER TABLE `dettaglio_utente_interno` DISABLE KEYS */;
+INSERT INTO `dettaglio_utente_interno` VALUES (1,1);
 /*!40000 ALTER TABLE `dettaglio_utente_interno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,9 +120,9 @@ CREATE TABLE `flusso_approvativo` (
   KEY `fk_flusso_approvativo_utente_idx` (`id_utente`),
   KEY `fk_flusso_approvativo_stato_approvativo_idx` (`id_stato_approvativo`),
   KEY `fk_flusso_approvativo_ricetta_idx` (`id_ricetta`),
-  CONSTRAINT `fk_flusso_approvativo_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_flusso_approvativo_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_stato_approvativo` FOREIGN KEY (`id_stato_approvativo`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_flusso_approvativo_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_flusso_approvativo_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,8 +229,8 @@ CREATE TABLE `lista_ricerche` (
   `id_ricetta` int(11) NOT NULL,
   PRIMARY KEY (`id_utente`,`id_ricetta`),
   KEY `fk_lista_ricerche_ricetta_idx` (`id_ricetta`),
-  CONSTRAINT `fk_lista_ricerche_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lista_ricerche_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_lista_ricerche_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lista_ricerche_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -261,9 +264,9 @@ CREATE TABLE `ricetta` (
   KEY `fk_ricetta_utente_idx` (`id_utente`),
   KEY `fk_ricetta_lista_ingredienti_idx` (`id_lista_ingredienti`),
   KEY `fk_ricetta_tipologia_idx` (`id_tipologia`),
-  CONSTRAINT `fk_ricetta_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ricetta_lista_ingredienti` FOREIGN KEY (`id_lista_ingredienti`) REFERENCES `lista_ingredienti` (`id_lista_ingredienti`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ricetta_tipologia` FOREIGN KEY (`id_tipologia`) REFERENCES `tipologia` (`id_tipologia`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_ricetta_tipologia` FOREIGN KEY (`id_tipologia`) REFERENCES `tipologia` (`id_tipologia`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ricetta_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -301,6 +304,31 @@ LOCK TABLES `stato_approvativo` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tipo_delega`
+--
+
+DROP TABLE IF EXISTS `tipo_delega`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tipo_delega` (
+  `id_tipo_delega` int(11) NOT NULL AUTO_INCREMENT,
+  `codice` int(11) NOT NULL,
+  `nome` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_tipo_delega`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tipo_delega`
+--
+
+LOCK TABLES `tipo_delega` WRITE;
+/*!40000 ALTER TABLE `tipo_delega` DISABLE KEYS */;
+INSERT INTO `tipo_delega` VALUES (1,10,'visitatore'),(2,20,'redattore'),(3,30,'caporedattore');
+/*!40000 ALTER TABLE `tipo_delega` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tipologia`
 --
 
@@ -335,9 +363,10 @@ CREATE TABLE `utente` (
   `nome` varchar(45) NOT NULL,
   `cognome` varchar(45) NOT NULL,
   `username` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  PRIMARY KEY (`id_utente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `password` varchar(60) NOT NULL,
+  PRIMARY KEY (`id_utente`),
+  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -346,6 +375,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
+INSERT INTO `utente` VALUES (1,'Gianmattia','Gherardi','admin','$2y$10$8BefxWbWyyJka.NQjlMS.uMvK9eZF50fbjsGct2eboNJnh6nmm.s2'),(8,'Mario','Rossi','mariorossi','$2y$10$OtI5mZz9tSfRfOk9zyYDLu6MED/ATkNERbvYat3WDO5sGsVMWF1vC');
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -366,4 +396,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-09  1:13:34
+-- Dump completed on 2018-10-11  1:09:32

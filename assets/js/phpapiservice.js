@@ -12,7 +12,7 @@ class RestClient {
         if(jqXHR.status == 401) {
             CorrelationID = jqXHR.responseText;
             mainContentController.setView(views.unauthorized);
-            modal.openErrorModal();
+            modal.openErrorModal();            
         }
     }
 
@@ -27,6 +27,23 @@ class AuthenticationService extends RestClient {
     constructor() {
         super();
         this.endpoint = "php/AuthenticationService.php";
+    }
+
+    registerUser(registrationForm) {
+        registrationForm = JSON.stringify(registrationForm);
+        this.data = {
+            action: "registerUser",
+            registrationForm: registrationForm
+        }
+        return super.execute();
+    }
+
+    checkUsernameValidity(username) {
+        this.data = {
+            action: "checkUsernameValidity",
+            username: username
+        }
+        return super.execute();
     }
 
     login(username, password) {

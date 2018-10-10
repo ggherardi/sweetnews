@@ -1,6 +1,7 @@
 <?php
 include 'DBConnection.php';
 include 'TokenGenerator.php';
+include 'Constants.php';
 use TokenGenerator;
 use Logger;
 
@@ -19,6 +20,82 @@ class AuthenticationService {
             $this->dbContext = new DBConnection();
         }
         return $this->dbContext->ExecuteQuery($query);
+    }
+
+    public function RegisterUser() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            $registrationForm = json_decode($_POST["registrationForm"]);
+            $this->dbContext->StartTransaction();
+            $query = 
+                "INSERT INTO utente
+                (nome, cognome, username, password)
+                VALUES
+                (%s, %s, %s, %s)";
+            $hashedPassword = password_hash($registrationForm->password, PASSWORD_DEFAULT);     
+            $query = sprintf($query, self::GetSlashedValueOrDefault($registrationForm->nome), self::GetSlashedValueOrDefault($registrationForm->cognome), 
+            self::GetSlashedValueOrDefault($registrationForm->username), self::GetSlashedValueOrDefault($hashedPassword));
+            $res = self::ExecuteQuery($query);
+            $insertId = $this->dbContext->GetLastID();
+            $query = 
+            "INSERT INTO delega
+            (id_tipo_delega, id_utente)
+            VALUES
+            ((SELECT id_tipo_delega FROM tipo_delega WHERE codice = %d), %d)";
+            $query = sprintf($query, PermissionsConstants::VISITATORE, $insertId);
+            $res = self::ExecuteQuery($query);
+            if(count($_FILES) > 0) {
+                $fileData = self::GetFileData();
+            }
+            $query = 
+            "INSERT INTO dettaglio_utente_esterno
+            (id_utente, indirizzo, telefono_abitazione, telefono_cellulare, email, data_nascita, liberatoria)
+            VALUES
+            (%d, %s, %s, %s, %s, %s, %s)";
+            $query = sprintf($query, $insertId, self::GetSlashedValueOrDefault($registrationForm->indirizzo), self::GetSlashedValueOrDefault($registrationForm->telefono_abitazione), 
+                self::GetSlashedValueOrDefault($registrationForm->telefono_cellulare), self::GetSlashedValueOrDefault($registrationForm->email),
+                self::GetSlashedValueOrDefault($registrationForm->data_nascita), ($fileData != null ? "'$fileData'" : "DEFAULT"));
+            $res = self::ExecuteQuery($query);
+            $this->dbContext->CommitTransaction();
+            exit(true);
+        } 
+        catch (Throwable $ex) {
+            $this->dbContext->RollBack();            
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);
+            switch($ex->getMessage()) {
+                case 1062:
+                    http_response_code(409);
+                    break;
+                default:
+                    http_response_code(500); 
+            }            
+        }
+    }
+    
+    public function CheckUsernameValidity() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        $username = $_POST["username"];
+        $this->dbContext->StartTransaction();
+        $query = 
+            "SELECT username FROM utente WHERE username = %s";
+        $query = sprintf($query, self::GetSlashedValueOrDefault($username));
+        $res = self::ExecuteQuery($query);
+        $row = $res->fetch_assoc();
+        exit($row);
+    }
+
+    private function GetSlashedValueOrDefault($value) {
+        $value = addslashes($value);
+        return strlen($value) > 0 ? "'$value'" : "DEFAULT";
+    }
+
+    private function GetFileData() {
+        $filename = $_FILES['file']['tmp_name'];
+        $file = readfile($_FILES['file']['tmp_name']);
+        $filePointer = fopen($_FILES['file']['tmp_name'], 'rb');
+        $fileData = fread($filePointer, filesize($_FILES['file']['tmp_name']));
+        $fileData = addslashes($fileData);
+        return $fileData;
     }
 
     /** Effettua il login al sito con l'username inserito */
@@ -85,7 +162,14 @@ class AuthenticationService {
 
     // Switcha l'operazione richiesta lato client
     function Init(){
+        $this->dbContext = new DBConnection();
         switch($_POST["action"]) {
+            case "registerUser":
+                self::RegisterUser();
+                break;
+            case "checkUsernameValidity":
+                self::CheckUsernameValidity();
+                break;
             case "login":
                 self::Login();
                 break;

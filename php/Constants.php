@@ -1,7 +1,7 @@
 <?php
 class PermissionsConstants {
-    const ADDETTO = 10;
-    const RESPONSABILE = 20;
-    const PROPRIETARIO = 30;
+    const VISITATORE = 10;
+    const REDATTORE = 20;
+    const CAPOREDATTORE = 30;
 }
 ?>

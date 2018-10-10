@@ -2,14 +2,25 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,400italic,600italic|Roboto+Slab:400,700");
 
 /* Shared */
+::-webkit-datetime-edit-year-field:not([aria-valuenow]),
+::-webkit-datetime-edit-month-field:not([aria-valuenow]),
+::-webkit-datetime-edit-day-field:not([aria-valuenow]) {
+    color: transparent;
+}
+
+button:focus
+{
+	outline: 0;
+}
+
 .sitecolor
 {
-	color: #F56A6A;
+	color: #F56A6A!important;
 }
 
 .ta-center
 {
-	text-align: center;
+	text-align: center!important;
 }
 
 .placeholder-center input::placeholder
@@ -17,9 +28,16 @@
 	text-align: center;
 }
 
-button:focus
-{
-	outline: 0;
+.c-pointer {
+	cursor: pointer;
+}
+
+.td-underline {
+	text-decoration: underline;
+}
+
+.form-center input {
+	text-align: center!important;
 }
 
 html, body, div, span, applet, object,
@@ -1833,7 +1851,7 @@ input, select, textarea {
 		display: block;
 		font-size: 0.9em;
 		font-weight: 600;
-		margin: 0 0 1em 0;
+		/* margin: 0 0 1em 0; */
 	}
 
 	input[type="text"],
@@ -3584,16 +3602,25 @@ input, select, textarea {
 		}
 
 	/* View */
-	#login
-    {
+	#login {
         max-width: 400px;
 		margin: 0 auto;
 		margin-top: 50px;
 	}
 	
-	
-	#navbar > li.active {
-		transition: all 0.5;
-		color: #f56a6a;
-		text-align: right;
+	#secondaryContentContainer {
+		display: none;
+	}
+
+	#navbar > li {
+		position: relative;
+		min-height: 40px;
+	}
+
+	#navbar li a {
+		position: absolute;
+	}
+
+	#navbar li.active a {
+		color: #f56a6a;		
 	}

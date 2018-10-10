@@ -13,7 +13,7 @@ class DBConnection {
     //PROD
     //function __construct($servername = "127.0.0.1", $username = "newuser", $password = "password", $db = "videonoleggio") {
     //DEV
-    function __construct($servername = "127.0.0.1", $username = "root", $password = "root", $db = "videonoleggio") {
+    function __construct($servername = "127.0.0.1", $username = "root", $password = "root", $db = "sweetnews") {
         $this->ServerName = $servername;
         $this->UserName = $username;
         $this->Password = $password;
@@ -61,12 +61,14 @@ class DBConnection {
     /** Ritorna il risultato della query. Se non sono stati trovati, la chiamata riesce e ritorna un array vuoto */
     function ExecuteQuery($query = "") {
         try {
+            Logger::Write("Query: ".$query, $GLOBALS["CorrelationID"]);
             Logger::Write("Executing query", $GLOBALS["CorrelationID"]);
             // Logger::Write($query, $GLOBALS["CorrelationID"]);
             $msRes = $this->getConnection()->query($query);
             if(!$msRes) {     
                 if($this->Connection->error){
-                    throw new Exception($this->Connection->error);   
+                    Logger::Write("Error occured while executing query -> ".$this->Connection->error, $GLOBALS["CorrelationID"]);
+                    throw new Exception($this->Connection->errno);   
                 }
                 Logger::Write("No results found", $GLOBALS["CorrelationID"]);                
             }
@@ -75,8 +77,8 @@ class DBConnection {
         } 
         catch (Throwable $ex) {
             $exMessage = $ex->getMessage();
-            Logger::Write("Error while executing query -> $exMessage", $GLOBALS["CorrelationID"]);
-            throw new Exception($ex);
+            Logger::Write("Error code -> [$ex]", $GLOBALS["CorrelationID"]);
+            throw new Exception($exMessage);
         }
     }
 
@@ -97,7 +99,7 @@ class DBConnection {
         catch (Throwable $ex) {
             $exMessage = $ex->getMessage();
             Logger::Write("Error while executing multi query -> $exMessage", $GLOBALS["CorrelationID"]);
-            throw new Exception($ex);
+            throw $ex;
         }
     }
 

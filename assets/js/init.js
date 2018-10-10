@@ -1,9 +1,9 @@
-/* Settings */
-
 /* Properties */
 var authenticationService = new AuthenticationService();
 var menu = new Menu(views.allViews);
 var mainContentController = new Controller(placeholders.mainContentZone);
+var secondaryContentController = new Controller(placeholders.secondaryContentZone);
+var pageContentController = new PageContentController(mainContentController.container, secondaryContentController.container);
 var sidebarController = new Controller(placeholders.sidebarZone);
 var menuLoader = new Loader(placeholders.sidebarZone)
 var mainContentLoader = new Loader(placeholders.mainContentZone)
@@ -24,9 +24,7 @@ $().ready(function() {
                 initHomepageAnonymous();
             }
         })
-        .fail((data) => {
-            initLogin();
-        });
+        .fail(RestClient.redirectAccordingToError);
     mainContentLoader.hideLoader();
 })
 
@@ -155,4 +153,14 @@ function setStylesCrossBrowser() {
     if(Browser == "edge") {
         $(`body`).css(`font-family`, `Arial, Helvetica, sans-serif!important;`);
     }
+}
+
+/* Animations */
+function moveMenuItem(jqItem) {
+    var container = jqItem.parent().first();
+    var containerWidth = container.width();
+    var itemWidth = jqItem.width();
+    var remainingWidth = parseFloat(new Number(containerWidth - itemWidth).toFixed(2));
+    var leftPosition = parseInt(jqItem.css("left"));
+    jqItem.animate({left: leftPosition == 0 ? remainingWidth : 0});
 }

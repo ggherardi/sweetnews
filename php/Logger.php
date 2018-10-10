@@ -9,6 +9,9 @@ class Logger {
             return;
         }
         $date = date('Y_m_d');
+        if (!file_exists('logs')) {
+            mkdir('logs', 0777, true);
+        }
         self::$LogFileName = "logs/APILogger_$date.log";
         self::$Initialized = true;
     }

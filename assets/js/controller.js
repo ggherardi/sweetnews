@@ -2,9 +2,10 @@ class Controller {
     constructor(containerSelector) {
         this.baseUrl = window.location.host;
         this.containerSelector = containerSelector;
+        this.container = $(this.containerSelector);
         this.renderSuccess = function(data) {
             this.loadCorrelatedScript();
-            $(this.containerSelector).html(data);
+            this.container.html(data);
         }
         this.renderError = function(error) {
             console.log(error);
@@ -42,6 +43,22 @@ class Controller {
             script.setAttribute("src", this.correlatedScripUrl);
             document.head.appendChild(script);
         }
+    }
+
+    hide() {
+        this.containerSelector
+    }
+}
+
+class PageContentController {
+    constructor(container1, container2) {
+        this.container1 = container1;
+        this.container2 = container2;
+    }
+
+    switch() {
+        this.container1.toggle();
+        this.container2.toggle();
     }
 }
 
@@ -82,10 +99,12 @@ class Menu {
         var prevItem = items.toArray().find(findActiveItem.bind(this));    
         if(prevItem){
             $(prevItem).removeClass(this.activeClassName);
+            moveMenuItem($(prevItem.firstElementChild));
         }
         var currItem = $(`#navbar__${view.name}`);
         if(currItem){
-            $(currItem).addClass(this.activeClassName);
+            currItem.addClass(this.activeClassName);
+            moveMenuItem(currItem.children().first());
         }
     }
 }

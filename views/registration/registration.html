@@ -1,0 +1,36 @@
+<section id="registration">
+    <div class="content ta-center">
+        <div>
+            <h2 class="sitecolor">Registrati</h2>
+        </div>
+        <div id="loginTab" class="sitecolor mb-3">
+            <span>..oppure <strong class="td-underline c-pointer sitecolor" onclick="switchToLogin();">Accedi!</strong></span>
+        </div>
+        <form id="registrationForm" class="form form-center placeholder-center" onsubmit="return register(this, event); return false;">
+            <div class="form-row">
+                <div class="col">
+                    <input id="registrationForm__nome" class="form-control" type="text" placeholder="nome*" required>
+                </div>
+                <div class="col">
+                    <input id="registrationForm__cognome" class="form-control" type="text" placeholder="cognome*" required>
+                </div>
+            </div>
+            <input id="registrationForm__email" type="text" class="form-control mt-2" placeholder="email*" required>
+            <div class="form-row">
+                <div class="col">
+                    <input id="registrationForm__telefono_cellulare" class="form-control mt-2" type="text" placeholder="cellulare">
+                </div>
+                <div class="col">
+                    <input id="registrationForm__telefono_abitazione" class="form-control mt-2" type="text" placeholder="telefono casa">            
+                </div>
+            </div>
+            <input id="registrationForm__indirizzo" class="form-control mt-2" type="text" placeholder="città, indirizzo">
+            <input id="registrationForm__data_nascita" type="text" class="form-control mt-2" placeholder="data di nascita" onfocus="(this.type='date')" onfocusout="(this.type='text')">
+            <div id="registrationForm__username_container" class="mt-2">
+                <input id="registrationForm__username" type="text" class="form-control" placeholder="username*" onfocusout="checkUsernameValidity(this);" required>
+            </div>
+            <input id="registrationForm__password" type="password" class="form-control mt-2" placeholder="password*" required>
+            <button type="submit" class="mt-4">Registrazione</button>
+        </form>
+    </div>
+</section>

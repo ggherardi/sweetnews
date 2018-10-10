@@ -2,6 +2,8 @@ class Views {
     constructor() {
         this.allViews = {
             home: { title: "Home", name: "home" },
+            login: { title: "Profilo personale", name: "login" },
+            registration: { title: "Registrazione", name: "registration", showInMenu: false },
             allRecipes: { title: "Catalogo ricette", name: "allRecipes" },
             restitutions: { title: "Restituzioni", name: "restitutions" },
             bookings: { title: "Prenotazioni", name: "bookings" },
@@ -9,7 +11,6 @@ class Views {
             storage: { title: "Magazzino", name: "storage" },
             sales: { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
             accounts: { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
-            login: { title: "Login", name: "login", showInMenu: false },
             unauthorized: { title: "Unauthorized", name: "unauthorized", showInMenu: false }
         };
         
@@ -32,6 +33,7 @@ class Permissions {
 class Placeholders {
     constructor() {
         this.mainContentZone = "#mainContentContainer";
+        this.secondaryContentZone = "#secondaryContentContainer";
         this.sidebarZone = "#navbar";
         this.sharedModal = "#SharedModal";
     }
@@ -40,8 +42,9 @@ class Placeholders {
 class HttpUtilities {
     constructor() {
         this.httpStatusCodes = {
-            "unauthorized": 401,
-            "internalServerError": 500
+            unauthorized: 401,
+            conflict: 409,
+            internalServerError: 500
         }
     }
 }
