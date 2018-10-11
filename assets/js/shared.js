@@ -1,7 +1,17 @@
 class SharedStorage {
     constructor() {
         this.loginContext = null;
+        this.userIdentities = null;
     }
 }
 
-sharedStorage = new SharedStorage();
+class LoginManager {
+    constructor() { }
+
+    login() {
+        
+    }
+}
+
+var sharedStorage = new SharedStorage();
+var loginManager = new LoginManager();

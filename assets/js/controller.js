@@ -16,17 +16,31 @@ class Controller {
         };
     }
 
+    getActiveView() {
+        return this.view;
+    }
+
     setView(view) {
-        var viewName = view.name.toLowerCase();
-        this.correlatedScripUrl = `/views/${viewName}/${viewName}.js`;
-        this.ajaxOptions.url = `/views/${viewName}/${viewName}.html`;
-        return this.set();
+        this.view = view;
+        this.previousViewName = this.viewName;
+        this.viewName = view.name ? view.name.toLowerCase() : view;
+        this.correlatedScripUrl = `/views/${this.viewName}/${this.viewName}.js`;
+        this.ajaxOptions.url = `/views/${this.viewName}/${this.viewName}.html`;
     }
 
     setComponent(component) {
-        var componentName = component.name.toLowerCase();
-        this.correlatedScripUrl = `/components/${componentName}/${componentName}.js`;
-        this.ajaxOptions.url = `/components/${componentName}/${componentName}.html`;
+        this.componentName = component.name.toLowerCase();
+        this.correlatedScripUrl = `/components/${this.componentName}/${this.componentName}.js`;
+        this.ajaxOptions.url = `/components/${this.componentName}/${this.componentName}.html`;
+    }
+
+    loadView(view) {
+        this.setView(view);
+        return this.set();
+    }
+
+    loadComponent(view) {
+        this.setComponent(view);
         return this.set();
     }
 
@@ -44,21 +58,37 @@ class Controller {
             document.head.appendChild(script);
         }
     }
-
-    hide() {
-        this.containerSelector
-    }
 }
 
 class PageContentController {
-    constructor(container1, container2) {
-        this.container1 = container1;
-        this.container2 = container2;
+    constructor(primaryContainer, secondaryContainer) {
+        this.primaryContainer = primaryContainer;
+        this.secondaryContainer = secondaryContainer;
+        this.primaryController = new Controller(`#${this.primaryContainer[0].id}`);
+        this.secondaryController = new Controller(`#${this.secondaryContainer[0].id}`);
+    }
+
+    setSwitchableSecondaryPage(secondaryPageView) {
+        this.activeBreadcrumb = 1;
+        this.primaryPageView = mainContentController.getActiveView();
+        this.secondaryPageView = secondaryPageView;
+        this.secondaryController.loadView(secondaryPageView);
     }
 
     switch() {
-        this.container1.toggle();
-        this.container2.toggle();
+        this.switchBreadcrumb();
+        this.primaryContainer.toggle();
+        this.secondaryContainer.toggle();
+    }
+
+    switchBreadcrumb() {
+        if(this.activeBreadcrumb == 1) {
+            this.activeBreadcrumb--;
+            breadcrumb.rebuildBreadcrumb(this.secondaryPageView);
+        } else {
+            this.activeBreadcrumb++;
+            breadcrumb.rebuildBreadcrumb(this.primaryPageView);
+        }
     }
 }
 
@@ -71,8 +101,9 @@ class Menu {
 
     static menuClick(menuItem) {
         var view = views.allViews[menuItem.dataset["view"]];
-        mainContentController.setView(view);
+        mainContentController.loadView(view);
         menu.setMenuItemActive(view);
+        breadcrumb.rebuildBreadcrumb(view);
     }
     
     buildMenu() {
@@ -97,11 +128,12 @@ class Menu {
         var findActiveItem = function(el) { return el.className == this.activeClassName };
         var items = $(this.navbarId).children();
         var prevItem = items.toArray().find(findActiveItem.bind(this));    
+        var currItem = $(`#navbar__${view.name}`);
+        if(prevItem && prevItem.id == currItem[0].id) return;
         if(prevItem){
             $(prevItem).removeClass(this.activeClassName);
             moveMenuItem($(prevItem.firstElementChild));
         }
-        var currItem = $(`#navbar__${view.name}`);
         if(currItem){
             currItem.addClass(this.activeClassName);
             moveMenuItem(currItem.children().first());

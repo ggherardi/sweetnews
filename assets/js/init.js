@@ -7,6 +7,7 @@ var pageContentController = new PageContentController(mainContentController.cont
 var sidebarController = new Controller(placeholders.sidebarZone);
 var menuLoader = new Loader(placeholders.sidebarZone)
 var mainContentLoader = new Loader(placeholders.mainContentZone)
+var breadcrumb = new Breadcrumb(placeholders.breadcrumbContainer, views.allViews.home);
 var CorrelationID;
 var Global_FilmPrices;
 var Browser;
@@ -47,18 +48,18 @@ function initUser(loginContext) {
 }
 
 function initMasterpageComponents() {
-    sidebarController.setComponent(views.components.sidebar)
+    sidebarController.loadComponent(views.components.sidebar)
         .then(() => { menu.buildMenu() })
         .done(initHome)
 }
 
 function initHome() {
-    mainContentController.setView(views.allViews.home);
+    mainContentController.loadView(views.allViews.home);
     menu.setMenuItemActive(views.allViews.home);
 }
 
 function initLogin() {
-    mainContentController.setView(views.allViews.login);
+    mainContentController.loadView(views.allViews.login);
 }
 
 /* Shared functions */

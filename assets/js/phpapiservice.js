@@ -9,10 +9,14 @@ class RestClient {
     }
 
     static redirectAccordingToError(jqXHR, textStatus, errorThrown) {
-        if(jqXHR.status == 401) {
-            CorrelationID = jqXHR.responseText;
-            mainContentController.setView(views.unauthorized);
-            modal.openErrorModal();            
+        switch(jqXHR.status) {
+            case 401:
+                CorrelationID = jqXHR.responseText;
+                mainContentController.setView(views.unauthorized);
+                modal.openErrorModal();      
+                break;
+            case 480:
+                break;
         }
     }
 
@@ -38,25 +42,34 @@ class AuthenticationService extends RestClient {
         return super.execute();
     }
 
-    checkUsernameValidity(username) {
+    asyncCheckUsernameValidity(username) {
         this.data = {
-            action: "checkUsernameValidity",
+            action: "asyncCheckUsernameValidity",
             username: username
         }
         return super.execute();
     }
 
-    login(username, password) {
-        var credentials = JSON.stringify({
-            username: username,
-            password: password
-        });
+    login(credentials) {
+        credentials = JSON.stringify(credentials);
         this.data = {
-            credentials: credentials,
-            action: "login"
+            action: "login",
+            credentials: credentials
         }
         return super.execute();
     }
+
+    // login(username, password) {
+    //     var credentials = JSON.stringify({
+    //         username: username,
+    //         password: password
+    //     });
+    //     this.data = {
+    //         credentials: credentials,
+    //         action: "login"
+    //     }
+    //     return super.execute();
+    // }
 
     logout() {
         this.data = {

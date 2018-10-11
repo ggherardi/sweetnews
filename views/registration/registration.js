@@ -1,7 +1,7 @@
-loginController = new Controller("#registration");
+var registrationController = new Controller("#registration");
 
 function switchToLogin() {
-    loginController.setView(views.allViews.login);
+    pageContentController.switch();
 }
 
 /* EVENTS */
@@ -14,7 +14,7 @@ function checkUsernameValidity(sender) {
         var loader = new Loader("#registrationForm__username_container", 30, 30);
         loader.showLoader();
         var authenticationService = new AuthenticationService();
-        authenticationService.checkUsernameValidity(username)
+        authenticationService.asyncCheckUsernameValidity(username)
             .done((data) => {
                 loader.hideLoader();
                 if(data) {

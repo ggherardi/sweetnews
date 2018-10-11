@@ -1,9 +1,50 @@
-loginController = new Controller("#login");
+var loginController = new Controller("#login");
 
 function switchToRegistration() {
-    loginController.setView(views.allViews.registration);
+    pageContentController.setSwitchableSecondaryPage(views.allViews.registration);
+    pageContentController.switch();
 }
 
 function login() {
-    
+    var loader = new Loader("#loginForm");
+    loader.showLoader();
+    var authService = new AuthenticationService();
+    var credentials = getLoginCredentials();
+    var errorSpan = $("#loginForm__errorText");
+    errorSpan.hide();
+    authService.login(credentials)
+        .done(loginSuccess)
+        .fail(loginFail)
+        .always(() => loader.hideLoader());
+}
+
+function getLoginCredentials() {
+    return {
+        username: $("#loginForm__username").val(),
+        password: $("#loginForm__password").val()
+    }
+}
+
+function loginSuccess(data) {
+    var identities = JSON.parse(data);
+    if(identities.length > 1) {
+        sharedStorage.userIdentities = identities;
+        pageContentController.setSwitchableSecondaryPage(views.allViews.identities);
+        pageContentController.switch();
+    } else {
+        loginManager.login();
+    }
+}
+
+function loginFail(jqXHR) {
+    var errorSpan = $("#loginForm__errorText");
+    switch(jqXHR.status) {
+        case 401:
+            errorSpan.text("Le credenziali fornite non sono corrette");
+            break;
+        case 480:
+            errorSpan.text("Username non presente in database");
+            break;
+    }
+    errorSpan.show();
 }
