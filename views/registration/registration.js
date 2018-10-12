@@ -13,8 +13,8 @@ function checkUsernameValidity(sender) {
     } else {
         var loader = new Loader("#registrationForm__username_container", 30, 30);
         loader.showLoader();
-        var authenticationService = new AuthenticationService();
-        authenticationService.asyncCheckUsernameValidity(username)
+        var authenticationApi = new AuthenticationApi();
+        authenticationApi.asyncCheckUsernameValidity(username)
             .done((data) => {
                 loader.hideLoader();
                 if(data) {
@@ -32,10 +32,10 @@ function checkUsernameValidity(sender) {
 function register(sender, e) {
     e.preventDefault();
     var registrationForm = getRegistrationInputValues();
-    var authenticationService = new AuthenticationService();
+    var authenticationApi = new AuthenticationApi();
     var loader = new Loader("#registrationForm");
     loader.showLoader();
-    authenticationService.registerUser(registrationForm)
+    authenticationApi.registerUser(registrationForm)
         .done(registrationSuccess.bind(loader))
         .fail(registrationError.bind(loader));
 }

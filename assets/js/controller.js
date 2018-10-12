@@ -50,7 +50,7 @@ class Controller {
 
     loadCorrelatedScript() {
         var allScripts
-        allScripts = [].slice.call(document.scripts)
+        allScripts = Array.prototype.slice.call(document.scripts)
         var alreadyLoadedScript = allScripts.find((el) => { return el.src == this.correlatedScripUrl});
         if(!alreadyLoadedScript) {
             var script = document.createElement("script");
@@ -110,7 +110,7 @@ class Menu {
         this.html = "";
         for(var key in this.menuItems) {
             var item = this.menuItems[key];
-            var arePermissionsValid = item.needPermissions ? sharedStorage.loginContext.delega_codice >= item.needPermissions : true;
+            var arePermissionsValid = item.needPermissions ? shared.loginContext.delega_codice >= item.needPermissions : true;
             if(arePermissionsValid && item.showInMenu == undefined || item.showInMenu) {          
                 this.html += `<li id='navbar__${item.name}'>
                                 </span><a onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</a>

@@ -5,7 +5,7 @@ function switchToLogin() {
 }
 
 function buildIdentitiesList() {
-    for(var i = 0; i < sharedStorage.userIdentities; i++) {
+    for(var i = 0; i < shared.userIdentities; i++) {
         
     }
 }

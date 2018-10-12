@@ -8,7 +8,7 @@ use Logger;
 $GLOBALS["CorrelationID"] = uniqid("corrId_", true);
 $correlationId = $GLOBALS["CorrelationID"];
 
-class AuthenticationService {
+class AuthenticationApi {
     private static $authCookieName = "RentNetAuth";
     private $dbContext;
 
@@ -102,6 +102,7 @@ class AuthenticationService {
             $res = self::ExecuteQuery($query);
             $identities = array(); 
             while($row = $res->fetch_assoc()) {
+                $uniqueRow = $row;
                 $fetchedPassword = $row["password"];
                 $identity =  new Identity($row);
                 $identities[] = $identity;
@@ -116,7 +117,7 @@ class AuthenticationService {
                     Logger::Write(sprintf("%d identities found for user %s", $identitiesCount, self::GetSlashedValueOrDefault($credentials->username)), $GLOBALS["CorrelationID"]);       
                     exit(json_encode($identities));
                 } else {
-                    self::FinalizeLogin($row);
+                    self::FinalizeLogin($uniqueRow);
                 }
             }
             else{
@@ -157,9 +158,10 @@ class AuthenticationService {
         $loginContext = new LoginContext($row);
         Logger::Write(sprintf("User %s validated, starting token generation.", $loginContext->username), $GLOBALS["CorrelationID"]);       
         self::SetAuthenticationCookie($loginContext);
-        Logger::Write("User $this->username succesfully logged in.", $GLOBALS["CorrelationID"]);
+        Logger::Write(sprintf("User %s succesfully logged in.", $loginContext->username), $GLOBALS["CorrelationID"]);
         exit(json_encode($loginContext));
     }
+
     // private function GetFileData() {
     //     $filename = $_FILES['file']['tmp_name'];
     //     $file = readfile($_FILES['file']['tmp_name']);
@@ -173,7 +175,7 @@ class AuthenticationService {
         $cookie = TokenGenerator::GenerateTokenForUser($cookieValue);
         $cookieDuration = time() + (3600 * 12); // Scade in 12 ore
         setcookie(self::$authCookieName, $cookie, $cookieDuration, "/", "", false, true);
-        Logger::Write("Authentication cookie has been set: ".$_COOKIE[self::$authCookieName], $GLOBALS["CorrelationID"]);
+        Logger::Write("Authentication cookie has been set.", $GLOBALS["CorrelationID"]);
     }
 
     public function Logout() {
@@ -227,8 +229,8 @@ class AuthenticationService {
 
 // Inizializza la classe per restituire i risultati e richiama il metodo d'ingresso
 try {
-    Logger::Write("Reached AuthenticationService API", $GLOBALS["CorrelationID"]);    
-    $Auth = new AuthenticationService();
+    Logger::Write("Reached AuthenticationApi", $GLOBALS["CorrelationID"]);    
+    $Auth = new AuthenticationApi();
     $Auth->Init();
 }
 catch(Throwable $ex) {

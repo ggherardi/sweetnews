@@ -1,5 +1,5 @@
 /* Properties */
-var authenticationService = new AuthenticationService();
+var authenticationApi = new AuthenticationApi();
 var menu = new Menu(views.allViews);
 var mainContentController = new Controller(placeholders.mainContentZone);
 var secondaryContentController = new Controller(placeholders.secondaryContentZone);
@@ -16,7 +16,7 @@ var Browser;
 $().ready(function() {
     mainContentLoader.showLoader();
     initializeCrossBrowserSettings();
-    authenticationService.authenticateUser()
+    authenticationApi.authenticateUser()
         .done((data) => {
             var data = JSON.parse(data);
             if(data) {
@@ -41,9 +41,9 @@ function initHomepageAnonymous() {
 }
 
 function initUser(loginContext) {
-    if(!sharedStorage.loginContext) {
-        sharedStorage.loginContext = loginContext;
-        sharedStorage.loginContext.isAdmin = sharedStorage.loginContext.delega_codice >= 30;
+    if(!shared.loginContext) {
+        shared.loginContext = loginContext;
+        shared.loginContext.isAdmin = shared.loginContext.delega_codice >= 30;
     }
 }
 

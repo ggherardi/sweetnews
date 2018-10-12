@@ -27,10 +27,10 @@ class RestClient {
     }
 }
 
-class AuthenticationService extends RestClient {
+class AuthenticationApi extends RestClient {
     constructor() {
         super();
-        this.endpoint = "php/AuthenticationService.php";
+        this.endpoint = "php/AuthenticationAPI.php";
     }
 
     registerUser(registrationForm) {

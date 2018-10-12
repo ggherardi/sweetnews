@@ -5,14 +5,15 @@ function switchToRegistration() {
     pageContentController.switch();
 }
 
-function login() {
+function login(sender, e) {
+    e.preventDefault();
     var loader = new Loader("#loginForm");
     loader.showLoader();
-    var authService = new AuthenticationService();
+    var authenticationApi = new AuthenticationApi();
     var credentials = getLoginCredentials();
     var errorSpan = $("#loginForm__errorText");
     errorSpan.hide();
-    authService.login(credentials)
+    authenticationApi.login(credentials)
         .done(loginSuccess)
         .fail(loginFail)
         .always(() => loader.hideLoader());
@@ -28,11 +29,11 @@ function getLoginCredentials() {
 function loginSuccess(data) {
     var identities = JSON.parse(data);
     if(identities.length > 1) {
-        sharedStorage.userIdentities = identities;
+        shared.userIdentities = identities;
         pageContentController.setSwitchableSecondaryPage(views.allViews.identities);
         pageContentController.switch();
     } else {
-        loginManager.login();
+        shared.loginManager.login();
     }
 }
 
