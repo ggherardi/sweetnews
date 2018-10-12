@@ -5,7 +5,8 @@ function switchToLogin() {
 }
 
 function buildIdentitiesList() {
-    for(var i = 0; i < shared.userIdentities; i++) {
-        
-    }
+    var html = "<div>test</div>";
+    shared.buildRepeaterHtml(html, shared.userIdentities, "#identitiesForm");
 }
+
+buildIdentitiesList();

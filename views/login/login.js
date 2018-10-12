@@ -29,6 +29,7 @@ function getLoginCredentials() {
 function loginSuccess(data) {
     var identities = JSON.parse(data);
     if(identities.length > 1) {
+        console.log(identities);
         shared.userIdentities = identities;
         pageContentController.setSwitchableSecondaryPage(views.allViews.identities);
         pageContentController.switch();
