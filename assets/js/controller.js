@@ -115,7 +115,11 @@ class Menu {
         this.html = "";
         for(var key in this.menuItems) {
             var item = this.menuItems[key];
-            var arePermissionsValid = item.needPermissions ? shared.loginContext.delega_codice >= item.needPermissions : true;
+            var arePermissionsValid = item.needPermissions 
+                ? shared.loginContext.delega_codice >= item.needPermissions && (item.maxPermissions 
+                    ? shared.loginContext.delega_codice <= item.maxPermissions 
+                    : true)
+                : true;
             if(arePermissionsValid && item.showInMenu == undefined || item.showInMenu) {          
                 this.html += `<li id='navbar__${item.name}'>
                                 </span><a onclick='Menu.menuClick(this);' data-view='${item.name}'>${item.title}</a>
@@ -155,6 +159,7 @@ class Views {
                 this.login = { title: "Login", name: "login", showInMenu: false, parent: this.personal},
                 this.identities = { title: "Deleghe utente", name: "identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]},
                 this.registration = { title: "Registrazione", name: "registration", showInMenu: false, parent: this.personal },
+                this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore }
                 this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", needPermissions: permissions.levels.visitatore }
                 // this.restitutions = { title: "Restituzioni", name: "restitutions" },
                 // this.bookings = { title: "Prenotazioni", name: "bookings" },
