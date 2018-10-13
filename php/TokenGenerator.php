@@ -4,10 +4,10 @@ class TokenGenerator {
     private static $Initialized = false;
 
     /* Configurazioni per i token, da spostare */
-    private static $authCookieName = "RentNetAuth";
+    private static $authCookieName = "SweetNewsAuth";
     private static $EncryptMethod = "AES-256-CBC";
-    private static $SecretKey = "VideonoleggioKey";
-    private static $SecretIv = "VideonoleggioivKey";
+    private static $SecretKey = "SweetNewsKey";
+    private static $SecretIv = "SweetNewsivKey";
     private static $Key;
     private static $Iv;
 

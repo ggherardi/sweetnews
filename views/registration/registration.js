@@ -42,6 +42,7 @@ function register(sender, e) {
 
 function registrationSuccess() {
     this.hideLoader();
+    mainContentController.loadView(views.allViews.personal);
 }
 
 function registrationError(jqXHR) {

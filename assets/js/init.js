@@ -1,3 +1,11 @@
+/* Init Classes */
+// var permissions = new Permissions();
+// var placeholders = new Placeholders();
+// var httpUtilities = new HttpUtilities();
+// var ribbon = new Ribbon();
+// var views = new Views();
+// var shared = new Shared();
+
 /* Properties */
 var authenticationApi = new AuthenticationApi();
 var menu = new Menu(views.allViews);
@@ -5,6 +13,7 @@ var mainContentController = new Controller(placeholders.mainContentZone);
 var secondaryContentController = new Controller(placeholders.secondaryContentZone);
 var pageContentController = new PageContentController(mainContentController.container, secondaryContentController.container);
 var sidebarController = new Controller(placeholders.sidebarZone);
+var logoutController = new Controller(placeholders.logoutContainer);
 var menuLoader = new Loader(placeholders.sidebarZone)
 var mainContentLoader = new Loader(placeholders.mainContentZone)
 var breadcrumb = new Breadcrumb(placeholders.breadcrumbContainer, views.allViews.home);
@@ -14,8 +23,11 @@ var Browser;
 
 /* Document ready */
 $().ready(function() {
+    ribbon.setContainer(secondaryContentController.container);
+    shared.loginContext.delega_codice = 0;
     mainContentLoader.showLoader();
     initializeCrossBrowserSettings();
+    initializeResponsivenessSettings();
     authenticationApi.authenticateUser()
         .done((data) => {
             var data = JSON.parse(data);
@@ -41,14 +53,14 @@ function initHomepageAnonymous() {
 }
 
 function initUser(loginContext) {
-    if(!shared.loginContext) {
+    if(shared.loginContext.delega_codice == 0) {
         shared.loginContext = loginContext;
         shared.loginContext.isAdmin = shared.loginContext.delega_codice >= 30;
     }
 }
 
 function initMasterpageComponents() {
-    sidebarController.loadComponent(views.components.sidebar)
+    $.when(sidebarController.loadComponent(views.AllComponents.sidebar), logoutController.loadComponent(views.AllComponents.logout))
         .then(() => { menu.buildMenu() })
         .done(initHome)
 }
@@ -114,6 +126,19 @@ function base64ToArrayBuffer(base64) {
     return link;
 };
 
+/* Reponsiveness */
+function initializeResponsivenessSettings() {
+    window.addEventListener("resize", setLogo);
+    setLogo();
+}
+
+function setLogo() {
+    if(window.innerWidth >= 700) {
+        $("#mainLogo").attr("src", "/images/sweetnewslogo.png");
+    } else {
+        $("#mainLogo").attr("src", "/images/sweetnewslogo-onlyimage.png");
+    }
+}
 
 /* Cross Browser Settings */
 function initializeCrossBrowserSettings() {

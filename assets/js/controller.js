@@ -3,13 +3,6 @@ class Controller {
         this.baseUrl = window.location.host;
         this.containerSelector = containerSelector;
         this.container = $(this.containerSelector);
-        this.renderSuccess = function(data) {
-            this.loadCorrelatedScript();
-            this.container.html(data);
-        }
-        this.renderError = function(error) {
-            console.log(error);
-        }
         this.ajaxOptions = {
             success: this.renderSuccess.bind(this),
             error: this.renderError.bind(this)
@@ -46,6 +39,18 @@ class Controller {
 
     set() {
         return $.ajax(this.ajaxOptions);
+    }
+
+    renderSuccess(data) {
+        this.loadCorrelatedScript();
+        this.container.html(data);
+        if(this.view && this.view.ribbon) {
+            ribbon.buildRibbon(this.view.ribbon);
+        }
+    }
+
+    renderError(error) {
+        console.log(error);
     }
 
     loadCorrelatedScript() {
@@ -140,3 +145,39 @@ class Menu {
         }
     }
 }
+
+class Views {
+    constructor() {
+        class AllViews {
+            constructor() {
+                this.home = { title: "Home", name: "home" },
+                this.personal = { title: "Pagina personale", name: "personal" }
+                this.login = { title: "Login", name: "login", showInMenu: false, parent: this.personal},
+                this.identities = { title: "Deleghe utente", name: "identities", 
+                    showInMenu: false, 
+                    needPermissions: permissions.levels.visitatore, 
+                    parent: this.login,
+                    ribbon: [ ribbon.buttons.back ]},
+                this.registration = { title: "Registrazione", name: "registration", showInMenu: false, parent: this.personal },
+                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes" },
+                this.restitutions = { title: "Restituzioni", name: "restitutions" },
+                this.bookings = { title: "Prenotazioni", name: "bookings" },
+                this.customers = { title: "Gestione clienti", name: "customers" },
+                this.storage = { title: "Magazzino", name: "storage" },
+                this.sales = { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
+                this.accounts = { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
+                this.unauthorized = { title: "Unauthorized", name: "unauthorized", showInMenu: false };
+            }
+        };
+        this.allViews = new AllViews();
+        class AllComponents {
+            constructor() {
+                this.sidebar = { title: "Sidebar", name: "sidebar" };
+                this.logout = { title: "Logout", name: "logout" };
+            }
+        }
+        this.AllComponents = new AllComponents();
+    }
+}
+
+var views = new Views();

@@ -9,7 +9,7 @@ $GLOBALS["CorrelationID"] = uniqid("corrId_", true);
 $correlationId = $GLOBALS["CorrelationID"];
 
 class AuthenticationApi {
-    private static $authCookieName = "RentNetAuth";
+    private static $authCookieName = "SweetNewsAuth";
     private $dbContext;
 
     function __construct() { }
@@ -133,8 +133,8 @@ class AuthenticationApi {
     public function GetDetailsForUser($row) {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         $identities = $_POST["identities"];
-        $id_utente = isset($row) ? $row["id_utente"] : $_POST("id_utente");
-        $delega_codice = isset($row) ? $row["delega_codice"] : $_POST("delega_codice");
+        $id_utente = isset($row) ? $row["id_utente"] : $_POST["id_utente"];
+        $delega_codice = isset($row) ? $row["delega_codice"] : $_POST["delega_codice"];
         $query = 
             "SELECT *
             FROM utente as ut
@@ -147,7 +147,7 @@ class AuthenticationApi {
             $delega_codice == PermissionsConstants::VISITATORE 
                 ? "dettaglio_utente_esterno" 
                 : "dettaglio_utente_interno");      
-        $whereCondition = sprintf("WHERE id_utente = %d", $id_utente);
+        $whereCondition = sprintf("WHERE ut.id_utente = %d AND td.delega_codice = %d", $id_utente, $delega_codice);
         $query = sprintf($query, $tableJoin, $whereCondition);
         $res = self::ExecuteQuery($query);
         $row = $res->fetch_assoc();

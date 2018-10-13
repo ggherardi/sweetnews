@@ -59,17 +59,14 @@ class AuthenticationApi extends RestClient {
         return super.execute();
     }
 
-    // login(username, password) {
-    //     var credentials = JSON.stringify({
-    //         username: username,
-    //         password: password
-    //     });
-    //     this.data = {
-    //         credentials: credentials,
-    //         action: "login"
-    //     }
-    //     return super.execute();
-    // }
+    getDetailsForUser(id_utente, delega_codice) {
+        this.data = {
+            id_utente: id_utente,
+            delega_codice: delega_codice,
+            action: "getDetailsForUser"
+        }
+        return super.execute();
+    }
 
     logout() {
         this.data = {

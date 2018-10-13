@@ -5,8 +5,41 @@ function switchToLogin() {
 }
 
 function buildIdentitiesList() {
-    var html = "<div>test</div>";
-    shared.buildRepeaterHtml(html, shared.userIdentities, "#identitiesForm");
+    var html = "";
+    for(var i = 0; i < shared.userIdentities.length; i++) {
+        var identity = shared.userIdentities[i];
+        var codice = parseInt(identity.delega_codice);
+        var icon;
+        switch(codice) {
+            case 10:
+                icon = "person";
+                break;
+            case 20:
+                icon = "pie-chart";
+                break;
+            case 30:
+                icon = "briefcase";
+                break;
+        }
+        html += `   <div class="identityRow c-pointer" onclick="loginWithIdentity(${identity.id_utente}, ${identity.delega_codice})">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <svg class="identityIcon sweetNewsBaseIcon">
+                                    <use xlink:href="/assets/svg/sprite.svg#${icon}"></use>
+                                </svg>
+                            </div>
+                        <div class="col-sm-8">${identity.delega_nome}</div>
+                        </div>
+                    </div>`;
+    }
+    $("#identitiesForm").html(html);
+}
+
+function loginWithIdentity(id_utente, delega_codice) {
+    var authenticationApi = new AuthenticationApi();
+    authenticationApi.getDetailsForUser(id_utente, delega_codice)
+        .done((data) => console.log(data))
+        .fail(RestClient.redirectAccordingToError);
 }
 
 buildIdentitiesList();

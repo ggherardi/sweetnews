@@ -13,18 +13,48 @@ button:focus
 	outline: 0;
 }
 
-.sitecolor
-{
-	color: #F56A6A!important;
+.baseIcon {
+	width: 50px;
+	height: 50px;
 }
 
-.ta-center
-{
+.icon25x25 {
+	width: 25px;
+	height: 25px;
+}
+
+.pink {
+	color: #F56A6A!important;
+	fill: #F56A6A;
+}
+
+.buttonWithBorder {
+	border: solid 0.5px rgba(0, 0, 0, 0);
+	padding: 5px;
+	transition: all 0.3s ease-in-out;
+}
+
+.buttonWithBorder:hover {
+	border: solid 0.5px #F56A6A;
+}
+
+.sweetNewsBaseIcon {
+	fill: #D25575;
+}
+
+.sitecolor {
+	color: #D25575!important;
+}
+
+.confirmFillColor {
+	fill: #95D14B;
+}
+
+.ta-center {
 	text-align: center!important;
 }
 
-.placeholder-center input::placeholder
-{
+.placeholder-center input::placeholder {
 	text-align: center;
 }
 
@@ -43,6 +73,71 @@ button:focus
 .errorText {
 	color: red;
 	display: none;
+}
+
+/* Ribbon */
+#ribbon {
+	border-bottom: solid #d4d4d4 0.5px;
+	padding-bottom: 5px;
+}
+
+.ribbonButton {
+	border: solid 0.5px rgba(0, 0, 0, 0);
+	padding-top: 3px;
+	max-width: 70px;
+	text-align: center;
+	transition: all 0.5s ease-in-out;
+}
+
+.ribbonButton:hover {
+	border: solid 0.5px #d4d4d4;
+}
+
+.icon-floppy-disk::after {
+	color: lightblue;
+}
+
+/* Views */
+#login, #registration, #identitiesForm {
+	max-width: 400px;
+	margin: 0 auto;
+	margin-top: 50px;
+}
+
+#identitiesForm {
+	max-width: 300px;
+}
+
+#secondaryContentContainer {
+	display: none;
+}
+
+#navbar > li {
+	position: relative;
+	min-height: 40px;
+}
+
+#navbar li a {
+	position: absolute;
+}
+
+#navbar li.active a {
+	color: #f56a6a;		
+}
+
+.identityRow {
+	padding: 20px;
+}
+
+.identityRow:hover {
+	background-color: #ffe6e6;
+}
+
+.identityIcon {
+	border: solid 1px #D25575;
+	border-radius: 20px;
+	width: 30px;
+	height: 30px;
 }
 
 html, body, div, span, applet, object,
@@ -3605,27 +3700,3 @@ input, select, textarea {
 			margin-top: 0;
 			padding-top: 0;
 		}
-
-	/* View */
-	#login, #registration {
-        max-width: 400px;
-		margin: 0 auto;
-		margin-top: 50px;
-	}
-	
-	#secondaryContentContainer {
-		display: none;
-	}
-
-	#navbar > li {
-		position: relative;
-		min-height: 40px;
-	}
-
-	#navbar li a {
-		position: absolute;
-	}
-
-	#navbar li.active a {
-		color: #f56a6a;		
-	}
