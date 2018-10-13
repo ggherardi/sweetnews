@@ -40,9 +40,24 @@ function register(sender, e) {
         .fail(registrationError.bind(loader));
 }
 
-function registrationSuccess() {
-    this.hideLoader();
-    mainContentController.loadView(views.allViews.personal);
+function registrationSuccess(data) {
+    if(data) {
+        var authenticationApi = new AuthenticationApi();
+        var credentials = {
+            username: $("#registrationForm__username").val(),
+            password: $("#registrationForm__password").val()
+        }
+        authenticationApi.login(credentials)
+            .done((data) => { 
+                pageContentController.switch(); 
+                shared.loginManager.login(data);
+                var modalOptions = new ModalOptions();
+                modalOptions.title = `Registrazione effettuata`;
+                modalOptions.body = `<span>Registrazione effettuata con successo!</span>`;
+                modal = new Modal();                 
+            })
+            .fail(RestClient.redirectAccordingToError);
+    }
 }
 
 function registrationError(jqXHR) {

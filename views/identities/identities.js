@@ -24,7 +24,7 @@ function buildIdentitiesList() {
         html += `   <div class="identityRow c-pointer" onclick="loginWithIdentity(${identity.id_utente}, ${identity.delega_codice})">
                         <div class="row">
                             <div class="col-sm-4">
-                                <svg class="identityIcon sweetNewsBaseIcon">
+                                <svg class="identityIcon purple">
                                     <use xlink:href="/assets/svg/sprite.svg#${icon}"></use>
                                 </svg>
                             </div>
@@ -37,8 +37,10 @@ function buildIdentitiesList() {
 
 function loginWithIdentity(id_utente, delega_codice) {
     var authenticationApi = new AuthenticationApi();
+    var loader = new Loader(placeholders.mainContentZone);
+    loader.showLoader();
     authenticationApi.getDetailsForUser(id_utente, delega_codice)
-        .done(shared.loginManager.login)
+        .done((data) => { shared.loginManager.login(data); pageContentController.switch(); })
         .fail(RestClient.redirectAccordingToError);
 }
 

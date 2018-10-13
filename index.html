@@ -31,10 +31,34 @@
 								<header id="header">
 									<a class="logo"><img id="mainLogo" height="75"></a>		
 									<ul id="quickActions" class="icons">
-										<li id="logoutContainer"></li>
+										<div id="accountContainer"></div>
+										<div id="logoutContainer"></div>
 									</ul>
 								</header>
+
+								<!-- Modal -->
+								<div class="modal fade" id="SharedModal" tabindex="-1" role="dialog" aria-hidden="true">
+									<div id="SharedModalInner" class="modal-dialog modal-lg" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 id="SharedModalTitle" class="modal-title"></h5>
+												<div class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+												</div>
+											</div>
+											<div id="SharedModalBody" class="modal-body"></div>
+											<div id="SharedModalFooter" class="modal-footer">
+												<button id="ShareModalCancelButton" type="button" class="simple-button simple-button-cancel" data-dismiss="modal"></button>
+												<button id="ShareModalConfirmButton" type="button" class="simple-button"></button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Breadcrumb -->
 								<div id="breadcrumb"></div>
+
+								<!-- Main Content -->
 								<div id="mainContentContainer">								
 							<!-- Section -->
 									<!-- <section>
@@ -204,6 +228,7 @@
 								<script src="assets/js/breadcrumb.js"></script>
 								<script src="assets/js/init.js"></script>
 								<script src="assets/js/shared.js"></script>
+								<script src="assets/js/modal.js"></script>
 						</div>
 					</div>
 			</div>

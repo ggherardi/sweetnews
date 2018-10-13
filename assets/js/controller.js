@@ -170,6 +170,7 @@ class Views {
             constructor() {
                 this.sidebar = { title: "Sidebar", name: "sidebar" };
                 this.logout = { title: "Logout", name: "logout" };
+                this.account = { title: "Account", name: "account" };
             }
         }
         this.AllComponents = new AllComponents();

@@ -14,6 +14,7 @@ var secondaryContentController = new Controller(placeholders.secondaryContentZon
 var pageContentController = new PageContentController(mainContentController.container, secondaryContentController.container);
 var sidebarController = new Controller(placeholders.sidebarZone);
 var logoutController = new Controller(placeholders.logoutContainer);
+var accountController = new Controller(placeholders.accountContainer);
 var menuLoader = new Loader(placeholders.sidebarZone)
 var mainContentLoader = new Loader(placeholders.mainContentZone)
 var breadcrumb = new Breadcrumb(placeholders.breadcrumbContainer, views.allViews.home);
@@ -65,6 +66,7 @@ function initMasterpageComponents() {
         .done(initHome);
     if(shared.loginContext.delega_codice > 0) {
         logoutController.loadComponent(views.AllComponents.logout);
+        accountController.loadComponent(views.AllComponents.account);
     }
 }
 

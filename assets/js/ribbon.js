@@ -6,7 +6,7 @@ class Ribbon {
                 label: `Indietro`,
                 action: `pageContentController.switch();`,
                 icon: `chevron-left`,
-                cssClass: `sweetNewsBaseIcon`,
+                cssClass: `purple`,
                 order: 1,
                 permissions: permissions.levels.anonimo
             },  

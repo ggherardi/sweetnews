@@ -28,6 +28,20 @@ button:focus
 	fill: #F56A6A;
 }
 
+.grey {
+	color: #7f888f;
+	fill: #7f888f;
+}
+
+.purple {
+	color: #D25575;
+	fill: #D25575;
+}
+
+.pink-hover:hover {
+	background-color: #ffe6e6;
+}
+
 .buttonWithBorder {
 	border: solid 0.5px rgba(0, 0, 0, 0);
 	padding: 5px;
@@ -36,10 +50,6 @@ button:focus
 
 .buttonWithBorder:hover {
 	border: solid 0.5px #F56A6A;
-}
-
-.sweetNewsBaseIcon {
-	fill: #D25575;
 }
 
 .sitecolor {
@@ -73,6 +83,10 @@ button:focus
 .errorText {
 	color: red;
 	display: none;
+}
+
+.pad-5 {
+	padding: 5px;
 }
 
 /* Ribbon */

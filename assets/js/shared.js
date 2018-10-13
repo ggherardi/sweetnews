@@ -7,6 +7,7 @@ class Shared {
                 shared.loginContext = JSON.parse(stringLoginContext);
                 mainContentController.loadView(views.allViews.personal);
                 logoutController.loadComponent(views.AllComponents.logout);
+                accountController.loadComponent(views.AllComponents.account);
                 breadcrumb.rebuildBreadcrumb(views.allViews.personal);
                 menu.buildMenu();
             }
@@ -14,6 +15,7 @@ class Shared {
             logout() {
                 shared.loginContext = { delega_codice: 0 };
                 $(placeholders.logoutContainer).html("");
+                $(placeholders.accountContainer).html("");
                 if(mainContentController.getActiveView().title == views.allViews.personal.title) {
                     $("#navbar__home").children().first().click();
                 }

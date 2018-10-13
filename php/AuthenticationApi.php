@@ -86,7 +86,7 @@ class AuthenticationApi {
     }
 
     /** Effettua il login al sito con l'username inserito */
-    public function Login() {             
+    public function Login($credentials) {             
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
             $credentials = json_decode($_POST["credentials"]);
@@ -290,6 +290,16 @@ class LoginContext {
         $this->telefono_cellulare = $row["telefono_cellulare"];
         $this->email = $row["email"];
         $this->data_nascita = $row["data_nascita"];
+    }
+}
+
+class Credentials {
+    public $username;
+    public $password;
+
+    public function __construct($row) {
+        $this->username = $row["username"];
+        $this->password = $row["password"];
     }
 }
 ?>

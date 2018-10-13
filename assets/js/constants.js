@@ -17,6 +17,7 @@ class Placeholders {
         this.breadcrumbContainer = "#breadcrumb";
         this.sharedModal = "#SharedModal";
         this.logoutContainer = "#logoutContainer";
+        this.accountContainer = "#accountContainer";
     }
 }
 
