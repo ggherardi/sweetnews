@@ -34,9 +34,7 @@ function loginSuccess(data) {
         pageContentController.setSwitchableSecondaryPage(views.allViews.identities);
         pageContentController.switch();
     } else {
-        console.log(identities);
-        shared.loginContext = identities;
-        // shared.loginManager.login();
+        shared.loginManager.login(data);
     }
 }
 

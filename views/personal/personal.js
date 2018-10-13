@@ -10,6 +10,7 @@ function authenticateUserCallback(data) {
     console.log(data);
     if(!data) {
         mainContentController.loadView(views.allViews.login);
+        breadcrumb.rebuildBreadcrumb(views.allViews.login);
     }
 }
 

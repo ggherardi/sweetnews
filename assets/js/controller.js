@@ -153,20 +153,16 @@ class Views {
                 this.home = { title: "Home", name: "home" },
                 this.personal = { title: "Pagina personale", name: "personal" }
                 this.login = { title: "Login", name: "login", showInMenu: false, parent: this.personal},
-                this.identities = { title: "Deleghe utente", name: "identities", 
-                    showInMenu: false, 
-                    needPermissions: permissions.levels.visitatore, 
-                    parent: this.login,
-                    ribbon: [ ribbon.buttons.back ]},
+                this.identities = { title: "Deleghe utente", name: "identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]},
                 this.registration = { title: "Registrazione", name: "registration", showInMenu: false, parent: this.personal },
-                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes" },
-                this.restitutions = { title: "Restituzioni", name: "restitutions" },
-                this.bookings = { title: "Prenotazioni", name: "bookings" },
-                this.customers = { title: "Gestione clienti", name: "customers" },
-                this.storage = { title: "Magazzino", name: "storage" },
-                this.sales = { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
-                this.accounts = { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
-                this.unauthorized = { title: "Unauthorized", name: "unauthorized", showInMenu: false };
+                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", needPermissions: permissions.levels.visitatore }
+                // this.restitutions = { title: "Restituzioni", name: "restitutions" },
+                // this.bookings = { title: "Prenotazioni", name: "bookings" },
+                // this.customers = { title: "Gestione clienti", name: "customers" },
+                // this.storage = { title: "Magazzino", name: "storage" },
+                // this.sales = { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
+                // this.accounts = { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
+                // this.unauthorized = { title: "Unauthorized", name: "unauthorized", showInMenu: false };
             }
         };
         this.allViews = new AllViews();

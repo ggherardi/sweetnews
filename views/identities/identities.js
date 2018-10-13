@@ -38,7 +38,7 @@ function buildIdentitiesList() {
 function loginWithIdentity(id_utente, delega_codice) {
     var authenticationApi = new AuthenticationApi();
     authenticationApi.getDetailsForUser(id_utente, delega_codice)
-        .done((data) => console.log(data))
+        .done(shared.loginManager.login)
         .fail(RestClient.redirectAccordingToError);
 }
 

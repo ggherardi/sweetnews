@@ -60,9 +60,12 @@ function initUser(loginContext) {
 }
 
 function initMasterpageComponents() {
-    $.when(sidebarController.loadComponent(views.AllComponents.sidebar), logoutController.loadComponent(views.AllComponents.logout))
+    sidebarController.loadComponent(views.AllComponents.sidebar)
         .then(() => { menu.buildMenu() })
-        .done(initHome)
+        .done(initHome);
+    if(shared.loginContext.delega_codice > 0) {
+        logoutController.loadComponent(views.AllComponents.logout);
+    }
 }
 
 function initHome() {

@@ -3,16 +3,21 @@ class Shared {
         class LoginManager {
             constructor() { }
         
-            login() {
-
+            login(stringLoginContext) {
+                shared.loginContext = JSON.parse(stringLoginContext);
+                mainContentController.loadView(views.allViews.personal);
+                logoutController.loadComponent(views.AllComponents.logout);
+                breadcrumb.rebuildBreadcrumb(views.allViews.personal);
+                menu.buildMenu();
             }
 
             logout() {
                 shared.loginContext = { delega_codice: 0 };
                 $(placeholders.logoutContainer).html("");
                 if(mainContentController.getActiveView().title == views.allViews.personal.title) {
-                    mainContentController.loadView(views.allViews.home);
+                    $("#navbar__home").children().first().click();
                 }
+                menu.buildMenu();
             }
         }
         this.buildRepeaterHtml = function(htmlTemplate, array, containerSelector) {
