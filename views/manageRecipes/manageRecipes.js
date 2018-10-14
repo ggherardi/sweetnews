@@ -92,7 +92,8 @@ function BuidUserRecipesTableHead() {
 }
 
 function createRecipe() {
-
+    pageContentController.setSwitchableSecondaryPage(views.recipeForms.newForm);
+    pageContentController.switch();
 }
 
 function viewRecipe() {

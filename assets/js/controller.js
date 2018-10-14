@@ -13,18 +13,33 @@ class Controller {
         return this.view;
     }
 
-    setView(view) {
+    // setView(view) {
+    //     this.view = view;
+    //     this.previousViewName = this.viewName;
+    //     this.viewName = view.name ? view.name.toLowerCase() : view;
+    //     this.correlatedScripUrl = `/views/${this.viewName}/${this.viewName}.js`;
+    //     this.ajaxOptions.url = `/views/${this.viewName}/${this.viewName}.html`;
+    // }
+    setView(view) {       
+        this.previousView = this.view;
         this.view = view;
-        this.previousViewName = this.viewName;
-        this.viewName = view.name ? view.name.toLowerCase() : view;
-        this.correlatedScripUrl = `/views/${this.viewName}/${this.viewName}.js`;
-        this.ajaxOptions.url = `/views/${this.viewName}/${this.viewName}.html`;
+        // this.previousViewName = this.viewName;
+        // this.viewName = view.name ? view.name.toLowerCase() : view;
+        this.correlatedScripUrl = `/${view.path}.js`;
+        this.ajaxOptions.url = `/${view.path}.html`;
     }
 
     setComponent(component) {
         this.componentName = component.name.toLowerCase();
         this.correlatedScripUrl = `/components/${this.componentName}/${this.componentName}.js`;
         this.ajaxOptions.url = `/components/${this.componentName}/${this.componentName}.html`;
+    }
+
+    setForm(form) {
+        this.form = form;
+        this.formName = form.name ? form.name.toLowerCase() : form;
+        this.correlatedScripUrl = `/form/${this.formName}/${this.formName}.js`;
+        this.ajaxOptions.url = `/form/${this.formName}/${this.formName}.html`;
     }
 
     loadView(view) {
@@ -154,30 +169,29 @@ class Views {
     constructor() {
         class AllViews {
             constructor() {
-                this.home = { title: "Home", name: "home" },
-                this.personal = { title: "Pagina personale", name: "personal" }
-                this.login = { title: "Login", name: "login", showInMenu: false, parent: this.personal},
-                this.identities = { title: "Deleghe utente", name: "identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]},
-                this.registration = { title: "Registrazione", name: "registration", showInMenu: false, parent: this.personal },
-                this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore }
-                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", needPermissions: permissions.levels.visitatore }
-                // this.restitutions = { title: "Restituzioni", name: "restitutions" },
-                // this.bookings = { title: "Prenotazioni", name: "bookings" },
-                // this.customers = { title: "Gestione clienti", name: "customers" },
-                // this.storage = { title: "Magazzino", name: "storage" },
-                // this.sales = { title: "Vendite", name: "sales", needPermissions: permissions.levels.responsabile },
-                // this.accounts = { title: "Gestione dipendenti", name: "accounts", needPermissions: permissions.levels.proprietario },    
-                // this.unauthorized = { title: "Unauthorized", name: "unauthorized", showInMenu: false };
+                this.home = { title: "Home", name: "home", path: "views/home/home" },
+                this.personal = { title: "Pagina personale", name: "personal", path: "views/personal/personal" }
+                this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false, parent: this.personal},
+                this.identities = { title: "Deleghe utente", name: "identities", path: "views/identities/identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]},
+                this.registration = { title: "Registrazione", name: "registration", path: "views/registration/registration", showInMenu: false, parent: this.personal },
+                this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", path: "views/manageRecipes/manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore }
+                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", path: "views/allRecipes/allRecipes", needPermissions: permissions.levels.visitatore }
             }
         };
-        this.allViews = new AllViews();
-        class AllComponents {
+        class RecipeForms {
             constructor() {
-                this.sidebar = { title: "Sidebar", name: "sidebar" };
-                this.logout = { title: "Logout", name: "logout" };
-                this.account = { title: "Account", name: "account" };
+                this.newForm = { title: "Nuova ricetta", name: "recipeForm", path: "forms/recipeForm/recipeForm", ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] }
             }
         }
+        class AllComponents {
+            constructor() {
+                this.sidebar = { title: "Sidebar", name: "sidebar", path: "components/sidebar/sidebar" };
+                this.logout = { title: "Logout", name: "logout", path: "components/account/logout" };
+                this.account = { title: "Account", name: "account", path: "components/account/account" };
+            }
+        }
+        this.allViews = new AllViews();
+        this.recipeForms = new RecipeForms();
         this.AllComponents = new AllComponents();
     }
 }

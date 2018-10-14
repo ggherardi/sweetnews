@@ -1,11 +1,3 @@
-/* Init Classes */
-// var permissions = new Permissions();
-// var placeholders = new Placeholders();
-// var httpUtilities = new HttpUtilities();
-// var ribbon = new Ribbon();
-// var views = new Views();
-// var shared = new Shared();
-
 /* Properties */
 var authenticationApi = new AuthenticationApi();
 var menu = new Menu(views.allViews);

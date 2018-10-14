@@ -13,11 +13,20 @@ class Ribbon {
             save: {
                 title: `Salva modifiche`,
                 label: `Salva`,
-                action: `pageContentController.switch();`,
+                action: `save();`,
                 icon: `circle-check`,
                 cssClass: `confirmFillColor`,
                 order: 2,
-                permissions: permissions.levels.anonimo
+                permissions: permissions.levels.visitatore
+            },
+            send: {
+                title: `Invia in approvazione`,
+                label: `Invia`,
+                action: `send();`,
+                icon: `share-boxed`,
+                cssClass: `grey`,
+                order: 3,
+                permissions: permissions.levels.visitatore
             }
         }
     }
