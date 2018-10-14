@@ -82,3 +82,17 @@ class AuthenticationApi extends RestClient {
         return super.execute();
     }
 }
+
+class RecipesApi extends RestClient {
+    constructor() {
+        super();
+        this.endpoint = "php/AuthenticationAPI.php";
+    }
+
+    getRecipesForUser() {
+        this.data = {
+            action: "getRecipesForUser"
+        }
+        return super.execute();
+    }
+}

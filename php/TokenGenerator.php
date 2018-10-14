@@ -1,10 +1,11 @@
 <?php
+include_once "Constants.php";
+
 // Classe che genera e legge il token per il JWT
 class TokenGenerator {
     private static $Initialized = false;
 
     /* Configurazioni per i token, da spostare */
-    private static $authCookieName = "SweetNewsAuth";
     private static $EncryptMethod = "AES-256-CBC";
     private static $SecretKey = "SweetNewsKey";
     private static $SecretIv = "SweetNewsivKey";
@@ -49,7 +50,7 @@ class TokenGenerator {
     /* Verifica la validità del token fornito nell'header Authorization della request */
     public static function ValidateToken() {
         $res = json_encode(false);
-        $encodedCookie = isset($_COOKIE[self::$authCookieName]) ? $_COOKIE[self::$authCookieName] : null;
+        $encodedCookie = isset($_COOKIE[PermissionsConstants::COOKIE_NAME]) ? $_COOKIE[PermissionsConstants::COOKIE_NAME] : null;
         if($encodedCookie) {
             $decodedCookie = base64_decode($encodedCookie);
             $validToken = TokenGenerator::DecryptToken($decodedCookie);  

@@ -1,7 +1,7 @@
 <?php
-include 'DBConnection.php';
-include 'TokenGenerator.php';
-include 'Constants.php';
+include_once 'DBConnection.php';
+include_once 'TokenGenerator.php';
+include_once "Constants.php";
 use TokenGenerator;
 use Logger;
 
@@ -9,7 +9,6 @@ $GLOBALS["CorrelationID"] = uniqid("corrId_", true);
 $correlationId = $GLOBALS["CorrelationID"];
 
 class AuthenticationApi {
-    private static $authCookieName = "SweetNewsAuth";
     private $dbContext;
 
     function __construct() { }
@@ -72,7 +71,7 @@ class AuthenticationApi {
         }
     }
     
-    /**  */
+    /** Controlla se il nome esiste durante il form di registrazione  */
     public function AsyncCheckUsernameValidity() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         $username = $_POST["username"];
@@ -174,14 +173,14 @@ class AuthenticationApi {
     private function SetAuthenticationCookie($cookieValue) {
         $cookie = TokenGenerator::GenerateTokenForUser($cookieValue);
         $cookieDuration = time() + (3600 * 12); // Scade in 12 ore
-        setcookie(self::$authCookieName, $cookie, $cookieDuration, "/", "", false, true);
+        setcookie(PermissionsConstants::COOKIE_NAME, $cookie, $cookieDuration, "/", "", false, true);
         Logger::Write("Authentication cookie has been set.", $GLOBALS["CorrelationID"]);
     }
 
     public function Logout() {
-        $user = json_decode(TokenGenerator::ValidateToken());
+        $user = json_decode(TokenGenerator::ValidateToken());        
         Logger::Write(sprintf("User %s logging out.", $user->username), $GLOBALS["CorrelationID"]);
-        setcookie(self::$authCookieName, "", time() - 1, "/", "", false, true);
+        setcookie(PermissionsConstants::COOKIE_NAME, "", time() - 1, "/", "", false, true);
     }
 
     public function AuthenticateUser() {             
@@ -264,32 +263,6 @@ class Identity {
         $this->id_utente = $row["id_utente"];
         $this->delega_codice = $row["delega_codice"];
         $this->delega_nome = $row["delega_nome"];
-    }
-}
-
-class LoginContext {
-    public $username;
-    public $id_utente;
-    public $delega_codice;
-    public $delega_nome;
-    public $matricola;
-    public $indirizzo;
-    public $telefono_abitazione;
-    public $telefono_cellulare;
-    public $email;
-    public $data_nascita;
-
-    public function __construct($row) {
-        $this->username = $row["username"];
-        $this->id_utente = $row["id_utente"];
-        $this->delega_codice = $row["delega_codice"];
-        $this->delega_nome = $row["delega_nome"];
-        $this->matricola = $row["matricola"];
-        $this->indirizzo = $row["indirizzo"];
-        $this->telefono_abitazione = $row["telefono_abitazione"];
-        $this->telefono_cellulare = $row["telefono_cellulare"];
-        $this->email = $row["email"];
-        $this->data_nascita = $row["data_nascita"];
     }
 }
 

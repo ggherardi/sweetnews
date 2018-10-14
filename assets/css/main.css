@@ -89,6 +89,23 @@ button:focus
 	padding: 5px;
 }
 
+/* Datatables */ 
+.dt-buttons .btn {
+	background-color: transparent!important;
+	border-color: transparent!important;
+	margin: 20px 0;
+	font-size: 14px;
+	margin-right: 5px;
+}
+
+.dt-buttons .disabled {
+	opacity: 0.3!important;
+}
+
+.dt-buttons .btn:focus {
+	box-shadow: 0 0 0 0.2rem #D25575!important;
+}
+
 /* Ribbon */
 #ribbon {
 	border-bottom: solid #d4d4d4 0.5px;

@@ -31,6 +31,30 @@ class HttpUtilities {
     }
 }
 
+class DataTableLanguage {
+    constructor() {
+        this.italian = {
+            emptyTable: "Nessun risultato trovato",
+            search: "Cerca",
+            paginate: {
+                
+            },
+            info: "Risultati da _START_ a _END_ da _TOTAL_ totali",
+            infoEmpty: "Risultati da 0 a 0 di 0 totali",
+            lengthMenu: "Mostra _MENU_ risultati",
+            loadingRecords: "Caricamento...",
+            processing: "Processando...",
+            paginate: {
+                first: "Primo",
+                last: "Ultimo",
+                next: "Prossimo",
+                previous: "Precedente"
+            }
+        }
+    }
+}
+
 var permissions = new Permissions();
 var placeholders = new Placeholders();
 var httpUtilities = new HttpUtilities();
+var dataTableLanguage = new DataTableLanguage();
