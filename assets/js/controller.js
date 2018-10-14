@@ -178,11 +178,15 @@ class Views {
                 this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", path: "views/allRecipes/allRecipes", needPermissions: permissions.levels.visitatore }
             }
         };
+        this.allViews = new AllViews();
+
         class RecipeForms {
-            constructor() {
-                this.newForm = { title: "Nuova ricetta", name: "recipeForm", path: "forms/recipeForm/recipeForm", ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] }
+            constructor(views) {
+                this.newForm = { title: "Nuova ricetta", name: "recipeForm", path: "forms/recipeForm/recipeForm", parent: views.allViews.personal, ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] }
             }
         }
+        this.recipeForms = new RecipeForms(this);
+
         class AllComponents {
             constructor() {
                 this.sidebar = { title: "Sidebar", name: "sidebar", path: "components/sidebar/sidebar" };
@@ -190,8 +194,6 @@ class Views {
                 this.account = { title: "Account", name: "account", path: "components/account/account" };
             }
         }
-        this.allViews = new AllViews();
-        this.recipeForms = new RecipeForms();
         this.AllComponents = new AllComponents();
     }
 }

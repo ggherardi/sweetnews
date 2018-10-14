@@ -355,7 +355,7 @@ CREATE TABLE `tipologia` (
   `id_tipologia` int(11) NOT NULL AUTO_INCREMENT,
   `nome_tipologia` varchar(45) NOT NULL,
   PRIMARY KEY (`id_tipologia`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,6 +364,7 @@ CREATE TABLE `tipologia` (
 
 LOCK TABLES `tipologia` WRITE;
 /*!40000 ALTER TABLE `tipologia` DISABLE KEYS */;
+INSERT INTO `tipologia` VALUES (1,'antipasto'),(2,'primo'),(3,'secondo'),(4,'dolce'),(5,'altro');
 /*!40000 ALTER TABLE `tipologia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -453,4 +454,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-14 13:36:29
+-- Dump completed on 2018-10-15  1:25:04

@@ -23,7 +23,7 @@ class LoginContext {
         $this->id_utente = $row["id_utente"];
         $this->delega_codice = $row["delega_codice"];
         $this->delega_nome = $row["delega_nome"];
-        $this->matricola = $row["matricola"];
+        $this->matricola = $row["id_dettaglio_utente_interno"];
         $this->indirizzo = $row["indirizzo"];
         $this->telefono_abitazione = $row["telefono_abitazione"];
         $this->telefono_cellulare = $row["telefono_cellulare"];

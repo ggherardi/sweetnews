@@ -8,12 +8,12 @@ var userRecipesDTOptions = {
         { data: "preparazione" },
         { data: "note" },
         { data: "ingredienti" },
-        {
-            class: "more-details",
-            orderable: false,
-            data: null,
-            defaultContent: ""
-        },
+        // {
+        //     class: "more-details",
+        //     orderable: false,
+        //     data: null,
+        //     defaultContent: ""
+        // },
         { data: "titolo_ricetta" },
         { data: "tipologia" },
         { data: "difficolta" },
@@ -30,7 +30,12 @@ var userRecipesDTOptions = {
         { text: "Crea nuova ricetta", action: createRecipe },
         { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
     ],
-    language: dataTableLanguage.italian
+    language: dataTableLanguage.italian,
+    responsive: {
+        details: {
+            type: "inline"
+        }
+    }
 };
 var userRecipesDT = {};
 var userRecipesContainerSelector = "#userRecipesContainer";
@@ -59,7 +64,6 @@ function getRecipesForUserSuccess(data) {
                             <td>${recipe.codice_stato_approvativo}</td>
                             <td>${recipe.preparazione}</td>  
                             <td>${recipe.note}</td>                           
-                            <td></td>
                             <td>${recipe.titolo}</td>
                             <td>${recipe.tipologia} minuti</td>
                             <td>${recipe.difficolta} €</td>
@@ -77,7 +81,7 @@ function getRecipesForUserSuccess(data) {
 function BuidUserRecipesTableHead() {
     var html = `<thead>
                     <tr>`;
-    for(var i = 0; i < userRecipesDTOptions.columnDefs[0].targets.length + 1; i++) {
+    for(var i = 0; i < userRecipesDTOptions.columnDefs[0].targets.length; i++) {
         html += `       <th scope="col"></th>`;
     }
     html += `           <th scope="col">Titolo</th>

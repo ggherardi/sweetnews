@@ -171,6 +171,64 @@ button:focus
 	height: 30px;
 }
 
+/* Forms */
+#recipeNewForm {
+	max-width: 400px;
+}
+
+#recipeNewForm__difficolta {
+	padding: 0 5px;
+	height: auto;
+}
+
+#recipeNewForm__difficolta span {
+	color: #9fa3a6;
+	margin-left: 5px;
+	margin-top: 3px;
+}
+
+#recipeNewForm__ingredients input[type="number"]{
+	min-height: 44px!important;
+}
+
+/* Star rating */
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+/* Default */
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
 pre, a, abbr, acronym, address, big, cite,
@@ -1985,6 +2043,9 @@ input, select, textarea {
 		/* margin: 0 0 1em 0; */
 	}
 
+	textarea {
+		resize: none!important;
+	}
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
@@ -2026,10 +2087,11 @@ input, select, textarea {
 		input[type="tel"]:focus,
 		input[type="search"]:focus,
 		input[type="url"]:focus,
+		input[type="number"]:focus,
 		select:focus,
 		textarea:focus {
-			border-color: #f56a6a;
-			box-shadow: 0 0 0 1px #f56a6a;
+			border-color: #f56a6a!important;
+			box-shadow: 0 0 0 1px #f56a6a!important;
 		}
 
 	select {
@@ -2069,7 +2131,7 @@ input, select, textarea {
 		padding: 0.75em 1em;
 	}
 
-	input[type="checkbox"],
+	/* input[type="checkbox"],
 	input[type="radio"] {
 		-moz-appearance: none;
 		-webkit-appearance: none;
@@ -2142,7 +2204,7 @@ input, select, textarea {
 
 	input[type="radio"] + label:before {
 		border-radius: 100%;
-	}
+	} */
 
 	::-webkit-input-placeholder {
 		color: #9fa3a6 !important;

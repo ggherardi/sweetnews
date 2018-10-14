@@ -1,6 +1,5 @@
 <?php
 include_once 'Logger.php';
-use Logger;
 
 class DBConnection {
     private $Connection;
