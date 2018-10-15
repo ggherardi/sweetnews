@@ -37,7 +37,7 @@ class Ribbon {
 
     buildRibbon(ribbon) {
         ribbon = ribbon.sort((a, b) => { return a.order >= b.order ? 1 : -1 });
-        this.ribbonHTML = `<div id="ribbon" class="mt-3">`;
+        this.ribbonHTML = ` <div id="ribbon" class="mt-3">`;
         for(var i = 0; i < ribbon.length; i++) {
             var button = ribbon[i];
             if(parseInt(shared.loginContext.delega_codice) >= button.permissions) {
@@ -49,13 +49,28 @@ class Ribbon {
                                     </div>`;
             }            
         }
-        this.ribbonHTML += `</div>`
+        this.ribbonHTML += `</div><div id="warningBanner"></div>`
         this.appendRibbon();
     }
 
     appendRibbon() {
         var firstChild = this.container.children().first();
         firstChild.prepend(this.ribbonHTML);
+    }
+
+    static setMessage(message) {
+        var messageId = $(`${placeholders.warningBanner} div`).length + 1;
+        var messageSpan = `<div id="warningMessage_${messageId}">${message}</div>`;
+        $(placeholders.warningBanner).append(messageSpan);
+        $(placeholders.warningBanner).show();
+        return messageId;
+    }
+
+    static removeMessage(id) {
+        $(`${placeholders.warningBanner} #warningMessage_${id}`).remove();
+        if(!$(`${placeholders.warningBanner} div`).length) {
+            $(placeholders.warningBanner).hide();
+        }
     }
 }
 

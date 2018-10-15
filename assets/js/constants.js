@@ -18,6 +18,8 @@ class Placeholders {
         this.sharedModal = "#SharedModal";
         this.logoutContainer = "#logoutContainer";
         this.accountContainer = "#accountContainer";
+        this.warningBanner = "#warningBanner";
+        this.warningBannerText = "#warningBannerText";
     }
 }
 
