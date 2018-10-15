@@ -4,7 +4,7 @@ class Ribbon {
             back: {
                 title: `Indietro`,
                 label: `Indietro`,
-                action: `pageContentController.switch();`,
+                action: `back();`,
                 icon: `chevron-left`,
                 cssClass: `purple`,
                 order: 1,

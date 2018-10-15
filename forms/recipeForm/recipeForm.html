@@ -1,5 +1,5 @@
 <section>
-    <form id="recipeNewForm" class="form mt-3">
+    <form id="recipeNewForm" class="form mt-3" onsubmit="test(this, event);return false;">
         <input id="recipeNewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" required>
         <select id="recipeNewForm__tipologia" class="form-control mt-2" type="select" placeholder="tipologia" required></select>
         <div id="recipeNewForm__difficolta" class="rate mt-2 mb-2 box" required>
@@ -19,18 +19,7 @@
         <textarea id="recipeNewForm__preparazione" class="form-control mt-2" rows="6" placeholder="preparazione ricetta*" required></textarea>
         <input id="recipeNewForm__porzioni" class="form-control mt-2" type="number" placeholder="numero porzioni*" min="0" max="20" required>
         <textarea id="recipeNewForm__note" class="form-control mt-2" row="6" placeholder="note"></textarea>
-        <div id="recipeNewForm__ingredients" class="mt-2">
-            <div class="form-row">
-                <div class="col">
-                    <input id="registrationForm__ingredient_0" class="form-control" type="text" placeholder="ingrediente" required>
-                </div>
-                <div class="col">
-                    <input id="registrationForm__ingredient_1" class="form-control" type="number" min="0" placeholder="quantità" required>
-                </div>
-                <div class="col">
-                    <input id="registrationForm__ingredient_1" class="form-control" type="number" min="0" placeholder="calorie" required>
-                </div>
-            </div>
-        </div>
+        <div id="recipeNewForm__ingredients"></div>
+        <div class="mt-2 ta-center"><button class="secondary" type="button" onclick="createNewIngredientControl();">Aggiungi ingrediente</button></div>
     </form>
 </section>
