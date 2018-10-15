@@ -20,9 +20,12 @@ function save() {
 }
 
 function back() {
-    if(WarningIds[WarningMessages.saveWarning] && window.confirm(`Attenzione, tornando indietro verranno perse le modifiche non salvate.`)) {
-        pageContentController.switch();
+    if(WarningIds[WarningMessages.saveWarning]) { 
+        if(!window.confirm(`Attenzione, tornando indietro verranno perse le modifiche non salvate.`)) {
+            return;
+        }
     }
+    pageContentController.switch();
 }
 
 function send() {
