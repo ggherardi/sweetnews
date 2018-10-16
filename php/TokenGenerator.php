@@ -62,8 +62,8 @@ class TokenGenerator {
         return $res;
     }
 
-    /* Verifica che l'utente abbia i privilegi specificati nel parametro minimumPermissions */
-    public static function CheckPermissions($minimumPermissions, $fieldToCheck) {
+    /* Verifica che l'utente abbia i privilegi specificati in $permissions ($permissions = [min_perm, max_perm]) */
+    public static function CheckPermissions($permissions, $fieldToCheck) {
         $jsonContext = self::ValidateToken();
         $oContext = json_decode($jsonContext);
         $assoc_array = array();
@@ -71,12 +71,20 @@ class TokenGenerator {
         {
             $assoc_array[$key] = $value;
         }
-        if(!$oContext || $assoc_array[$fieldToCheck] < $minimumPermissions) {
-            Logger::Write(sprintf("Insufficient permissions for user %s (required %d, has %d)", $oContext->username, $minimumPermissions, $oContext->delega_codice), $GLOBALS["CorrelationID"]);
+        $valueToCheck = $assoc_array[$fieldToCheck];
+        $permissionsTooLow = $valueToCheck < $permissions[0];
+        $permissionsTooHigh = ($permissions[1] ? $valueToCheck > $permissions[1] : false);
+        if(!$oContext || $permissionsTooLow || $permissionsTooHigh) {
+            Logger::Write(sprintf("%s for user %s (required %d, has %d)", 
+                ($permissionsTooLow ? "Insufficient permissions" : "Permissions too high"), 
+                $oContext->username, 
+                ($permissionsTooLow ? $permissions[0] : $permissions[1]), 
+                $oContext->delega_codice), 
+                $GLOBALS["CorrelationID"]);
             http_response_code(401);
             exit($GLOBALS["CorrelationID"]);
         }
-        Logger::Write(sprintf("Validated permissions for user %s (required %d, has %d)", $oContext->username, $minimumPermissions, $oContext->delega_codice), $GLOBALS["CorrelationID"]);
+        Logger::Write(sprintf("Validated permissions for user %s (required %d, has %d)", $oContext->username, $permissions[0], $oContext->delega_codice), $GLOBALS["CorrelationID"]);
     }
 }
 ?>

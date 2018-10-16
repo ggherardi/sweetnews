@@ -102,4 +102,11 @@ class RecipesApi extends RestClient {
         }
         return super.execute();
     }
+    
+    insertRecipe() {
+        this.data = {
+            action: "insertRecipe"
+        }
+        return super.execute();
+    }
 }

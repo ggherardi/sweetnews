@@ -23,7 +23,7 @@ class RecipesApi {
     public function GetRecipesForUser() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(PermissionsConstants::VISITATORE, "delega_codice");            
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
             $id_utente = $this->loginContext->id_utente;
             $query = 
                 "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, 
@@ -82,10 +82,10 @@ class RecipesApi {
         return $a->id_ricetta > $b->id_ricetta;
     }
 
-    public function GetRecipeTopologies() {
+    function GetRecipeTopologies() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(PermissionsConstants::VISITATORE, "delega_codice");            
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
             $query = 
                 "SELECT *
                 FROM tipologia";
@@ -102,9 +102,18 @@ class RecipesApi {
         }
     }
 
-    private function GetSlashedValueOrDefault($value) {
-        $value = addslashes($value);
-        return strlen($value) > 0 ? "'$value'" : "DEFAULT";
+    function InsertRecipe() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
+            $query = 
+                "SELECT *
+                FROM tipologia";
+            $res = self::ExecuteQuery($query);
+            $array = array();
+            while($row = $res->fetch_assoc()) {
+                $array[] = $row;
+            }
+            exit(json_encode($array));
     }
 
     // Switcha l'operazione richiesta lato client
@@ -121,6 +130,9 @@ class RecipesApi {
                 break;
             case "getRecipeTopologies":
                 self::GetRecipeTopologies();
+                break;
+            case "insertRecipe":
+                self::InsertRecipe();
                 break;
             default: 
                 exit(json_encode($_POST));

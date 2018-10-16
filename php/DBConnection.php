@@ -101,7 +101,6 @@ class DBConnection {
         try {
             Logger::Write("Query: ".$query, $GLOBALS["CorrelationID"]);
             Logger::Write("Executing query", $GLOBALS["CorrelationID"]);
-            // Logger::Write($query, $GLOBALS["CorrelationID"]);
             $msRes = $this->getConnection()->query($query);
             if(!$msRes) {     
                 if($this->Connection->error){
