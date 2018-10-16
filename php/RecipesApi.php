@@ -102,18 +102,30 @@ class RecipesApi {
         }
     }
 
+    function GetIngredients() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
+        $query = 
+            "SELECT * FROM ingrediente";
+        $res = self::ExecuteQuery($query);
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
     function InsertRecipe() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
-            $query = 
-                "SELECT *
-                FROM tipologia";
-            $res = self::ExecuteQuery($query);
-            $array = array();
-            while($row = $res->fetch_assoc()) {
-                $array[] = $row;
-            }
-            exit(json_encode($array));
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE, PermissionsConstants::VISITATORE), "delega_codice");            
+        $query = 
+            "INSERT INTO ricetta
+            (id_utente, id_tipologia, titolo_ricetta, difficolta, tempo_cottura, preparazione, porzioni, note, messaggio)
+            VALUES
+            (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("ddsddsds", array($id_utente));
+        $res = $this->dbContext->ExecuteStatement();
     }
 
     // Switcha l'operazione richiesta lato client
@@ -130,6 +142,9 @@ class RecipesApi {
                 break;
             case "getRecipeTopologies":
                 self::GetRecipeTopologies();
+                break;
+            case "getIngredients":
+                self::GetIngredients();
                 break;
             case "insertRecipe":
                 self::InsertRecipe();

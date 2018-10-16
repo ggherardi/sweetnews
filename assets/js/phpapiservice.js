@@ -20,6 +20,10 @@ class RestClient {
         }
     }
 
+    static reportError(jqXHR) {
+        console.log(jqXHR);
+    }
+
     setAjaxOptions() {
         this.ajaxOptions.url = this.endpoint,
         this.ajaxOptions.data = this.data,
@@ -93,12 +97,19 @@ class RecipesApi extends RestClient {
         this.data = {
             action: "getRecipesForUser"
         }
-        return super.execute();
+        return super.execute(); 
     }
 
     getRecipeTopologies() {
         this.data = {
             action: "getRecipeTopologies"
+        }
+        return super.execute();
+    }
+
+    getIngredients() {
+        this.data = {
+            action: "getIngredients"
         }
         return super.execute();
     }

@@ -21,7 +21,6 @@ class AuthenticationApi {
                 (nome, cognome, username, password)
                 VALUES
                 (?, ?, ?, ?)";
-
             $this->dbContext->PrepareStatement($query);
             $hashedPassword = password_hash($registrationForm->password, PASSWORD_DEFAULT);     
             $this->dbContext->BindStatementParameters("ssss", array($registrationForm->nome, $registrationForm->cognome, $registrationForm->username, $hashedPassword));
@@ -33,7 +32,6 @@ class AuthenticationApi {
                 (id_tipo_delega, id_utente)
                 VALUES
                 ((SELECT id_tipo_delega FROM tipo_delega WHERE delega_codice = ?), ?)";
-
             $this->dbContext->PrepareStatement($query);
             $this->dbContext->BindStatementParameters("dd", array(PermissionsConstants::VISITATORE, $insertId));
             $this->dbContext->ExecuteStatement();
