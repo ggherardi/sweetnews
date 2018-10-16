@@ -34,11 +34,11 @@ class RecipesApi {
                 INNER JOIN flusso_approvativo fa
                 ON ri.id_ricetta = fa.id_ricetta
                 INNER JOIN stato_flusso_approvativo sfa
-                ON ri.id_ricetta = sfa.id_ricetta        
-                WHERE ri.id_utente = %d";
-            $query = sprintf($query, $id_utente);
-            Logger::Write("Query: ".$query, $GLOBALS["CorrelationID"]);
-            $res = self::ExecuteQuery($query);
+                ON ri.id_ricetta = sfa.id_ricetta      
+                WHERE ri.id_utente = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array($id_utente));
+            $res = $this->dbContext->ExecuteStatement();
             $array = array();
             while($row = $res->fetch_assoc()) {
                 $array[] = $row;
@@ -58,7 +58,6 @@ class RecipesApi {
                 $idsString = rtrim($idsString);
                 $idsString = rtrim($idsString, ",");
                 $query = sprintf($query, $idsString);
-                Logger::Write("Query: ".$query, $GLOBALS["CorrelationID"]);
                 usort($array, array($this, "SortByRicettaId"));        
                 $res = self::ExecuteQuery($query);
                 while($row = $res->fetch_assoc()) {
@@ -90,7 +89,6 @@ class RecipesApi {
             $query = 
                 "SELECT *
                 FROM tipologia";
-            Logger::Write("Query: ".$query, $GLOBALS["CorrelationID"]);
             $res = self::ExecuteQuery($query);
             $array = array();
             while($row = $res->fetch_assoc()) {

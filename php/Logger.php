@@ -29,6 +29,18 @@ class Logger {
         file_put_contents(self::$LogFileName, "$logText\r\n", FILE_APPEND);
     }
 
+    function WriteWithParameters($text, $parameters, string $correlationId) {
+        self::initialize();
+        for($i = 0; $i < count($parameters); $i++) {
+            $text = $text." %s,";
+        }
+        $text = rtrim($text, ",");
+        $text = vsprintf($text, $parameters);
+        $timeStamp = self::GetTimeStamp();
+        $logText = "[$timeStamp] - $correlationId - $text ";
+        file_put_contents(self::$LogFileName, "$logText\r\n", FILE_APPEND);
+    }
+
     function WriteNoCorrelation(string $text) {
         self::initialize();
         $timeStamp = self::GetTimeStamp();

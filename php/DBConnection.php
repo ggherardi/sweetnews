@@ -3,11 +3,11 @@ include_once 'Logger.php';
 
 class DBConnection {
     private $Connection;
-
-    public $ServerName;
-    public $UserName;
-    public $Password;
-    public $DB;
+    private $Statement;
+    private $ServerName;
+    private $UserName;
+    private $Password;
+    private $DB;
 
     //PROD
     //function __construct($servername = "127.0.0.1", $username = "newuser", $password = "password", $db = "videonoleggio") {
@@ -22,6 +22,11 @@ class DBConnection {
 
     private function getConnection(): mysqli {
         return $this->Connection;
+    }
+
+    private function getStatement(): mysqli_stmt {
+        return $this->Statement;
+ 
     }
 
     private function EstablishConnection() {
@@ -39,6 +44,40 @@ class DBConnection {
             Logger::Write("Error while establishing a connection with the DB -> $exMessage", $GLOBALS["CorrelationID"]);
             http_response_code(500);
             exit(json_encode($exMessage));
+        }
+    }
+
+    function PrepareStatement($query) {
+        Logger::Write(sprintf("Preparing statement: %s", $query), $GLOBALS["CorrelationID"]);
+        $this->Statement = $this->getConnection()->prepare($query);      
+        if(!$this->Statement) {
+            throw new Exception("An error occured while preparing the query.");            
+        }
+    }
+
+    function BindStatementParameters($paramType, $parameters) {
+        Logger::WriteWithParameters(sprintf("Binding parameters to statement: types: %s, values:", $paramType), $parameters, $GLOBALS["CorrelationID"]);
+        $this->getStatement()->bind_param($paramType, ...$parameters);
+    }
+
+    function ExecuteStatement() {
+        try {
+            Logger::Write("Executing statement", $GLOBALS["CorrelationID"]);
+            $this->getStatement()->execute();  
+            if(!$res) {     
+                if($this->getStatement()->error){
+                    Logger::Write("Error occured while executing statement -> ".$this->getStatement()->error, $GLOBALS["CorrelationID"]);
+                    throw new Exception($this->getStatement()->errno);   
+                }
+                Logger::Write("No results found", $GLOBALS["CorrelationID"]);                
+            }
+            Logger::Write("Statement executed successfully", $GLOBALS["CorrelationID"]);
+            return $this->getStatement()->get_result();
+        }
+        catch (Throwable $ex) {
+            $exMessage = $ex->getMessage();
+            Logger::Write("Error code -> [$ex]", $GLOBALS["CorrelationID"]);
+            throw new Exception($exMessage);
         }
     }
 
