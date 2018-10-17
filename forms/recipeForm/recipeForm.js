@@ -15,10 +15,11 @@ autoCompleteClickEvent = function(e){
 
 /* RIBBON ACTIONS */
 function save() {
+    var form = $("#recipeNewForm");
     if(ingredientsCount = $("#recipeNewForm__ingredients .form-row").length < 0) {
-
+        
     } else {
-        $("#recipeNewForm").submit();
+        form.submit();
         if(WarningIds[WarningMessages.saveWarning]) {
             removeWarning(WarningMessages.saveWarning);
         }
