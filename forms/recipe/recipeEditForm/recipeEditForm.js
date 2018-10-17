@@ -1,30 +1,20 @@
-var FormInitialState = [];
-var WarningIds = [];
-var AllIngredients = [];
-var InitialIngredientsCount;
-var WarningMessages = {
+Recipe = {};
+FormInitialState = [];
+WarningIds = [];
+AllIngredients = [];
+InitialIngredientsCount = 0;
+WarningMessages = {
     saveWarning: "saveWarning",
-    noIngredientsWarning: "noIngredientsWarning"
+    noIngredientsWarning: "noIngredientsWarning",
+    loadingError: "loadingError"
 }
 
 /* RIBBON ACTIONS */
 function save() {
-    var form = $("#recipeNewForm");
-    if(form[0].reportValidity()) {
+    var form = $("#recipeEditForm");
+    if(form[0].reportValidity() && $("#recipeEditForm__ingredients .form-row").length > 0) {
         $("#submitForm").click();
     } 
-    // else {
-
-    // }
-    // if(ingredientsCount = $("#recipeNewForm__ingredients .form-row").length < 0) {
-        
-    // } else {
-    //     // form.submit();
-    //     $("#submitForm").click();
-    //     if(WarningIds[WarningMessages.saveWarning]) {
-    //         removeWarning(WarningMessages.saveWarning);
-    //     }
-    // }
 }
 
 function back() {
@@ -32,7 +22,7 @@ function back() {
         if(!window.confirm(`Attenzione, tornando indietro verranno perse le modifiche non salvate.`)) {
             return;
         }
-    }
+    }    
     pageContentController.switch();
 }
 
@@ -42,9 +32,38 @@ function send() {
 
 /* FORM POPULATION */
 function init() {
-    populateTipologiaSelect();
-    populateIngredientsControl();
-    retrieveIngredientsFromDBAndInitAutocomplete();
+    var recipesApi = new RecipesApi();
+    recipesApi.getRecipe(window.Id_ricetta)
+        .done(initControlsPopulation)
+        .fail(RestClient.reportError);
+}
+
+function initControlsPopulation(data) {
+    if(data) {
+        Recipe = JSON.parse(data);
+        populateTextControls();
+        populateRadioControl();
+        populateTipologiaSelect();
+        populateIngredientsControl();
+        retrieveIngredientsFromDBAndInitAutocomplete();
+    }
+    else {
+        var messageId = Ribbon.setMessage(`Si è verificato un errore durante il caricamento.`);
+        WarningIds[WarningMessages.loadingError] = messageId;
+    }
+}
+
+function populateTextControls() {
+    $("#recipeEditForm__titolo").val(Recipe.titolo_ricetta);
+    $("#recipeEditForm__tempo_cottura").val(Recipe.tempo_cottura);
+    $("#recipeEditForm__preparazione").val(Recipe.preparazione);
+    $("#recipeEditForm__porzioni").val(Recipe.porzioni);
+    $("#recipeEditForm__note").val(Recipe.note);
+    $("#recipeEditForm__messaggio").val(Recipe.messaggio);
+}
+
+function populateRadioControl() {
+    $(`#star${Recipe.difficolta}`).prop("checked", true);
 }
 
 function populateTipologiaSelect() {
@@ -56,24 +75,32 @@ function populateTipologiaSelect() {
 
 function getRecipeTopologiesSuccess(data) {
     topologies = JSON.parse(data);
-    var topologiesSelect = document.getElementById("recipeNewForm__tipologia");
+    var topologiesSelect = document.getElementById("recipeEditForm__tipologia");
     for(var i = 0; i < topologies.length; i++) {
         let topology = topologies[i];
         let option = document.createElement("option");
         option.value = topology.id_tipologia;
         option.text = topology.nome_tipologia;
+        option.defaultSelected = topology.id_tipologia == Recipe.id_tipologia;
         topologiesSelect.add(option);
     }
 }
 
 /* Ingredients controls */
 function populateIngredientsControl() {
-    createNewIngredientControl();
+    for(var i = 0; i < Recipe.ingredienti.length; i++) {
+        var ingredient = Recipe.ingredienti[i];
+        var controlNumber = i + 1;
+        createNewIngredientControl();
+        $(`#recipeEditForm__ingredient_nome_${controlNumber}`).val(ingredient.nome_ingrediente);
+        $(`#recipeEditForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
+        $(`#recipeEditForm__ingredient_calorie_${controlNumber}`).val(ingredient.calorie);
+    }
 }
 
 function createNewIngredientControl() {
-    var ingredientsControlsContainer = $("#recipeNewForm__ingredients");
-    var ingredientsCount = $("#recipeNewForm__ingredients .form-row").length;    
+    var ingredientsControlsContainer = $("#recipeEditForm__ingredients");
+    var ingredientsCount = $("#recipeEditForm__ingredients .form-row").length;    
     if(ingredientsCount == 0) {
         removeWarning(WarningMessages.noIngredientsWarning);
     }
@@ -82,20 +109,20 @@ function createNewIngredientControl() {
     }
     var currentControlNumber = ingredientsCount + 1;
     var html = `<div id="ingredientRow_${currentControlNumber}" class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
-                    <input id="recipeNewForm__ingredient_id_${currentControlNumber}" type="hidden">
+                    <input id="recipeEditForm__ingredient_id_${currentControlNumber}" type="hidden">
                     <div class="col-sm-5 autocomplete">
-                        <input id="recipeNewForm__ingredient_nome_${currentControlNumber}" class="form-control" type="text" placeholder="ingrediente" required>
+                        <input id="recipeEditForm__ingredient_nome_${currentControlNumber}" class="form-control" type="text" placeholder="ingrediente" required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="qt." title="quantità" required>
+                        <input id="recipeEditForm__ingredient_quantita_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="qt." title="quantità" step="0.01" required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="cal." title="calorie" required disabled>
+                        <input id="recipeEditForm__ingredient_calorie_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="cal." title="calorie" step="0.01" required disabled>
                     </div>
                     <div class="col-sm-1"><span class="icon fa-remove delete-cross c-pointer" onclick="deleteIngredientControl(this)"></span></div>
                 </div>`;
     ingredientsControlsContainer.append(html);
-    var ingredient = $(`#recipeNewForm__ingredient_nome_${currentControlNumber}`)[0];
+    var ingredient = $(`#recipeEditForm__ingredient_nome_${currentControlNumber}`)[0];
     ingredient.addEventListener("change", checkCurrentstate);
     initAutoComplete(ingredient.id);
     switchAddIngredientButtonState(currentControlNumber);
@@ -140,11 +167,11 @@ function retrieveIngredientsFromDBAndInitAutocomplete() {
             if(data) {
                 data = JSON.parse(data);
                 AllIngredients = data;
-                var ingredientsControls = $("[id^=recipeNewForm__ingredient_nome_]");
+                var ingredientsControls = $("[id^=recipeEditForm__ingredient_nome_]");
                 for(var i = 0; i < ingredientsControls.length; i++) {                    
                     initAutoComplete(ingredientsControls[i].id);
                 }
-                getInitialState();
+                getInitialState();                
             }
         })
         .fail(RestClient.reportError);
@@ -157,8 +184,8 @@ function initAutoComplete(inputId) {
 
 /* State check */
 function getInitialState() {
-    InitialIngredientsCount = 1;
-    var controls = $("#recipeNewForm").find(".form-control");
+    InitialIngredientsCount = $(".ingredientRow").length;
+    var controls = $("#recipeEditForm").find(".form-control");
     for(var i = 0; i < controls.length; i++) {
 	    var control = controls[i];
         FormInitialState[control.id] = { value: control.value, isDirty: false };
@@ -195,7 +222,7 @@ function isFormStateDirty() {
 /* EVENTS */
 function insertRecipe(sender, e) {
     e.preventDefault();
-    var loader = new Loader("#recipeNewForm");
+    var loader = new Loader("#recipeEditForm");
     loader.showLoader();
     var recipeForm = getRecipeFromForm();
     var recipesApi = new RecipesApi();
@@ -218,14 +245,14 @@ function saveFail(jqXHR) {
 
 function getRecipeFromForm() {
     var recipe = {
-        id_tipologia : $("#recipeNewForm__tipologia").val(),
-        titolo_ricetta : $("#recipeNewForm__titolo").val(),
-        difficolta : $("#recipeNewForm__difficolta input:checked").val(),
-        tempo_cottura : $("#recipeNewForm__tempo_cottura").val(),
-        preparazione : $("#recipeNewForm__preparazione").val(),
-        porzioni : $("#recipeNewForm__porzioni").val(),
-        note : $("#recipeNewForm__note").val(),
-        messaggio : $("#recipeNewForm__messaggio").val(),
+        id_tipologia : $("#recipeEditForm__tipologia").val(),
+        titolo_ricetta : $("#recipeEditForm__titolo").val(),
+        difficolta : $("#recipeEditForm__difficolta input:checked").val(),
+        tempo_cottura : $("#recipeEditForm__tempo_cottura").val(),
+        preparazione : $("#recipeEditForm__preparazione").val(),
+        porzioni : $("#recipeEditForm__porzioni").val(),
+        note : $("#recipeEditForm__note").val(),
+        messaggio : $("#recipeEditForm__messaggio").val(),
         lista_ingredienti : getIngredientsFromForm()
     };
 
@@ -234,13 +261,13 @@ function getRecipeFromForm() {
 
 function getIngredientsFromForm() {
     var ingredients = [];
-    var ingredientsRows = $("#recipeNewForm__ingredients .ingredientRow");
+    var ingredientsRows = $("#recipeEditForm__ingredients .ingredientRow");
     for(var i = 0; i < ingredientsRows.length; i++) {
         var ingredientRow = ingredientsRows[i];
         var rowid = ingredientRow.dataset["rowid"];
         var ingredient = {};
-        ingredient.id_ingrediente = $(`#recipeNewForm__ingredient_id_${rowid}`).val(),
-        ingredient.quantita = $(`#recipeNewForm__ingredient_quantita_${rowid}`).val()
+        ingredient.id_ingrediente = $(`#recipeEditForm__ingredient_id_${rowid}`).val(),
+        ingredient.quantita = $(`#recipeEditForm__ingredient_quantita_${rowid}`).val()
         ingredients.push(ingredient);
     }
     return ingredients;
@@ -255,5 +282,14 @@ function removeWarning(warning) {
     }
 }
 
+function resetVariables() {
+    delete RecipeId;
+    delete Recipe;
+    delete FormInitialState;
+    delete WarningIds;
+    delete AllIngredients;
+    delete InitialIngredientsCount;
+    delete WarningMessages;
+}
 /* Init */
 init();

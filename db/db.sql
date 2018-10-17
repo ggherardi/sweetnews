@@ -123,7 +123,7 @@ CREATE TABLE `flusso_approvativo` (
   CONSTRAINT `fk_flusso_approvativo_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_stato_approvativo` FOREIGN KEY (`id_stato_approvativo`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,6 +132,7 @@ CREATE TABLE `flusso_approvativo` (
 
 LOCK TABLES `flusso_approvativo` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo` DISABLE KEYS */;
+INSERT INTO `flusso_approvativo` VALUES (18,1,1,20,'2018-10-17 21:18:26');
 /*!40000 ALTER TABLE `flusso_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -194,7 +195,7 @@ CREATE TABLE `flusso_approvativo_audit` (
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,6 +204,7 @@ CREATE TABLE `flusso_approvativo_audit` (
 
 LOCK TABLES `flusso_approvativo_audit` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo_audit` DISABLE KEYS */;
+INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,'20','1','2018-10-17 21:18:26');
 /*!40000 ALTER TABLE `flusso_approvativo_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +218,7 @@ DROP TABLE IF EXISTS `ingrediente`;
 CREATE TABLE `ingrediente` (
   `id_ingrediente` int(11) NOT NULL AUTO_INCREMENT,
   `nome_ingrediente` varchar(45) NOT NULL,
-  `calorie` int(11) NOT NULL,
+  `calorie` float NOT NULL,
   PRIMARY KEY (`id_ingrediente`)
 ) ENGINE=InnoDB AUTO_INCREMENT=390 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -241,7 +243,7 @@ DROP TABLE IF EXISTS `lista_ingredienti`;
 CREATE TABLE `lista_ingredienti` (
   `id_ingrediente` int(11) NOT NULL,
   `id_ricetta` int(11) NOT NULL,
-  `quantita` int(11) NOT NULL,
+  `quantita` float NOT NULL,
   PRIMARY KEY (`id_ingrediente`,`id_ricetta`),
   KEY `fk_lista_ingredienti_ingrediente_idx` (`id_ingrediente`),
   KEY `fk_lista_ingredienti_ricetta_idx` (`id_ricetta`),
@@ -256,6 +258,7 @@ CREATE TABLE `lista_ingredienti` (
 
 LOCK TABLES `lista_ingredienti` WRITE;
 /*!40000 ALTER TABLE `lista_ingredienti` DISABLE KEYS */;
+INSERT INTO `lista_ingredienti` VALUES (270,20,0.5),(282,20,1),(295,20,2),(359,20,2),(388,20,0.1),(389,20,0.1);
 /*!40000 ALTER TABLE `lista_ingredienti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -308,7 +311,7 @@ CREATE TABLE `ricetta` (
   KEY `fk_ricetta_tipologia_idx` (`id_tipologia`),
   CONSTRAINT `fk_ricetta_tipologia` FOREIGN KEY (`id_tipologia`) REFERENCES `tipologia` (`id_tipologia`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ricetta_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,6 +320,7 @@ CREATE TABLE `ricetta` (
 
 LOCK TABLES `ricetta` WRITE;
 /*!40000 ALTER TABLE `ricetta` DISABLE KEYS */;
+INSERT INTO `ricetta` VALUES (20,1,2,'Pasta al sugo',1,30,'Tagliare tutto, mettere a soffriggere, buttare acqua, condire.',2,'Nessuna nota','Aggiungere pasta all\'uovo');
 /*!40000 ALTER TABLE `ricetta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -333,7 +337,7 @@ BEGIN
 	INSERT INTO `sweetnews`.`flusso_approvativo`
     (id_utente, id_stato_approvativo, id_ricetta)
     VALUES
-    (NEW.id_utente, (SELECT id_stato_approvativo FROM stato_approvativo WHERE codice_approvativo = 0), NEW.id_ricetta);
+    (NEW.id_utente, (SELECT id_stato_approvativo FROM stato_approvativo WHERE codice_stato_approvativo = 0), NEW.id_ricetta);
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -468,6 +472,28 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'sweetnews'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `deleteRecipe` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteRecipe`(IN idRicetta VARCHAR(255))
+BEGIN
+	DELETE FROM flusso_approvativo_audit WHERE id_ricetta = idRicetta;
+    DELETE FROM flusso_approvativo WHERE id_ricetta = idRicetta;
+    DELETE FROM lista_ingredienti WHERE id_ricetta = idRicetta;
+	DELETE FROM ricetta WHERE id_ricetta = idRicetta;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `deleteUser` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -519,4 +545,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-17 21:09:39
+-- Dump completed on 2018-10-18  0:11:32

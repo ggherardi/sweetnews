@@ -106,10 +106,29 @@ button:focus
 	box-shadow: 0 0 0 0.2rem #D25575!important;
 }
 
+table.dataTable tbody>tr.selected, table.dataTable tbody>tr>.selected {
+	background-color: #D25575!important;
+}
+
+table.dataTable tbody>tr.selected, table.dataTable tbody>tr {
+	cursor: pointer;
+}
+
+table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
+	background-color: #ffe6e6;
+}
+
+.table td {
+	outline-color: transparent;
+	vertical-align: middle;
+}
+
 /* Ribbon */
 #ribbon {
+	border-left: solid #d4d4d4 0.5px;
+	border-right: solid #d4d4d4 0.5px;
 	border-bottom: solid #d4d4d4 0.5px;
-	padding-bottom: 5px;
+	padding: 5px;
 }
 
 .ribbonButton {
@@ -131,6 +150,10 @@ button:focus
 #warningBanner {
 	display: none;
 	background-color: #fff6d6;
+}
+
+#warningBanner div {
+	padding: 3px;
 }
 
 /* Views */
@@ -177,28 +200,29 @@ button:focus
 }
 
 /* Forms */
-#recipeNewForm {
+.recipeForm {
 	max-width: 400px;
 }
 
-#recipeNewForm__difficolta {
-	padding: 0 5px;
-	height: auto;
+.recipeForm__difficolta {
+	padding: 0 5px!important;
+	height: auto!important;
 }
 
-#recipeNewForm__difficolta span {
-	color: #9fa3a6;
-	margin-left: 5px;
-	margin-top: 3px;
+.recipeForm__difficolta span {
+	color: #9fa3a6!important;
+	margin-left: 5px!important;
+	margin-top: 3px!important;
 }
 
-#recipeNewForm__ingredients input[type="number"]{
+.recipeForm__ingredients input[type="number"]{
 	min-height: 44px!important;
 }
 
 .delete-cross {
 	line-height: 2.5;
 }
+
 
 /* Autocomplete */
 .autocomplete {
@@ -267,7 +291,20 @@ button:focus
 .rate > input:checked ~ label:hover,
 .rate > input:checked ~ label:hover ~ label,
 .rate > label:hover ~ input:checked ~ label {
-    color: #c59b08;
+    color: #c59b08!;
+}
+
+.rate-displayOnly:not(:checked) > label:hover,
+.rate-displayOnly:not(:checked) > label:hover ~ label {
+	color: #ccc!important;
+}
+
+.rate-displayOnly > input:checked + label:hover,
+.rate-displayOnly > input:checked + label:hover ~ label,
+.rate-displayOnly > input:checked ~ label:hover,
+.rate-displayOnly > input:checked ~ label:hover ~ label,
+.rate-displayOnly > label:hover ~ input:checked ~ label {
+    color: #ffc700!important;
 }
 
 /* Default */

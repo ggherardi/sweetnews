@@ -100,6 +100,14 @@ class RecipesApi extends RestClient {
         return super.execute(); 
     }
 
+    getRecipe(id_ricetta) {
+        this.data = {
+            action: "getRecipe",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
+    }
+
     getRecipeTopologies() {
         this.data = {
             action: "getRecipeTopologies"

@@ -1,3 +1,4 @@
+Id_ricetta = 0;
 var userRecipesDTOptions = {
     dom: 'Bftpil',
     buttons: true,
@@ -7,7 +8,7 @@ var userRecipesDTOptions = {
         { data: "codice_stato_approvativo" },
         { data: "preparazione" },
         { data: "note" },
-        { data: "ingredienti" },
+        // { data: "ingredienti" },
         // {
         //     class: "more-details",
         //     orderable: false,
@@ -22,13 +23,13 @@ var userRecipesDTOptions = {
         { data: "nome_stato_approvativo" }
     ],
     columnDefs: [{
-        targets: [ 0, 1, 2, 3, 4 ],
+        targets: [ 0, 1, 2, 3 ],
         visible: false,
         searchable: false
     }],
     buttons: [
         { text: "Crea nuova ricetta", action: createRecipe },
-        { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+        { extend: "selectedSingle", text: "Modifica/Invia ricetta", action: editRecipe }
     ],
     language: dataTableLanguage.italian,
     responsive: {
@@ -58,16 +59,16 @@ function getRecipesForUserSuccess(data) {
     html +=        `<tbody>`;            
     for(var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i];
-        recipe.cast = castCellRender;
+        var difficultyCell = formatDifficultyCell(i);
             html +=     `<tr>
                             <td>${recipe.id_ricetta}</td>
                             <td>${recipe.codice_stato_approvativo}</td>
                             <td>${recipe.preparazione}</td>  
                             <td>${recipe.note}</td>                           
-                            <td>${recipe.titolo}</td>
-                            <td>${recipe.tipologia} minuti</td>
-                            <td>${recipe.difficolta} €</td>
-                            <td>${recipe.tempo_cottura}</td>
+                            <td>${recipe.titolo_ricetta}</td>
+                            <td>${recipe.nome_tipologia}</td>
+                            <td>${difficultyCell}</td>
+                            <td>${recipe.tempo_cottura} min</td>
                             <td>${recipe.porzioni}</td>
                             <td>${recipe.nome_stato_approvativo}</td>
                         </tr>`;
@@ -76,6 +77,7 @@ function getRecipesForUserSuccess(data) {
                 </table>`;
     userRecipesContainer.html(html);
     userRecipesDT = $(`#${tableName}`).DataTable(userRecipesDTOptions);
+    setDifficultyCellsInTable(recipes);
 }
 
 function BuidUserRecipesTableHead() {
@@ -95,14 +97,40 @@ function BuidUserRecipesTableHead() {
     return html;
 }
 
+function formatDifficultyCell(i) {
+    return `<div class="rate rate-displayOnly">
+                <input type="radio" id="star5_${i}" name="rate" value="5" disabled />
+                <label for="star5_${i}" title="text">5 stars</label>
+                <input type="radio" id="star4_${i}" name="rate" value="4" disabled />
+                <label for="star4_${i}" title="text">4 stars</label>
+                <input type="radio" id="star3_${i}" name="rate" value="3" disabled />
+                <label for="star3_${i}" title="text">3 stars</label>
+                <input type="radio" id="star2_${i}" name="rate" value="2" disabled />
+                <label for="star2_${i}" title="text">2 stars</label>
+                <input type="radio" id="star1_${i}" name="rate" value="1" disabled />
+                <label for="star1_${i}" title="text">1 star</label>
+            </div>`;
+}
+
+function setDifficultyCellsInTable(recipes) {
+    for(var i = 0; i < recipes.length; i++) {
+        var recipe = recipes[i];
+        $(`#star${recipe.difficolta}_${i}`).prop("checked", true);
+    }
+}
+
+/* BUTTONS */
 function createRecipe() {
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.newForm);
     pageContentController.switch();
 }
 
-function viewRecipe() {
-
+function editRecipe(e, dt, node, config) {
+    Id_ricetta = dt.rows({ selected: true }).data()[0].id_ricetta;
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
+    pageContentController.switch();
 }
 
+/* INIT */
 init();
 

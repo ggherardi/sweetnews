@@ -1,8 +1,9 @@
-var FormInitialState = [];
-var WarningIds = [];
-var AllIngredients = [];
-var InitialIngredientsCount;
-var WarningMessages = {
+Id_ricetta = 0;
+FormInitialState = [];
+WarningIds = [];
+AllIngredients = [];
+InitialIngredientsCount = 1;
+WarningMessages = {
     saveWarning: "saveWarning",
     noIngredientsWarning: "noIngredientsWarning"
 }
@@ -10,34 +11,19 @@ var WarningMessages = {
 /* RIBBON ACTIONS */
 function save() {
     var form = $("#recipeNewForm");
-    if(form[0].reportValidity()) {
+    if(form[0].reportValidity() && $("#recipeNewForm__ingredients .form-row").length > 0) {
         $("#submitForm").click();
     } 
-    // else {
-
-    // }
-    // if(ingredientsCount = $("#recipeNewForm__ingredients .form-row").length < 0) {
-        
-    // } else {
-    //     // form.submit();
-    //     $("#submitForm").click();
-    //     if(WarningIds[WarningMessages.saveWarning]) {
-    //         removeWarning(WarningMessages.saveWarning);
-    //     }
-    // }
 }
 
 function back() {
     if(WarningIds[WarningMessages.saveWarning]) { 
         if(!window.confirm(`Attenzione, tornando indietro verranno perse le modifiche non salvate.`)) {
+            resetVariables();
             return;
         }
     }
     pageContentController.switch();
-}
-
-function send() {
-    
 }
 
 /* FORM POPULATION */
@@ -61,7 +47,7 @@ function getRecipeTopologiesSuccess(data) {
         let topology = topologies[i];
         let option = document.createElement("option");
         option.value = topology.id_tipologia;
-        option.text = topology.nome_tipologia;
+        option.text = topology.nome_tipologia;        
         topologiesSelect.add(option);
     }
 }
@@ -87,10 +73,10 @@ function createNewIngredientControl() {
                         <input id="recipeNewForm__ingredient_nome_${currentControlNumber}" class="form-control" type="text" placeholder="ingrediente" required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="qt." title="quantità" required>
+                        <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="qt." title="quantità" step="0.01" required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="cal." title="calorie" required disabled>
+                        <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="cal." title="calorie" step="0.01" required disabled>
                     </div>
                     <div class="col-sm-1"><span class="icon fa-remove delete-cross c-pointer" onclick="deleteIngredientControl(this)"></span></div>
                 </div>`;
@@ -201,19 +187,16 @@ function insertRecipe(sender, e) {
     var recipesApi = new RecipesApi();
     recipesApi.insertRecipe(recipeForm)
         .done(saveSuccess)
-        .fail(saveFail)
+        .fail(RestClient.reportError)
         .always(() => loader.hideLoader());
     // Restart form initial state
 }
 
 function saveSuccess(data) {
     console.log(data);
-    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.newForm);
+    Id_ricetta = data;
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
     pageContentController.switch();
-}
-
-function saveFail(jqXHR) {
-    console.log(jqXHR);
 }
 
 function getRecipeFromForm() {
@@ -253,6 +236,15 @@ function removeWarning(warning) {
         Ribbon.removeMessage(id);
         WarningIds[warning] = undefined;
     }
+}
+
+function resetVariables() {
+    delete RecipeId;
+    delete FormInitialState;
+    delete WarningIds;
+    delete AllIngredients;
+    delete InitialIngredientsCount;
+    delete WarningMessages;
 }
 
 /* Init */

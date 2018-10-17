@@ -53,7 +53,7 @@ class RecipesApi {
                     IN (%s)";
                 $idsString = "";
                 for($i = 0; $i < count($array); $i++) {            
-                    $idsString .= sprintf("%d, ", $array[$i]["id_film"]);
+                    $idsString .= sprintf("%d, ", $array[$i]["id_ricetta"]);
                 }
                 $idsString = rtrim($idsString);
                 $idsString = rtrim($idsString, ",");
@@ -71,6 +71,53 @@ class RecipesApi {
                 }
             }            
             exit(json_encode($array));
+        } 
+        catch (Throwable $ex) {          
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
+            http_response_code(500); 
+        }
+    }
+    
+    public function GetRecipe() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");
+            $id_ricetta = $_POST["id_ricetta"];
+            $id_utente = $this->loginContext->id_utente;
+            $query = 
+                "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, ri.messaggio,
+                    ti.id_tipologia, ti.nome_tipologia, sfa.data_flusso, sfa.codice_stato_approvativo, sfa.nome_stato_approvativo
+                FROM ricetta ri
+                INNER JOIN tipologia ti
+                ON ri.id_tipologia = ti.id_tipologia      
+                INNER JOIN flusso_approvativo fa
+                ON ri.id_ricetta = fa.id_ricetta
+                INNER JOIN stato_flusso_approvativo sfa
+                ON ri.id_ricetta = sfa.id_ricetta      
+                WHERE ri.id_ricetta = ?
+                AND ri.id_utente = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("dd", array($id_ricetta, $id_utente));
+            $res = $this->dbContext->ExecuteStatement();
+            $recipeRow = $res->fetch_assoc();
+            Logger::Write("ROW ".json_encode($row), $GLOBALS["CorrelationID"]);
+            if($recipeRow) {
+                $query = 
+                    "SELECT li.id_ricetta, li.quantita, ing.id_ingrediente, ing.nome_ingrediente, ing.calorie                    
+                    FROM lista_ingredienti li
+                    INNER JOIN ingrediente ing
+                    ON li.id_ingrediente = ing.id_ingrediente
+                    WHERE li.id_ricetta = %s";
+                $idsString = "";
+                $query = sprintf($query, $id_ricetta);
+                $res = self::ExecuteQuery($query);
+                while($row = $res->fetch_assoc()) {         
+                    $ingredient = new Ingredient($row);                                
+                    $recipeRow["ingredienti"][] = $ingredient;
+                }
+            }            
+            Logger::Write("FINAL ROW ".json_encode($recipeRow), $GLOBALS["CorrelationID"]);
+            exit(json_encode($recipeRow));
         } 
         catch (Throwable $ex) {          
             Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
@@ -146,7 +193,6 @@ class RecipesApi {
                 $this->dbContext->BindStatementParameters("ddd", array($ingredient->id_ingrediente, $recipeId, $ingredient->quantita));
                 $res = $this->dbContext->ExecuteStatement();
             } 
-
             $this->dbContext->CommitTransaction();
             exit(json_encode($recipeId));
         }
@@ -244,6 +290,9 @@ class RecipesApi {
                 break;
             case "getIngredients":
                 self::GetIngredients();
+                break;
+            case "getRecipe":
+                self::GetRecipe();
                 break;
             case "insertRecipe":
                 self::InsertRecipe();
