@@ -114,9 +114,11 @@ class RecipesApi extends RestClient {
         return super.execute();
     }
     
-    insertRecipe() {
+    insertRecipe(recipeForm) {
+        recipeForm = JSON.stringify(recipeForm);
         this.data = {
-            action: "insertRecipe"
+            action: "insertRecipe",
+            recipeForm: recipeForm
         }
         return super.execute();
     }

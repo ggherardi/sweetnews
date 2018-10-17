@@ -123,7 +123,7 @@ CREATE TABLE `flusso_approvativo` (
   CONSTRAINT `fk_flusso_approvativo_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_stato_approvativo` FOREIGN KEY (`id_stato_approvativo`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,6 +134,48 @@ LOCK TABLES `flusso_approvativo` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo` DISABLE KEYS */;
 /*!40000 ALTER TABLE `flusso_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `sweetnews`.`flusso_approvativo_AFTER_INSERT` AFTER INSERT ON `flusso_approvativo` FOR EACH ROW
+BEGIN
+	INSERT INTO `sweetnews`.`flusso_approvativo_audit`
+    (id_flusso_approvativo, id_stato_approvativo, id_ricetta, id_utente, data_flusso)
+    VALUES
+    (NEW.id_flusso_approvativo, NEW.id_stato_approvativo, NEW.id_ricetta, NEW.id_utente, NEW.data_flusso);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `sweetnews`.`flusso_approvativo_AFTER_UPDATE` AFTER UPDATE ON `flusso_approvativo` FOR EACH ROW
+BEGIN
+	INSERT INTO `sweetnews`.`flusso_approvativo_audit`
+    (id_flusso_approvativo, id_stato_approvativo, id_ricetta, id_utente, data_flusso)
+    VALUES
+    (NEW.id_flusso_approvativo, NEW.id_stato_approvativo, NEW.id_ricetta, NEW.id_utente, NEW.data_flusso);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `flusso_approvativo_audit`
@@ -145,10 +187,10 @@ DROP TABLE IF EXISTS `flusso_approvativo_audit`;
 CREATE TABLE `flusso_approvativo_audit` (
   `id_flusso_approvativo_audit` int(11) NOT NULL AUTO_INCREMENT,
   `id_flusso_approvativo` int(11) NOT NULL,
-  `id_stato` int(11) NOT NULL,
+  `id_stato_approvativo` int(11) NOT NULL,
   `id_ricetta` varchar(45) NOT NULL,
   `id_utente` varchar(45) NOT NULL,
-  `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_flusso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -176,7 +218,7 @@ CREATE TABLE `ingrediente` (
   `nome_ingrediente` varchar(45) NOT NULL,
   `calorie` int(11) NOT NULL,
   PRIMARY KEY (`id_ingrediente`)
-) ENGINE=InnoDB AUTO_INCREMENT=385 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=390 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +227,7 @@ CREATE TABLE `ingrediente` (
 
 LOCK TABLES `ingrediente` WRITE;
 /*!40000 ALTER TABLE `ingrediente` DISABLE KEYS */;
-INSERT INTO `ingrediente` VALUES (223,'Banana',89),(224,'Melograno',83),(225,'Zenzero',80),(226,'Fichi',74),(227,'Uva',69),(228,'Ciliegie',63),(229,'Kiwi',61),(230,'Mango',60),(231,'Pera',58),(232,'Mirtilli',57),(233,'Mandarini',53),(234,'Mela',52),(235,'Lamponi',52),(236,'Ananas',50),(237,'Albicocche',48),(238,'Arance',47),(239,'Prugne',46),(240,'More',43),(241,'Pompelmo',42),(242,'Pesca',39),(243,'Melone',34),(244,'Fragole',32),(245,'Anguria',30),(246,'Limone',29),(247,'Melone giallo',28),(248,'Macadamia',718),(249,'Pinoli',673),(250,'Nocciole',628),(251,'Pistacchi',601),(252,'Anacardi',598),(253,'Noci',582),(254,'Arachidi',571),(255,'Sesamo',573),(256,'Mandorle dolci',542),(257,'Castagne',189),(258,'Cocco',604),(259,'Uva',283),(260,'Banana',270),(261,'Datteri',253),(262,'Fichi',242),(263,'Prugne',240),(264,'Albicocche',188),(265,'Lupini secchi',371),(266,'Ceci secchi',364),(267,'Lenticchie secche',353),(268,'Fagioli secchi',291),(269,'Avocado',160),(270,'Aglio',149),(271,'Soia',122),(272,'Fave',88),(273,'Mais crudo',86),(274,'Patata dolce',86),(275,'Fagioli borlotti in scatola',83),(276,'Piselli',81),(277,'Patate',77),(278,'Porro',61),(279,'Carciofo',47),(280,'Barbabietola',43),(281,'Carote',41),(282,'Cipolla',40),(283,'Broccoli',34),(284,'Finocchio',31),(285,'Fagiolini',31),(286,'Rape',28),(287,'Zucca',26),(288,'Cavolfiore',25),(289,'Rucola',25),(290,'Melanzana',24),(291,'Peperoni',24),(292,'Spinaci',23),(293,'Funghi',22),(294,'Zucchina',21),(295,'Pomodori',20),(296,'Asparago',20),(297,'Lattuga',17),(298,'Ravanelli',16),(299,'Cetriolo',16),(300,'Lardo',902),(301,'Salame',392),(302,'Salsiccia',339),(303,'Costina di maiale',277),(304,'Wurstel',230),(305,'Prosciutto cotto',215),(306,'Manzo macinato',212),(307,'Prosciutto crudo',195),(308,'Tacchino',160),(309,'Prosciutto crudo magro',147),(310,'Vitello',144),(311,'Manzo magro',140),(312,'Coniglio',136),(313,'Anatra',136),(314,'Coscia di pollo',130),(315,'Cervo',120),(316,'Maiale filetto',110),(317,'Agnello',109),(318,'Petto di tacchino',111),(319,'Petto di pollo',100),(320,'Salmone',179),(321,'Sgombro',163),(322,'Trota',148),(323,'Trota salmonata',141),(324,'Salmone affumicato',117),(325,'Orata',105),(326,'Gamberi',105),(327,'Tonno',103),(328,'Branzino',97),(329,'Cozze',86),(330,'Vongole',86),(331,'Polpo',82),(332,'Seppie',79),(333,'Gamberetti',71),(334,'Olio Extravergine',884),(335,'Burro',717),(336,'Olio di semi',884),(337,'Grana',392),(338,'Seitain',370),(339,'Emmental',357),(340,'Mozzarella',254),(341,'Tempeh',193),(342,'Hamburger di soia',154),(343,'Tofu',145),(344,'Uova',143),(345,'Ricotta',138),(346,'Yogurt alla frutta',109),(347,'Yogurt greco',96),(348,'Fiocchi di latte',87),(349,'Latte intero',61),(350,'Yogurt greco 0%',57),(351,'Latte di soia',54),(352,'Yogurt di soia',50),(353,'Latte di avena',44),(354,'Yogurt magro',41),(355,'Latte parzialmente Scremato',40),(356,'Latte scremato',34),(357,'Avena',389),(358,'Miglio',378),(359,'Pasta di semola',371),(360,'Amaranto',371),(361,'Farina di mais',365),(362,'Quinoa',364),(363,'Frumento tipo 0',361),(364,'Riso',358),(365,'Orzo',354),(366,'Grano saraceno',343),(367,'Segale',338),(368,'Farro',335),(369,'Gocciole',477),(370,'Oro Saiwa',425),(371,'Brioches',390),(372,'Pizza',301),(373,'Patatine fritte',299),(374,'Pane tipo 0',271),(375,'Big Mac',232),(376,'Coca Cola',42),(377,'Limoncello',343),(378,'Whisky',250),(379,'Vodka',231),(380,'Vino rosso',84),(381,'Vino bianco',82),(382,'Birra rossa',63),(383,'Spritz',50),(384,'Birra',43);
+INSERT INTO `ingrediente` VALUES (223,'Banana',89),(224,'Melograno',83),(225,'Zenzero',80),(226,'Fichi',74),(227,'Uva',69),(228,'Ciliegie',63),(229,'Kiwi',61),(230,'Mango',60),(231,'Pera',58),(232,'Mirtilli',57),(233,'Mandarini',53),(234,'Mela',52),(235,'Lamponi',52),(236,'Ananas',50),(237,'Albicocche',48),(238,'Arance',47),(239,'Prugne',46),(240,'More',43),(241,'Pompelmo',42),(242,'Pesca',39),(243,'Melone',34),(244,'Fragole',32),(245,'Anguria',30),(246,'Limone',29),(247,'Melone giallo',28),(248,'Macadamia',718),(249,'Pinoli',673),(250,'Nocciole',628),(251,'Pistacchi',601),(252,'Anacardi',598),(253,'Noci',582),(254,'Arachidi',571),(255,'Sesamo',573),(256,'Mandorle dolci',542),(257,'Castagne',189),(258,'Cocco',604),(259,'Uva',283),(260,'Banana',270),(261,'Datteri',253),(262,'Fichi',242),(263,'Prugne',240),(264,'Albicocche',188),(265,'Lupini secchi',371),(266,'Ceci secchi',364),(267,'Lenticchie secche',353),(268,'Fagioli secchi',291),(269,'Avocado',160),(270,'Aglio',149),(271,'Soia',122),(272,'Fave',88),(273,'Mais crudo',86),(274,'Patata dolce',86),(275,'Fagioli borlotti in scatola',83),(276,'Piselli',81),(277,'Patate',77),(278,'Porro',61),(279,'Carciofo',47),(280,'Barbabietola',43),(281,'Carote',41),(282,'Cipolla',40),(283,'Broccoli',34),(284,'Finocchio',31),(285,'Fagiolini',31),(286,'Rape',28),(287,'Zucca',26),(288,'Cavolfiore',25),(289,'Rucola',25),(290,'Melanzana',24),(291,'Peperoni',24),(292,'Spinaci',23),(293,'Funghi',22),(294,'Zucchina',21),(295,'Pomodori',20),(296,'Asparago',20),(297,'Lattuga',17),(298,'Ravanelli',16),(299,'Cetriolo',16),(300,'Lardo',902),(301,'Salame',392),(302,'Salsiccia',339),(303,'Costina di maiale',277),(304,'Wurstel',230),(305,'Prosciutto cotto',215),(306,'Manzo macinato',212),(307,'Prosciutto crudo',195),(308,'Tacchino',160),(309,'Prosciutto crudo magro',147),(310,'Vitello',144),(311,'Manzo magro',140),(312,'Coniglio',136),(313,'Anatra',136),(314,'Coscia di pollo',130),(315,'Cervo',120),(316,'Maiale filetto',110),(317,'Agnello',109),(318,'Petto di tacchino',111),(319,'Petto di pollo',100),(320,'Salmone',179),(321,'Sgombro',163),(322,'Trota',148),(323,'Trota salmonata',141),(324,'Salmone affumicato',117),(325,'Orata',105),(326,'Gamberi',105),(327,'Tonno',103),(328,'Branzino',97),(329,'Cozze',86),(330,'Vongole',86),(331,'Polpo',82),(332,'Seppie',79),(333,'Gamberetti',71),(334,'Olio Extravergine',884),(335,'Burro',717),(336,'Olio di semi',884),(337,'Grana',392),(338,'Seitain',370),(339,'Emmental',357),(340,'Mozzarella',254),(341,'Tempeh',193),(342,'Hamburger di soia',154),(343,'Tofu',145),(344,'Uova',143),(345,'Ricotta',138),(346,'Yogurt alla frutta',109),(347,'Yogurt greco',96),(348,'Fiocchi di latte',87),(349,'Latte intero',61),(350,'Yogurt greco 0%',57),(351,'Latte di soia',54),(352,'Yogurt di soia',50),(353,'Latte di avena',44),(354,'Yogurt magro',41),(355,'Latte parzialmente Scremato',40),(356,'Latte scremato',34),(357,'Avena',389),(358,'Miglio',378),(359,'Pasta di semola',371),(360,'Amaranto',371),(361,'Farina di mais',365),(362,'Quinoa',364),(363,'Frumento tipo 0',361),(364,'Riso',358),(365,'Orzo',354),(366,'Grano saraceno',343),(367,'Segale',338),(368,'Farro',335),(369,'Gocciole',477),(370,'Oro Saiwa',425),(371,'Brioches',390),(372,'Pizza',301),(373,'Patatine fritte',299),(374,'Pane tipo 0',271),(375,'Big Mac',232),(376,'Coca Cola',42),(377,'Limoncello',343),(378,'Whisky',250),(379,'Vodka',231),(380,'Vino rosso',84),(381,'Vino bianco',82),(382,'Birra rossa',63),(383,'Spritz',50),(384,'Birra',43),(387,'Pasta all\'uovo',410),(388,'Sale',0),(389,'Pepe',0);
 /*!40000 ALTER TABLE `ingrediente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +308,7 @@ CREATE TABLE `ricetta` (
   KEY `fk_ricetta_tipologia_idx` (`id_tipologia`),
   CONSTRAINT `fk_ricetta_tipologia` FOREIGN KEY (`id_tipologia`) REFERENCES `tipologia` (`id_tipologia`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ricetta_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,6 +319,27 @@ LOCK TABLES `ricetta` WRITE;
 /*!40000 ALTER TABLE `ricetta` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ricetta` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `sweetnews`.`ricetta_AFTER_INSERT` AFTER INSERT ON `ricetta` FOR EACH ROW
+BEGIN
+	INSERT INTO `sweetnews`.`flusso_approvativo`
+    (id_utente, id_stato_approvativo, id_ricetta)
+    VALUES
+    (NEW.id_utente, (SELECT id_stato_approvativo FROM stato_approvativo WHERE codice_approvativo = 0), NEW.id_ricetta);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `stato_approvativo`
@@ -299,7 +362,7 @@ CREATE TABLE `stato_approvativo` (
 
 LOCK TABLES `stato_approvativo` WRITE;
 /*!40000 ALTER TABLE `stato_approvativo` DISABLE KEYS */;
-INSERT INTO `stato_approvativo` VALUES (1,0,'creata'),(2,10,'in approvazione'),(3,15,'non idonea'),(4,20,'idonea'),(5,25,'non approvata'),(6,30,'approvata');
+INSERT INTO `stato_approvativo` VALUES (1,0,'bozza'),(2,10,'in approvazione'),(3,15,'non idonea'),(4,20,'idonea'),(5,25,'non approvata'),(6,30,'approvata');
 /*!40000 ALTER TABLE `stato_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -456,4 +519,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-17  1:20:52
+-- Dump completed on 2018-10-17 21:09:39

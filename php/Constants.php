@@ -6,6 +6,15 @@ class PermissionsConstants {
     const COOKIE_NAME = "SweetNewsAuth";
 }
 
+class ApprovalFlowConstants {
+    const BOZZA = 0;
+    const IN_APPROVAZIONE = 10;
+    const NON_IDONEA = 15;
+    const IDONEA = 20;
+    const NON_APPROVATA = 25;
+    const APPROVATA = 30;
+}
+
 class LoginContext {
     public $username;
     public $id_utente;

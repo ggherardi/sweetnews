@@ -1,0 +1,30 @@
+<section>
+    <div>
+        <form id="recipeNewForm" class="form mt-3" onsubmit="insertRecipe(this, event);return false;">
+            <input id="recipeNewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" required>
+            <select id="recipeNewForm__tipologia" class="form-control mt-2" type="select" placeholder="tipologia" required></select>
+            <div id="recipeNewForm__difficolta" class="rate mt-2 mb-2 box" required>
+                <div><span>difficoltà*</span></div>
+                <input type="radio" id="star5" name="rate" value="5" />
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="4" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="3" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="2" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="1" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+            <input id="recipeNewForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" required>
+            <textarea id="recipeNewForm__preparazione" class="form-control mt-2" rows="6" placeholder="preparazione ricetta*" required></textarea>
+            <input id="recipeNewForm__porzioni" class="form-control mt-2" type="number" placeholder="numero porzioni*" min="0" max="20" required>
+            <textarea id="recipeNewForm__note" class="form-control mt-2" row="6" placeholder="note"></textarea>
+            <textarea id="recipeNewForm__messaggio" class="form-control mt-2" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)"></textarea>
+            <div id="recipeNewForm__ingredients"></div>
+            <div class="mt-2 ta-center"><button class="secondary" id="createIngredientControl" type="button" onclick="createNewIngredientControl();">Aggiungi ingrediente</button></div>
+            <button id="submitForm" class="d-none"></button>
+        </form>
+    </div>
+    
+</section>

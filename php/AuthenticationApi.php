@@ -58,6 +58,7 @@ class AuthenticationApi {
                     break;
                 default:
                     http_response_code(500); 
+                    break;
             }            
         }
     }

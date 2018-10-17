@@ -1,6 +1,6 @@
 <section>
     <div>
-        <form id="recipeNewForm" class="form mt-3" onsubmit="test(this, event);return false;">
+        <form id="recipeNewForm" class="form mt-3" onsubmit="insertRecipe(this, event);return false;">
             <input id="recipeNewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" required>
             <select id="recipeNewForm__tipologia" class="form-control mt-2" type="select" placeholder="tipologia" required></select>
             <div id="recipeNewForm__difficolta" class="rate mt-2 mb-2 box" required>
@@ -22,7 +22,8 @@
             <textarea id="recipeNewForm__note" class="form-control mt-2" row="6" placeholder="note"></textarea>
             <textarea id="recipeNewForm__messaggio" class="form-control mt-2" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)"></textarea>
             <div id="recipeNewForm__ingredients"></div>
-            <div class="mt-2 ta-center"><button class="secondary" type="button" onclick="createNewIngredientControl();">Aggiungi ingrediente</button></div>
+            <div class="mt-2 ta-center"><button class="secondary" id="createIngredientControl" type="button" onclick="createNewIngredientControl();">Aggiungi ingrediente</button></div>
+            <button id="submitForm" class="d-none"></button>
         </form>
     </div>
     

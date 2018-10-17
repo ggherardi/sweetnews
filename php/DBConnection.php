@@ -63,7 +63,7 @@ class DBConnection {
     function ExecuteStatement() {
         try {
             Logger::Write("Executing statement", $GLOBALS["CorrelationID"]);
-            $this->getStatement()->execute();  
+            $res = $this->getStatement()->execute();  
             if(!$res) {     
                 if($this->getStatement()->error){
                     Logger::Write("Error occured while executing statement -> ".$this->getStatement()->error, $GLOBALS["CorrelationID"]);

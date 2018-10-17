@@ -7,24 +7,24 @@ var WarningMessages = {
     noIngredientsWarning: "noIngredientsWarning"
 }
 
-/* Autocomplete click override */
-autoCompleteClickEvent = function(e){
-    console.log("test");
-    closeAllLists();
-}
-
 /* RIBBON ACTIONS */
 function save() {
     var form = $("#recipeNewForm");
-    if(ingredientsCount = $("#recipeNewForm__ingredients .form-row").length < 0) {
+    if(form[0].reportValidity()) {
+        $("#submitForm").click();
+    } 
+    // else {
+
+    // }
+    // if(ingredientsCount = $("#recipeNewForm__ingredients .form-row").length < 0) {
         
-    } else {
-        form.submit();
-        if(WarningIds[WarningMessages.saveWarning]) {
-            removeWarning(WarningMessages.saveWarning);
-        }
-    }
-    // Restart form initial state
+    // } else {
+    //     // form.submit();
+    //     $("#submitForm").click();
+    //     if(WarningIds[WarningMessages.saveWarning]) {
+    //         removeWarning(WarningMessages.saveWarning);
+    //     }
+    // }
 }
 
 function back() {
@@ -45,7 +45,6 @@ function init() {
     populateTipologiaSelect();
     populateIngredientsControl();
     retrieveIngredientsFromDBAndInitAutocomplete();
-    getInitialState();
 }
 
 function populateTipologiaSelect() {
@@ -67,6 +66,7 @@ function getRecipeTopologiesSuccess(data) {
     }
 }
 
+/* Ingredients controls */
 function populateIngredientsControl() {
     createNewIngredientControl();
 }
@@ -81,7 +81,7 @@ function createNewIngredientControl() {
         removeWarning(WarningMessages.saveWarning);
     }
     var currentControlNumber = ingredientsCount + 1;
-    var html = `<div class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
+    var html = `<div id="ingredientRow_${currentControlNumber}" class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
                     <input id="recipeNewForm__ingredient_id_${currentControlNumber}" type="hidden">
                     <div class="col-sm-5 autocomplete">
                         <input id="recipeNewForm__ingredient_nome_${currentControlNumber}" class="form-control" type="text" placeholder="ingrediente" required>
@@ -95,14 +95,42 @@ function createNewIngredientControl() {
                     <div class="col-sm-1"><span class="icon fa-remove delete-cross c-pointer" onclick="deleteIngredientControl(this)"></span></div>
                 </div>`;
     ingredientsControlsContainer.append(html);
+    var ingredient = $(`#recipeNewForm__ingredient_nome_${currentControlNumber}`)[0];
+    ingredient.addEventListener("change", checkCurrentstate);
+    initAutoComplete(ingredient.id);
+    switchAddIngredientButtonState(currentControlNumber);
 }
 
 function deleteIngredientControl(sender) {
+    var controlNumber = $(sender).parents(".ingredientRow")[0].dataset["rowid"];
+    var rowInputs = getIngredientRow(controlNumber);
+    restoreIngredientRowStateToPristine(rowInputs);
     $(sender).parents(".form-row").remove();        
     if($(".ingredientRow").length < 1) {
         var id = Ribbon.setMessage("Attenzione, la ricetta deve contenere almeno un ingrediente");
         WarningIds[WarningMessages.noIngredientsWarning] = id;
     }
+    switchAddIngredientButtonState(controlNumber - 1);
+}
+
+function getIngredientRow(ingredientControlNumber) {
+    var ingredientRow = $(`#ingredientRow_${ingredientControlNumber}`);
+    var inputs = ingredientRow.find(`input`);
+    return inputs;
+}
+
+function restoreIngredientRowStateToPristine(inputs) {
+    for(var i = 0; i < inputs.length; i++) {
+        var row = inputs[i];
+        if(FormInitialState[row.id]) {
+            FormInitialState[row.id].isDirty = false;
+        }
+    }
+}
+
+function switchAddIngredientButtonState(ingredientControlNumber) {
+    var button = document.getElementById("createIngredientControl");    
+    button.disabled = parseInt(ingredientControlNumber) >= 10;
 }
 
 function retrieveIngredientsFromDBAndInitAutocomplete() {
@@ -116,6 +144,7 @@ function retrieveIngredientsFromDBAndInitAutocomplete() {
                 for(var i = 0; i < ingredientsControls.length; i++) {                    
                     initAutoComplete(ingredientsControls[i].id);
                 }
+                getInitialState();
             }
         })
         .fail(RestClient.reportError);
@@ -126,6 +155,7 @@ function initAutoComplete(inputId) {
     autocomplete(inputControl, AllIngredients);
 }
 
+/* State check */
 function getInitialState() {
     InitialIngredientsCount = 1;
     var controls = $("#recipeNewForm").find(".form-control");
@@ -138,6 +168,9 @@ function getInitialState() {
 
 function checkCurrentstate(e) {
     var controlId = e.srcElement.id;
+    if(!FormInitialState[controlId]) {
+        return;
+    }
     FormInitialState[controlId].isDirty = e.srcElement.value != FormInitialState[controlId].value;
     currentIngredientsCount = $(".ingredientRow").length;
     if(isFormStateDirty() || currentIngredientsCount != InitialIngredientsCount){
@@ -160,14 +193,57 @@ function isFormStateDirty() {
 }
 
 /* EVENTS */
-function test(sender, e) {
+function insertRecipe(sender, e) {
     e.preventDefault();
-    console.log("test");
+    var loader = new Loader("#recipeNewForm");
+    loader.showLoader();
+    var recipeForm = getRecipeFromForm();
+    var recipesApi = new RecipesApi();
+    recipesApi.insertRecipe(recipeForm)
+        .done(saveSuccess)
+        .fail(saveFail)
+        .always(() => loader.hideLoader());
+    // Restart form initial state
+}
+
+function saveSuccess(data) {
+    console.log(data);
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.newForm);
+    pageContentController.switch();
+}
+
+function saveFail(jqXHR) {
+    console.log(jqXHR);
 }
 
 function getRecipeFromForm() {
-    $("#recipeNewForm__difficolta input:checked"); //difficoltà
-    $("#recipeNewForm__ingredients .form-row").first().find("input.recipeNewForm__ingredient_quantita"); //ingredienti
+    var recipe = {
+        id_tipologia : $("#recipeNewForm__tipologia").val(),
+        titolo_ricetta : $("#recipeNewForm__titolo").val(),
+        difficolta : $("#recipeNewForm__difficolta input:checked").val(),
+        tempo_cottura : $("#recipeNewForm__tempo_cottura").val(),
+        preparazione : $("#recipeNewForm__preparazione").val(),
+        porzioni : $("#recipeNewForm__porzioni").val(),
+        note : $("#recipeNewForm__note").val(),
+        messaggio : $("#recipeNewForm__messaggio").val(),
+        lista_ingredienti : getIngredientsFromForm()
+    };
+
+    return recipe;
+}
+
+function getIngredientsFromForm() {
+    var ingredients = [];
+    var ingredientsRows = $("#recipeNewForm__ingredients .ingredientRow");
+    for(var i = 0; i < ingredientsRows.length; i++) {
+        var ingredientRow = ingredientsRows[i];
+        var rowid = ingredientRow.dataset["rowid"];
+        var ingredient = {};
+        ingredient.id_ingrediente = $(`#recipeNewForm__ingredient_id_${rowid}`).val(),
+        ingredient.quantita = $(`#recipeNewForm__ingredient_quantita_${rowid}`).val()
+        ingredients.push(ingredient);
+    }
+    return ingredients;
 }
 
 /* AUX */

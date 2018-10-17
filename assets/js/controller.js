@@ -180,12 +180,18 @@ class Views {
         };
         this.allViews = new AllViews();
 
-        class RecipeForms {
+        class AllForms {
             constructor(views) {
-                this.newForm = { title: "Nuova ricetta", name: "recipeForm", path: "forms/recipeForm/recipeForm", parent: views.allViews.personal, ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] }
+                class RecipeForms {
+                    constructor(views) {
+                        this.newForm = { title: "Nuova ricetta", name: "recipeNewForm", path: "forms/recipe/recipeNewForm/recipeNewForm", parent: views.allViews.personal, ribbon: [ ribbon.buttons.back, ribbon.buttons.save ] },
+                        this.editForm = { title: "Modifica e invia ricetta", name: "recipeNewForm", path: "forms/recipe/recipeEditForm/recipeEditForm", parent: views.allViews.personal, ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] }
+                    }
+                }
+                this.recipes = new RecipeForms(views);
             }
         }
-        this.recipeForms = new RecipeForms(this);
+        this.allForms = new AllForms(this);
 
         class AllComponents {
             constructor() {
