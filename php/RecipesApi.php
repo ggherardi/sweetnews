@@ -213,64 +213,57 @@ class RecipesApi {
 
     
     function EditRecipe() {
-        // try {
-        //     Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-        //     TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE, PermissionsConstants::VISITATORE), "delega_codice");
-        //     $recipeForm = json_decode($_POST["recipeForm"]);
-        //     $id_utente = array("id_utente" => $this->loginContext->id_utente);
-        //     $ingredients = json_decode($recipeForm["lista_ingredienti"]);
-        //     $recipe = array_merge($id_utente, $recipeForm);           
-        //     Logger::Write("RECIPE ".json_encode($recipe), $GLOBALS["CorrelationID"]);
-        //     $this->dbContext->StartTransaction();
-        //     $query = 
-        //         "UPDATE ricetta
-        //         SET (id_utente, id_tipologia, titolo_ricetta, difficolta, tempo_cottura, preparazione, porzioni, note, messaggio)
-        //         VALUES
-        //         (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        //         WHERE id_ricetta = ?
-        //         AND id_utente = ?";
-        //     $this->dbContext->PrepareStatement($query);
-        //     $this->dbContext->BindStatementParameters("ddsddsds", $recipe);
-        //     $res = $this->dbContext->ExecuteStatement();
-        //     $recipeId = $this->dbContext->GetLastId();
-        //     // Cancello tutti quelli esistenti e poi li ricreo
-        //     $query = 
-        //         "INSERT INTO lista_ingredienti
-        //         (id_ingrediente, id_ricetta, quantita)
-        //         VALUES
-        //         (?, ?, ?)";
-        //     $this->dbContext->PrepareStatement($query);
-        //     for($i = 0; $i < count($ingredients); $i++) {
-        //         $this->dbContext->BindStatementParameters("ddd", $ingredients[$i]);
-        //         $res = $this->dbContext->ExecuteStatement();
-        //     } 
-            
-        //     $query = 
-        //         "INSERT INTO lista_ingredienti
-        //         (id_ingrediente, id_ricetta, quantita)
-        //         VALUES
-        //         (?, ?, ?)";
-        //     $this->dbContext->PrepareStatement($query);
-        //     for($i = 0; $i < count($ingredients); $i++) {
-        //         $this->dbContext->BindStatementParameters("ddd", $ingredients[$i]);
-        //         $res = $this->dbContext->ExecuteStatement();
-        //     }        
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE, PermissionsConstants::VISITATORE), "delega_codice");
+            $recipeForm = json_decode($_POST["recipeForm"]);
+            $id_utente = $this->loginContext->id_utente;
+            $ingredients = $recipeForm->lista_ingredienti;
+            $this->dbContext->StartTransaction();
+            $query = 
+                "UPDATE ricetta
+                SET id_tipologia = ?, titolo_ricetta = ?, difficolta = ?, tempo_cottura = ?, preparazione = ?, porzioni = ?, note = ?, messaggio = ?
+                WHERE id_ricetta = ?
+                AND id_utente = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("dsddsdssdd", array($recipeForm->id_tipologia, $recipeForm->titolo_ricetta, $recipeForm->difficolta, 
+                $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->note, $recipeForm->messaggio, $recipeForm->id_ricetta, $id_utente));
+            $res = $this->dbContext->ExecuteStatement();
 
-        //     exit();
-        //     $this->dbContext->CommitTransaction();
-        // }
-        // catch(Throwable $ex) {
-        //     $this->dbContext->RollBack();            
-        //     Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);
-        //     switch($ex->getMessage()) {
-        //         case 1062:
-        //             http_response_code(409);
-        //             break;
-        //         default:
-        //             http_response_code(500); 
-        //             break;
-        //     }   
-        // }
+            // Per ora cancello e ricreo, con più tempo creerò un metodo per controllare quali ingredienti sono stati cancellati e quali aggiunti
+            $query = 
+                "DELETE FROM lista_ingredienti WHERE id_ricetta = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array($recipeForm->id_ricetta)); 
+            $this->dbContext->ExecuteStatement();
+
+            $query = 
+                "INSERT INTO lista_ingredienti
+                (id_ingrediente, id_ricetta, quantita)
+                VALUES
+                (?, ?, ?)";
+            $this->dbContext->PrepareStatement($query);
+            for($i = 0; $i < count($ingredients); $i++) {
+                $ingredient = $ingredients[$i];
+                $this->dbContext->BindStatementParameters("ddd", array($ingredient->id_ingrediente, $recipeForm->id_ricetta, $ingredient->quantita));
+                $res = $this->dbContext->ExecuteStatement();
+            } 
+            $this->dbContext->CommitTransaction();
+            exit(json_encode($recipeId));
+        }
+        catch(Throwable $ex) {
+            $this->dbContext->RollBack();            
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getTraceAsString()), $GLOBALS["CorrelationID"]);
+            switch($ex->getMessage()) {
+                case 1062:
+                    http_response_code(409);
+                    break;
+                default:
+                    http_response_code(500); 
+                    break;
+            }   
+        }
     }
 
     // Switcha l'operazione richiesta lato client
@@ -296,6 +289,9 @@ class RecipesApi {
                 break;
             case "insertRecipe":
                 self::InsertRecipe();
+                break;
+            case "editRecipe":
+                self::EditRecipe();
                 break;
             default: 
                 exit(json_encode($_POST));

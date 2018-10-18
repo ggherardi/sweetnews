@@ -1,4 +1,4 @@
-Id_ricetta = 0;
+window.RecipeId = 0;
 var userRecipesDTOptions = {
     dom: 'Bftpil',
     buttons: true,
@@ -42,7 +42,7 @@ var userRecipesDT = {};
 var userRecipesContainerSelector = "#userRecipesContainer";
 var userRecipesContainer = $(userRecipesContainerSelector);
 
-function init() {
+function initPersonalRecipes() {
     var recipesApi = new RecipesApi();
     var loader = new Loader(userRecipesContainerSelector); 
     loader.showLoader();
@@ -98,18 +98,20 @@ function BuidUserRecipesTableHead() {
 }
 
 function formatDifficultyCell(i) {
-    return `<div class="rate rate-displayOnly">
-                <input type="radio" id="star5_${i}" name="rate" value="5" disabled />
-                <label for="star5_${i}" title="text">5 stars</label>
-                <input type="radio" id="star4_${i}" name="rate" value="4" disabled />
-                <label for="star4_${i}" title="text">4 stars</label>
-                <input type="radio" id="star3_${i}" name="rate" value="3" disabled />
-                <label for="star3_${i}" title="text">3 stars</label>
-                <input type="radio" id="star2_${i}" name="rate" value="2" disabled />
-                <label for="star2_${i}" title="text">2 stars</label>
-                <input type="radio" id="star1_${i}" name="rate" value="1" disabled />
-                <label for="star1_${i}" title="text">1 star</label>
-            </div>`;
+    return `<form>
+                <div class="rate rate-displayOnly">
+                    <input type="radio" id="star5_${i}" name="rate" value="5" disabled />
+                    <label for="star5_${i}" title="text">5 stars</label>
+                    <input type="radio" id="star4_${i}" name="rate" value="4" disabled />
+                    <label for="star4_${i}" title="text">4 stars</label>
+                    <input type="radio" id="star3_${i}" name="rate" value="3" disabled />
+                    <label for="star3_${i}" title="text">3 stars</label>
+                    <input type="radio" id="star2_${i}" name="rate" value="2" disabled />
+                    <label for="star2_${i}" title="text">2 stars</label>
+                    <input type="radio" id="star1_${i}" name="rate" value="1" disabled />
+                    <label for="star1_${i}" title="text">1 star</label>
+                </div>
+            </form>`;
 }
 
 function setDifficultyCellsInTable(recipes) {
@@ -126,11 +128,11 @@ function createRecipe() {
 }
 
 function editRecipe(e, dt, node, config) {
-    Id_ricetta = dt.rows({ selected: true }).data()[0].id_ricetta;
+    window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
     pageContentController.switch();
 }
 
 /* INIT */
-init();
+initPersonalRecipes();
 

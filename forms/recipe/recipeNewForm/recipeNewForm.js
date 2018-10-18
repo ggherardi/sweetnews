@@ -1,4 +1,4 @@
-Id_ricetta = 0;
+RecipeId = 0;
 FormInitialState = [];
 WarningIds = [];
 AllIngredients = [];
@@ -68,15 +68,34 @@ function createNewIngredientControl() {
     }
     var currentControlNumber = ingredientsCount + 1;
     var html = `<div id="ingredientRow_${currentControlNumber}" class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
-                    <input id="recipeNewForm__ingredient_id_${currentControlNumber}" type="hidden">
+                    <input id="recipeNewForm__ingredient_id_${currentControlNumber}" class="ingredient_id_${currentControlNumber}" type="hidden">
                     <div class="col-sm-5 autocomplete">
-                        <input id="recipeNewForm__ingredient_nome_${currentControlNumber}" class="form-control" type="text" placeholder="ingrediente" required>
+                        <input id="recipeNewForm__ingredient_nome_${currentControlNumber}" 
+                            class="form-control ingredient_nome_${currentControlNumber}" 
+                            type="text" 
+                            placeholder="ingrediente" 
+                            required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="qt." title="quantità" step="0.01" required>
+                        <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" 
+                            class="form-control ingredient_quantita_${currentControlNumber}" 
+                            type="number" 
+                            min="0" 
+                            placeholder="qt."
+                            title="quantità" 
+                            step="0.01" 
+                            required>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" class="form-control" type="number" min="0" placeholder="cal." title="calorie" step="0.01" required disabled>
+                        <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" 
+                            class="form-control ingredient_calorie_${currentControlNumber}" 
+                            type="number" 
+                            min="0" 
+                            placeholder="cal." 
+                            title="calorie" 
+                            step="0.01" 
+                            required 
+                            disabled>
                     </div>
                     <div class="col-sm-1"><span class="icon fa-remove delete-cross c-pointer" onclick="deleteIngredientControl(this)"></span></div>
                 </div>`;
@@ -148,7 +167,7 @@ function getInitialState() {
     for(var i = 0; i < controls.length; i++) {
 	    var control = controls[i];
         FormInitialState[control.id] = { value: control.value, isDirty: false };
-        control.addEventListener("change", checkCurrentstate);
+        control.addEventListener("keydown", checkCurrentstate);
     }
 }
 
@@ -194,9 +213,9 @@ function insertRecipe(sender, e) {
 
 function saveSuccess(data) {
     console.log(data);
-    Id_ricetta = data;
+    RecipeId = data;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
-    pageContentController.switch();
+    initPersonalRecipes();
 }
 
 function getRecipeFromForm() {

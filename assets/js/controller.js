@@ -13,18 +13,9 @@ class Controller {
         return this.view;
     }
 
-    // setView(view) {
-    //     this.view = view;
-    //     this.previousViewName = this.viewName;
-    //     this.viewName = view.name ? view.name.toLowerCase() : view;
-    //     this.correlatedScripUrl = `/views/${this.viewName}/${this.viewName}.js`;
-    //     this.ajaxOptions.url = `/views/${this.viewName}/${this.viewName}.html`;
-    // }
     setView(view) {       
         this.previousView = this.view;
         this.view = view;
-        // this.previousViewName = this.viewName;
-        // this.viewName = view.name ? view.name.toLowerCase() : view;
         this.correlatedScripUrl = `/${view.path}.js`;
         this.ajaxOptions.url = `/${view.path}.html`;
     }
@@ -86,10 +77,10 @@ class PageContentController {
         this.secondaryContainer = secondaryContainer;
         this.primaryController = new Controller(`#${this.primaryContainer[0].id}`);
         this.secondaryController = new Controller(`#${this.secondaryContainer[0].id}`);
+        this.isMainPageActive = 1;
     }
 
     setSwitchableSecondaryPage(secondaryPageView) {
-        this.activeBreadcrumb = 1;
         this.primaryPageView = mainContentController.getActiveView();
         this.secondaryPageView = secondaryPageView;
         this.secondaryController.loadView(secondaryPageView);
@@ -97,16 +88,17 @@ class PageContentController {
 
     switch() {
         this.switchBreadcrumb();
+        this.isMainPageActive = !this.isMainPageActive;
         this.primaryContainer.toggle();
         this.secondaryContainer.toggle();
     }
 
     switchBreadcrumb() {
-        if(this.activeBreadcrumb == 1) {
-            this.activeBreadcrumb--;
+        if(this.isMainPageActive) {
+            // this.activePage--;
             breadcrumb.rebuildBreadcrumb(this.secondaryPageView);
         } else {
-            this.activeBreadcrumb++;
+            // this.activePage++;
             breadcrumb.rebuildBreadcrumb(this.primaryPageView);
         }
     }
@@ -120,6 +112,9 @@ class Menu {
     }
 
     static menuClick(menuItem) {
+        if(pageContentController && !pageContentController.isMainPageActive) {
+            pageContentController.switch();
+        } 
         var view = views.allViews[menuItem.dataset["view"]];
         mainContentController.loadView(view);
         menu.setMenuItemActive(view);

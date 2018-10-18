@@ -38,9 +38,9 @@ function autocomplete(inp, arr) {
         var ingredient = JSON.parse(this.getElementsByTagName("input")[0].value);
         var row = inp.parentElement.parentElement;
         var controlNumber = row.dataset.rowid;
-        document.getElementById(`recipeNewForm__ingredient_id_${controlNumber}`).value = ingredient.id_ingrediente;
+        $(`.ingredient_id_${controlNumber}`)[0].value = ingredient.id_ingrediente;
         inp.value = ingredient.nome_ingrediente;
-        document.getElementById(`recipeNewForm__ingredient_calorie_${controlNumber}`).value = ingredient.calorie;
+        $(`.ingredient_calorie_${controlNumber}`)[0].value = ingredient.calorie;
         closeAllLists();
     }
 
