@@ -29,7 +29,7 @@ var userRecipesDTOptions = {
     }],
     buttons: [
         { text: "Crea nuova ricetta", action: createRecipe },
-        { text: "Modifica/Invia ricetta", action: editRecipe, enabled: false },
+        { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
         { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
     ],
     language: dataTableLanguage.italian,
@@ -79,11 +79,7 @@ function getRecipesForUserSuccess(data) {
     userRecipesContainer.html(html);
     userRecipesDT = $(`#${tableName}`).DataTable(userRecipesDTOptions);
     setDifficultyCellsInTable(recipes);
-    userRecipesDT.on("select", (e, dt, node, config) => {
-        
-        dt.rows({selected: true}).data();
-        console.log("test");
-    });
+    enableEditButtonLogic();
 }
 
 function BuidUserRecipesTableHead() {
@@ -127,6 +123,13 @@ function setDifficultyCellsInTable(recipes) {
     }
 }
 
+function enableEditButtonLogic() {
+    userRecipesDT.on("select deselect", (e, dt, node, config) => {
+        canEnableButton = dt.rows({selected: true}).data().length == 1 && dt.rows({selected: true}).data()[0].codice_stato_approvativo == Approval.getStates().bozza;
+        dt.buttons([".recipeEditButton"]).enable(canEnableButton);
+    });
+}
+
 /* BUTTONS */
 function createRecipe() {
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.newForm);
@@ -140,7 +143,9 @@ function editRecipe(e, dt, node, config) {
 }
 
 function viewRecipe(e, dt, node, config) {
-    window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
+    var row = dt.rows({ selected: true }).data()[0];
+    window.RecipeId = row.id_ricetta;
+    window.RecipeApprovaFlowState = row.codice_stato_approvativo;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
     pageContentController.switch();
 }

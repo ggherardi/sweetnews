@@ -9,6 +9,19 @@ class Permissions {
     }
 }
 
+class Approval {    
+    static getStates() {
+        return {
+            bozza: 0,
+            in_approvazione: 10,
+            non_idonea: 15,
+            idonea: 20,
+            non_approvata: 25,
+            approvata: 30
+        }
+    }
+}
+
 class Placeholders {
     constructor() {
         this.mainContentZone = "#mainContentContainer";

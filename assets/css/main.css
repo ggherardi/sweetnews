@@ -199,7 +199,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	height: 30px;
 }
 
-/* Forms */
+/* Forms */	
 .recipeForm {
 	max-width: 400px;
 }
@@ -263,10 +263,16 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
     height: 46px;
     padding: 0 10px;
 }
+
+.rate-disabled {
+	background-color: #e9ecef;
+}
+
 .rate:not(:checked) > input {
     position:absolute;
     top:-9999px;
 }
+
 .rate:not(:checked) > label {
     float:right;
     width:1em;
@@ -305,6 +311,60 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 .rate-displayOnly > input:checked ~ label:hover ~ label,
 .rate-displayOnly > label:hover ~ input:checked ~ label {
     color: #ffc700!important;
+}
+
+/* Wizard */
+#crumbs ul li a {
+	line-height: 3;
+	display: block;
+	float: left;
+	height: 45px;
+	background: #3498db;
+	text-align: center;
+	padding: 0 40px 0 70px;
+	position: relative;
+	margin: 0 10px 0 0; 
+	font-size: 15px;
+	text-decoration: none;
+	color: #fff;
+}
+
+#crumbs ul li a:after {
+	content: "";  
+	border-top: 23px solid transparent;
+	border-bottom: 23px solid transparent;
+	border-left: 40px solid #3498db;
+	position: absolute; right: -40px; top: 0;
+	z-index: 1;
+}
+
+#crumbs ul li a:before {
+	content: "";  
+	border-top: 23px solid transparent;
+	border-bottom: 23px solid transparent;
+	border-left: 40px solid #fff;
+	position: absolute; left: 0; top: 0;
+}
+
+#crumbs ul {
+	box-sizing: content-box!important;
+	list-style: none!important;
+	padding-left: 0!important;
+}
+
+#crumbs ul li:first-child a {
+	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+}
+#crumbs ul li:first-child a:before {
+	display: none; 
+}
+
+#crumbs ul li:last-child a {
+	padding-right: 80px;
+	border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+}
+#crumbs ul li:last-child a:after {
+	display: none; 
 }
 
 /* Default */
