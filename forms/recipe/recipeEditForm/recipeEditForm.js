@@ -31,7 +31,7 @@ function send() {
         if(!window.confirm(`Vuoi salvare le modifiche prima di inviare la ricetta in approvazione?`)) {
             return;
         }
-    }    
+    }   
 }
 
 /* FORM POPULATION */

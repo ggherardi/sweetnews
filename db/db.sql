@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sweetnews` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sweetnews`;
--- MySQL dump 10.13  Distrib 5.5.61, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.5.60, for Win64 (AMD64)
 --
 -- Host: localhost    Database: sweetnews
 -- ------------------------------------------------------
--- Server version	5.5.61
+-- Server version	5.5.60
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -123,7 +123,7 @@ CREATE TABLE `flusso_approvativo` (
   CONSTRAINT `fk_flusso_approvativo_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_stato_approvativo` FOREIGN KEY (`id_stato_approvativo`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_flusso_approvativo_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `flusso_approvativo` (
 
 LOCK TABLES `flusso_approvativo` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo` VALUES (18,1,1,20,'2018-10-17 21:18:26');
+INSERT INTO `flusso_approvativo` VALUES (18,1,1,20,'2018-10-17 21:18:26'),(22,1,1,24,'2018-10-18 10:02:44');
 /*!40000 ALTER TABLE `flusso_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -195,7 +195,7 @@ CREATE TABLE `flusso_approvativo_audit` (
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +204,7 @@ CREATE TABLE `flusso_approvativo_audit` (
 
 LOCK TABLES `flusso_approvativo_audit` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo_audit` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,'20','1','2018-10-17 21:18:26');
+INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,'20','1','2018-10-17 21:18:26'),(7,22,1,'24','1','2018-10-18 10:02:44');
 /*!40000 ALTER TABLE `flusso_approvativo_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +258,7 @@ CREATE TABLE `lista_ingredienti` (
 
 LOCK TABLES `lista_ingredienti` WRITE;
 /*!40000 ALTER TABLE `lista_ingredienti` DISABLE KEYS */;
-INSERT INTO `lista_ingredienti` VALUES (270,20,0.5),(282,20,1),(295,20,2),(359,20,2),(388,20,0.1),(389,20,0.1);
+INSERT INTO `lista_ingredienti` VALUES (270,20,0.5),(277,24,2),(282,20,1),(282,24,1),(294,24,2),(295,20,2),(337,20,0.2),(344,24,4),(359,20,2),(388,20,0.1),(388,24,0.1),(389,20,0.1),(389,24,0.1);
 /*!40000 ALTER TABLE `lista_ingredienti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -311,7 +311,7 @@ CREATE TABLE `ricetta` (
   KEY `fk_ricetta_tipologia_idx` (`id_tipologia`),
   CONSTRAINT `fk_ricetta_tipologia` FOREIGN KEY (`id_tipologia`) REFERENCES `tipologia` (`id_tipologia`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ricetta_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +320,7 @@ CREATE TABLE `ricetta` (
 
 LOCK TABLES `ricetta` WRITE;
 /*!40000 ALTER TABLE `ricetta` DISABLE KEYS */;
-INSERT INTO `ricetta` VALUES (20,1,2,'Pasta al sugo',1,30,'Tagliare tutto, mettere a soffriggere, buttare acqua, condire.',2,'Nessuna nota','Aggiungere pasta all\'uovo');
+INSERT INTO `ricetta` VALUES (20,1,2,'Pasta al sugo',1,35,'Tagliare tutto, mettere a soffriggere, buttare acqua, condire!',2,'Nessuna nota','Aggiungere pasta all\'uovo'),(24,1,3,'Frittata',2,50,'Mettere a soffriggere cipolla, zucchine e patate. Sbattere in una ciotola le uova. Dopo aver lasciato appassire le verdure, versare le uova nella padella. Lasciare cuocere per 30 minuti a fuoco basso rigirando a metà cottura.',4,'','');
 /*!40000 ALTER TABLE `ricetta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -545,4 +545,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-18  0:11:32
+-- Dump completed on 2018-10-18 16:56:18
