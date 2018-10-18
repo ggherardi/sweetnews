@@ -34,14 +34,8 @@ function send() {
     }
     var approvalFlowApi = new ApprovalFlowApi();
     approvalFlowApi.startApprovalFlow(RecipeId)
-        .done(startApprovalFlowSuccess)
-        .fail(RestClient.redirectAccordingToError);
-}
-
-function startApprovalFlowSuccess(data) {
-    if(data) {
-        
-    }
+        .done()
+        .fail();
 }
 
 /* FORM POPULATION */

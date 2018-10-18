@@ -29,7 +29,8 @@ var userRecipesDTOptions = {
     }],
     buttons: [
         { text: "Crea nuova ricetta", action: createRecipe },
-        { extend: "selectedSingle", text: "Modifica/Invia ricetta", action: editRecipe }
+        { text: "Modifica/Invia ricetta", action: editRecipe, enabled: false },
+        { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
     ],
     language: dataTableLanguage.italian,
     responsive: {
@@ -78,6 +79,11 @@ function getRecipesForUserSuccess(data) {
     userRecipesContainer.html(html);
     userRecipesDT = $(`#${tableName}`).DataTable(userRecipesDTOptions);
     setDifficultyCellsInTable(recipes);
+    userRecipesDT.on("select", (e, dt, node, config) => {
+        
+        dt.rows({selected: true}).data();
+        console.log("test");
+    });
 }
 
 function BuidUserRecipesTableHead() {
@@ -131,6 +137,17 @@ function editRecipe(e, dt, node, config) {
     window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
     pageContentController.switch();
+}
+
+function viewRecipe(e, dt, node, config) {
+    window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
+    pageContentController.switch();
+}
+
+function isRecipeEditable(e, dt, node, config) {
+    console.log(dt);
+    return false;
 }
 
 /* INIT */

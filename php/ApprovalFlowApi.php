@@ -1,0 +1,78 @@
+<?php
+include_once 'DBConnection.php';
+include_once 'TokenGenerator.php';
+include_once 'Constants.php';
+
+$GLOBALS["CorrelationID"] = uniqid("corrId_", true);
+$correlationId = $GLOBALS["CorrelationID"];
+
+class ApprovalFlowApi {
+    private $dbContext;
+    private $loginContext;
+
+    function __construct() { }
+
+    /** Metodo per eseguire le Query. Utilizza la classe ausiliare DBConnection */
+    private function ExecuteQuery($query = "") {        
+        if($this->dbContext == null) {
+            $this->dbContext = new DBConnection();
+        }
+        return $this->dbContext->ExecuteQuery($query);
+    }
+
+    public function StartApprovalFlow() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
+            $id_utente = $this->loginContext->id_utente;
+            $query = 
+                "UPDATE flusso_approvativo
+                SET id_stato_approvativo = (SELECT id_stato_approvativo 
+                                            FROM stato_approvativo
+                                            WHERE codice_stato_approvativo = ?)
+                WHERE id_ricetta = ?                                                                
+                AND id_utente = ?
+                AND id_stato_approvativo <> (SELECT id_stato_approvativo 
+                                            FROM stato_approvativo
+                                            WHERE codice_stato_approvativo = ?)";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array(ApprovalFlowConstants::IN_APPROVAZIONE, $id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
+            $res = $this->dbContext->ExecuteStatement();
+            exit(json_encode($res));
+        } 
+        catch (Throwable $ex) {          
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
+            http_response_code(500); 
+        }
+    }
+
+    function Init(){
+        $this->dbContext = new DBConnection();
+        $this->loginContext = json_decode(TokenGenerator::ValidateToken());
+        if(!$this->loginContext) {
+            Logger::Write("LoginContext is not valid, exiting scope.", $GLOBALS["CorrelationID"]);
+            exit(false);
+        }
+        switch($_POST["action"]) {
+            case "startApprovalFlow":
+                self::StartApprovalFlow();
+                break;
+            default: 
+                exit(json_encode($_POST));
+                break;
+        }
+    }
+}
+
+// Inizializza la classe per restituire i risultati e richiama il metodo d'ingresso
+try {
+    Logger::Write("Reached ApprovalFlowApi", $GLOBALS["CorrelationID"]);    
+    $Auth = new ApprovalFlowApi();
+    $Auth->Init();
+}
+catch(Throwable $ex) {
+    Logger::Write("Error occured: $ex", $GLOBALS["CorrelationID"]);
+    http_response_code(500);
+    exit(json_encode($ex->getMessage()));
+}
+?>

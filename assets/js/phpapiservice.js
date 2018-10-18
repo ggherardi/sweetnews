@@ -140,3 +140,18 @@ class RecipesApi extends RestClient {
         return super.execute();
     }
 }
+
+class ApprovalFlowApi extends RestClient {
+    constructor() {
+        super();
+        this.endpoint = "php/ApprovalFlowApi.php";
+    }
+
+    startApprovalFlow(id_ricetta) {
+        this.data = {
+            action: "startApprovalFlow",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
+    }
+}
