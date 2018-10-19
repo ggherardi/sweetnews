@@ -32,6 +32,7 @@ function initControlsPopulation(data) {
         populateRadioControl();
         populateTipologiaSelect();
         populateIngredientsControl();
+        initFlowSteps();
     }
     else {
         var messageId = Ribbon.setMessage(`Si è verificato un errore durante il caricamento.`);
@@ -120,6 +121,11 @@ function createNewIngredientControl() {
                     </div>
                 </div>`;
     ingredientsControlsContainer.append(html);
+}
+
+function initFlowSteps() {
+    var steps = new ApprovalFlowSteps(Recipe, Global_AllApprovalSteps);
+    $("#flowStepsCrumb").html(steps.getHtml());
 }
 
 /* AUX */

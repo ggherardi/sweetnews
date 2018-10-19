@@ -220,13 +220,17 @@ class RecipesApi {
             $ingredients = $recipeForm->lista_ingredienti;
             $this->dbContext->StartTransaction();
             $query = 
-                "UPDATE ricetta
-                SET id_tipologia = ?, titolo_ricetta = ?, difficolta = ?, tempo_cottura = ?, preparazione = ?, porzioni = ?, note = ?, messaggio = ?
-                WHERE id_ricetta = ?
-                AND id_utente = ?";
+                "UPDATE ricetta ri
+                INNER JOIN stato_flusso_approvativo sfa
+                ON ri.id_ricetta = sfa.id_ricetta
+                SET ri.id_tipologia = ?, ri.titolo_ricetta = ?, ri.difficolta = ?, ri.tempo_cottura = ?, ri.preparazione = ?, ri.porzioni = ?, ri.note = ?, ri.messaggio = ?
+                WHERE ri.id_ricetta = ?
+                AND ri.id_utente = ?
+                AND sfa.codice_stato_approvativo = ?";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("dsddsdssdd", array($recipeForm->id_tipologia, $recipeForm->titolo_ricetta, $recipeForm->difficolta, 
-                $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->note, $recipeForm->messaggio, $recipeForm->id_ricetta, $id_utente));
+            $this->dbContext->BindStatementParameters("dsddsdssddd", array($recipeForm->id_tipologia, $recipeForm->titolo_ricetta, $recipeForm->difficolta, 
+                $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->note, $recipeForm->messaggio, $recipeForm->id_ricetta, 
+                $id_utente, ApprovalFlowConstants::BOZZA));
             $res = $this->dbContext->ExecuteStatement();
 
             // Per ora cancello e ricreo, con più tempo creerò un metodo per controllare quali ingredienti sono stati cancellati e quali aggiunti

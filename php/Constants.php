@@ -8,11 +8,13 @@ class PermissionsConstants {
 
 class ApprovalFlowConstants {
     const BOZZA = 0;
-    const IN_APPROVAZIONE = 10;
+    const INVIATA = 5;
+    const IN_VALIDAZIONE = 10;
     const NON_IDONEA = 15;
     const IDONEA = 20;
-    const NON_APPROVATA = 25;
-    const APPROVATA = 30;
+    const IN_APPROVAZIONE = 25;
+    const NON_APPROVATA = 30;
+    const APPROVATA = 35;
 }
 
 class LoginContext {

@@ -10,7 +10,7 @@ class ApprovalFlowSteps {
     buildSteps(step) {
         this.allSteps.push(step);
         var nextStep = this.allStates.filter((s) => s.id_stato_approvativo == step.id_stato_approvativo_precedente)[0];
-        if(!nextStep.id_stato_approvativo_precedente) {
+        if(!nextStep || !nextStep.id_stato_approvativo_precedente) {
             return;
         }
         this.buildSteps(nextStep);

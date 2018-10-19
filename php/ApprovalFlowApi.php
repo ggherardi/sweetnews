@@ -23,7 +23,8 @@ class ApprovalFlowApi {
     public function StartApprovalFlow() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE, PermissionsConstants::VISITATORE), "delega_codice"); 
+            $id_ricetta = $_POST["id_ricetta"];           
             $id_utente = $this->loginContext->id_utente;
             $query = 
                 "UPDATE flusso_approvativo
@@ -31,12 +32,12 @@ class ApprovalFlowApi {
                                             FROM stato_approvativo
                                             WHERE codice_stato_approvativo = ?)
                 WHERE id_ricetta = ?                                                                
-                AND id_utente = ?
-                AND id_stato_approvativo <> (SELECT id_stato_approvativo 
+                AND id_utente_creatore = ?
+                AND id_stato_approvativo = (SELECT id_stato_approvativo 
                                             FROM stato_approvativo
                                             WHERE codice_stato_approvativo = ?)";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("d", array(ApprovalFlowConstants::IN_APPROVAZIONE, $id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
+            $this->dbContext->BindStatementParameters("dddd", array(ApprovalFlowConstants::INVIATA, $id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
             $res = $this->dbContext->ExecuteStatement();
             exit(json_encode($res));
         } 

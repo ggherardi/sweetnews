@@ -13,7 +13,7 @@ var mainContentLoader = new Loader(placeholders.mainContentZone)
 var breadcrumb = new Breadcrumb(placeholders.breadcrumbContainer, views.allViews.home);
 
 /* Global */
-var AllApprovalSteps;
+var Global_AllApprovalSteps;
 var CorrelationID;
 var Browser;
 
@@ -62,7 +62,7 @@ function initTopologies() {
         .done((data) => {
             if(data) {
                 data = JSON.parse(data);
-                AllApprovalSteps = data;
+                Global_AllApprovalSteps = data;
             }
         })
         .fail(RestClient.reportError);

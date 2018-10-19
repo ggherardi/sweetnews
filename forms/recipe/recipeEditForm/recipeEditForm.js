@@ -40,7 +40,7 @@ function send() {
 
 function startApprovalFlowSuccess(data) {
     if(data) {
-        
+        pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
     }
 }
 

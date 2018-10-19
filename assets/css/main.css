@@ -314,29 +314,39 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 }
 
 /* Wizard */
+#flowStepsCrumbContainer {
+	padding: 10px;
+}
+
+.crumbs ul {
+	min-height: 50px;
+	margin-bottom: 0!important;
+}
+
 .crumbs ul li a {
 	line-height: 3;
 	display: block;
 	float: left;
-	height: 30px;
+	height: 50px;
 	background: #3498db;
 	text-align: center;
 	padding: 0 20px 0 60px;
 	position: relative;
 	margin: 0 10px 0 0; 
-	font-size: 10px;
+	font-size: 17px;
 	text-decoration: none;
 	color: #fff!important;
 }
 
 .crumbs ul li a:hover {
+	border-bottom-color: transparent!important;
 	color: #fff!important;
 }
 
 .crumbs ul li a:after {
 	content: "";  
-	border-top: 15px solid transparent;
-	border-bottom: 15px solid transparent;
+	border-top: 25px solid transparent;
+	border-bottom: 25px solid transparent;
 	border-left: 40px solid #3498db;
 	position: absolute; right: -40px; top: 0;
 	z-index: 1;
@@ -344,8 +354,8 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 
 .crumbs ul li a:before {
 	content: "";  
-	border-top: 15px solid transparent;
-	border-bottom: 15px solid transparent;
+	border-top: 25px solid transparent;
+	border-bottom: 25px solid transparent;
 	border-left: 40px solid #fff;
 	position: absolute; left: 0; top: 0;
 }
@@ -361,7 +371,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 }
 
 .crumbs ul li.futureStep a:after {
-	border-left-color: #f5f6f7;
+	border-left-color: #e9ecef;
 }
 
 .crumbs ul li.pastStep a {
@@ -369,7 +379,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 }
 
 .crumbs ul li.futureStep a {
-	background-color: #f5f6f7;
+	background-color: #e9ecef;
 }
 
 /* .crumbs ul li:first-child a {
