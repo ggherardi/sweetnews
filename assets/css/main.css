@@ -315,7 +315,8 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 
 /* Wizard */
 #flowStepsCrumbContainer {
-	padding: 10px;
+
+	margin-left: -7px;
 }
 
 .crumbs ul {
@@ -336,6 +337,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	font-size: 17px;
 	text-decoration: none;
 	color: #fff!important;
+	border-bottom-color: transparent!important;
 }
 
 .crumbs ul li a:hover {
@@ -346,7 +348,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 .crumbs ul li a:after {
 	content: "";  
 	border-top: 25px solid transparent;
-	border-bottom: 25px solid transparent;
+	border-bottom: 26px solid transparent;
 	border-left: 40px solid #3498db;
 	position: absolute; right: -40px; top: 0;
 	z-index: 1;
@@ -367,20 +369,45 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 }
 
 .crumbs ul li.pastStep a:after {
-	border-left-color: #41ba00;
+	border-left-color: #41ba005c;
+}
+
+.crumbs ul li.pastStep a {
+	background-color: #41ba005c;
 }
 
 .crumbs ul li.futureStep a:after {
 	border-left-color: #e9ecef;
 }
 
-.crumbs ul li.pastStep a {
-	background-color: #41ba00;
-}
-
 .crumbs ul li.futureStep a {
 	background-color: #e9ecef;
 }
+
+.crumbs ul li.rejectedStep a {
+	background-color: #c40000;
+}
+
+.crumbs ul li.rejectedStep a:after {
+	border-left-color: #c40000;
+}
+
+.crumbs ul li.activeStep a {
+	background-color: #41ba00;
+}
+
+.crumbs ul li.activeStep a:after {
+	border-left-color: #41ba00;
+}
+
+.crumbs ul li.rootStep a {
+	background-color: #f56a6a;
+}
+
+.crumbs ul li.rootStep a:after {
+	border-left-color: #f56a6a;
+}
+
 
 /* .crumbs ul li:first-child a {
 	border-top-left-radius: 10px; border-bottom-left-radius: 10px;

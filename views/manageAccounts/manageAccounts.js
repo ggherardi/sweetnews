@@ -4,9 +4,9 @@ var userRecipesDTOptions = {
     buttons: true,
     select: true,
     columns: [
-        { data: "id_ricetta" },
-        { data: "codice_stato_approvativo" },
-        { data: "preparazione" },
+        { data: "id_utente" },
+        { data: "id_dettaglio_utente_esterno" },
+        { data: "id_dettaglio_utente_interno" },
         { data: "note" },
         { data: "titolo_ricetta" },
         { data: "tipologia" },
@@ -90,30 +90,6 @@ function BuidUserRecipesTableHead() {
                     </tr>
                 </thead>`;
     return html;
-}
-
-function formatDifficultyCell(i) {
-    return `<form>
-                <div class="rate rate-displayOnly">
-                    <input type="radio" id="star5_${i}" name="rate" value="5" disabled />
-                    <label for="star5_${i}" title="text">5 stars</label>
-                    <input type="radio" id="star4_${i}" name="rate" value="4" disabled />
-                    <label for="star4_${i}" title="text">4 stars</label>
-                    <input type="radio" id="star3_${i}" name="rate" value="3" disabled />
-                    <label for="star3_${i}" title="text">3 stars</label>
-                    <input type="radio" id="star2_${i}" name="rate" value="2" disabled />
-                    <label for="star2_${i}" title="text">2 stars</label>
-                    <input type="radio" id="star1_${i}" name="rate" value="1" disabled />
-                    <label for="star1_${i}" title="text">1 star</label>
-                </div>
-            </form>`;
-}
-
-function setDifficultyCellsInTable(recipes) {
-    for(var i = 0; i < recipes.length; i++) {
-        var recipe = recipes[i];
-        $(`#star${recipe.difficolta}_${i}`).prop("checked", true);
-    }
 }
 
 function enableEditButtonLogic() {

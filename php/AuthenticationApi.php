@@ -104,7 +104,7 @@ class AuthenticationApi {
             }
             $identitiesCount = count($identities);
             if($identitiesCount == 0) {
-                http_response_code(480); // username not found (i made it up)
+                http_response_code(480); // username not found (code 480: i made it up)
                 exit();
             }
             if(password_verify($credentials->password, $fetchedPassword)) {   

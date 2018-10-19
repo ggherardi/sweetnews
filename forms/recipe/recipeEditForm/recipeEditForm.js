@@ -40,6 +40,7 @@ function send() {
 
 function startApprovalFlowSuccess(data) {
     if(data) {
+        initPersonalRecipes();
         pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
     }
 }
@@ -63,6 +64,7 @@ function initControlsPopulation(data) {
         populateTipologiaSelect();
         populateIngredientsControl();
         retrieveIngredientsFromDBAndInitAutocomplete();
+        initFlowSteps();
     }
     else {
         var messageId = Ribbon.setMessage(`Si è verificato un errore durante il caricamento.`);
@@ -308,6 +310,11 @@ function getIngredientsFromForm() {
         ingredients.push(ingredient);
     }
     return ingredients;
+}
+
+function initFlowSteps() {
+    var steps = new ApprovalFlowSteps(Recipe, Global_AllApprovalSteps);
+    $("#flowStepsCrumb").html(steps.getHtml());
 }
 
 /* AUX */

@@ -10,7 +10,7 @@ class ApprovalFlowSteps {
     buildSteps(step) {
         this.allSteps.push(step);
         var nextStep = this.allStates.filter((s) => s.id_stato_approvativo == step.id_stato_approvativo_precedente)[0];
-        if(!nextStep || !nextStep.id_stato_approvativo_precedente) {
+        if(!nextStep) {
             return;
         }
         this.buildSteps(nextStep);
@@ -21,8 +21,14 @@ class ApprovalFlowSteps {
                         <ul>`;
         var tempAllSteps = this.allSteps.sort(this.sortByCodiceStatoApprovativo)
         for(var i = 0; i < tempAllSteps.length; i++) {
-            console.log(`i: ${i}, step: ${tempAllSteps[i].nome_stato_approvativo}`);
-            this.html += `  <li class="${tempAllSteps[i].codice_stato_approvativo == this.recipeState.codice_stato_approvativo ? "activeState" : "pastStep"}"> 
+            var stepClass = tempAllSteps[i].codice_stato_approvativo == this.recipeState.codice_stato_approvativo
+                                ? tempAllSteps[i].id_stato_approvativo_precedente
+                                    ? tempAllSteps[i].stato_approvativo_isLeaf 
+                                        ? "rejectedStep" 
+                                        : "activeStep"
+                                    : "rootStep"
+                                : "pastStep"
+            this.html += `  <li class="${stepClass}"> 
                                 <a>${tempAllSteps[i].nome_stato_approvativo}</a>
                             </li>`;
         }
