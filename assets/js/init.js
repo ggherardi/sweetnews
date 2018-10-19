@@ -4,14 +4,17 @@ var menu = new Menu(views.allViews);
 var mainContentController = new Controller(placeholders.mainContentZone);
 var secondaryContentController = new Controller(placeholders.secondaryContentZone);
 var pageContentController = new PageContentController(mainContentController.container, secondaryContentController.container);
-var sidebarController = new Controller(placeholders.sidebarZone);
+var sidebarController = new Controller(placeholders.sideMenu);
 var logoutController = new Controller(placeholders.logoutContainer);
 var accountController = new Controller(placeholders.accountContainer);
-var menuLoader = new Loader(placeholders.sidebarZone)
+var flowController = new Controller("#flowSteps");
+var menuLoader = new Loader(placeholders.sideMenu)
 var mainContentLoader = new Loader(placeholders.mainContentZone)
 var breadcrumb = new Breadcrumb(placeholders.breadcrumbContainer, views.allViews.home);
+
+/* Global */
+var AllApprovalSteps;
 var CorrelationID;
-var Global_FilmPrices;
 var Browser;
 
 /* Document ready */
@@ -37,6 +40,7 @@ $().ready(function() {
 /* Init functions */
 function initHomepage(loginContext) {
     initUser(loginContext);
+    initTopologies();
     initMasterpageComponents();
 }
 
@@ -52,10 +56,21 @@ function initUser(loginContext) {
     }
 }
 
+function initTopologies() {
+    var approvalFlowApi = new ApprovalFlowApi();
+    approvalFlowApi.getAllApprovaFlowSteps()
+        .done((data) => {
+            if(data) {
+                data = JSON.parse(data);
+                AllApprovalSteps = data;
+            }
+        })
+        .fail(RestClient.reportError);
+}
+
 function initMasterpageComponents() {
-    sidebarController.loadComponent(views.AllComponents.sidebar)
-        .then(() => { menu.buildMenu() })
-        .done(initHome);
+    menu.buildMenu();
+    initHome();
     if(shared.loginContext.delega_codice > 0) {
         logoutController.loadComponent(views.AllComponents.logout);
         accountController.loadComponent(views.AllComponents.account);

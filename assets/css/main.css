@@ -314,56 +314,77 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 }
 
 /* Wizard */
-#crumbs ul li a {
+.crumbs ul li a {
 	line-height: 3;
 	display: block;
 	float: left;
-	height: 45px;
+	height: 30px;
 	background: #3498db;
 	text-align: center;
-	padding: 0 40px 0 70px;
+	padding: 0 20px 0 60px;
 	position: relative;
 	margin: 0 10px 0 0; 
-	font-size: 15px;
+	font-size: 10px;
 	text-decoration: none;
-	color: #fff;
+	color: #fff!important;
 }
 
-#crumbs ul li a:after {
+.crumbs ul li a:hover {
+	color: #fff!important;
+}
+
+.crumbs ul li a:after {
 	content: "";  
-	border-top: 23px solid transparent;
-	border-bottom: 23px solid transparent;
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
 	border-left: 40px solid #3498db;
 	position: absolute; right: -40px; top: 0;
 	z-index: 1;
 }
 
-#crumbs ul li a:before {
+.crumbs ul li a:before {
 	content: "";  
-	border-top: 23px solid transparent;
-	border-bottom: 23px solid transparent;
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
 	border-left: 40px solid #fff;
 	position: absolute; left: 0; top: 0;
 }
 
-#crumbs ul {
+.crumbs ul {
 	box-sizing: content-box!important;
 	list-style: none!important;
 	padding-left: 0!important;
 }
 
-#crumbs ul li:first-child a {
-	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+.crumbs ul li.pastStep a:after {
+	border-left-color: #41ba00;
 }
-#crumbs ul li:first-child a:before {
+
+.crumbs ul li.futureStep a:after {
+	border-left-color: #f5f6f7;
+}
+
+.crumbs ul li.pastStep a {
+	background-color: #41ba00;
+}
+
+.crumbs ul li.futureStep a {
+	background-color: #f5f6f7;
+}
+
+/* .crumbs ul li:first-child a {
+	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+} */
+
+.crumbs ul li:first-child a:before {
 	display: none; 
 }
 
-#crumbs ul li:last-child a {
-	padding-right: 80px;
-	border-top-right-radius: 10px; border-bottom-right-radius: 10px;
+.crumbs ul li:last-child a {
+	padding-right: 50px;
+	/* border-top-right-radius: 10px; border-bottom-right-radius: 10px; */
 }
-#crumbs ul li:last-child a:after {
+.crumbs ul li:last-child a:after {
 	display: none; 
 }
 

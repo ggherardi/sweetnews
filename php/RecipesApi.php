@@ -86,12 +86,11 @@ class RecipesApi {
             $id_utente = $this->loginContext->id_utente;
             $query = 
                 "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, ri.messaggio,
-                    ti.id_tipologia, ti.nome_tipologia, sfa.data_flusso, sfa.codice_stato_approvativo, sfa.nome_stato_approvativo
+                    ti.id_tipologia, ti.nome_tipologia, sfa.data_flusso, sfa.id_stato_approvativo, sfa.id_stato_approvativo_precedente,
+                    sfa.nome_stato_approvativo, sfa.stato_approvativo_isLeaf, sfa.codice_stato_approvativo
                 FROM ricetta ri
                 INNER JOIN tipologia ti
-                ON ri.id_tipologia = ti.id_tipologia      
-                INNER JOIN flusso_approvativo fa
-                ON ri.id_ricetta = fa.id_ricetta
+                ON ri.id_tipologia = ti.id_tipologia
                 INNER JOIN stato_flusso_approvativo sfa
                 ON ri.id_ricetta = sfa.id_ricetta      
                 WHERE ri.id_ricetta = ?

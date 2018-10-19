@@ -46,6 +46,22 @@ class ApprovalFlowApi {
         }
     }
 
+    public function GetAllApprovaFlowSteps() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
+        $query = 
+            "SELECT *
+            FROM stato_approvativo
+            ORDER BY codice_stato_approvativo ASC";
+        $this->dbContext->PrepareStatement($query);
+        $res = $this->dbContext->ExecuteStatement();
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
     function Init(){
         $this->dbContext = new DBConnection();
         $this->loginContext = json_decode(TokenGenerator::ValidateToken());
@@ -56,6 +72,9 @@ class ApprovalFlowApi {
         switch($_POST["action"]) {
             case "startApprovalFlow":
                 self::StartApprovalFlow();
+                break;
+            case "getAllApprovaFlowSteps":
+                self::GetAllApprovaFlowSteps();
                 break;
             default: 
                 exit(json_encode($_POST));

@@ -4,6 +4,7 @@ class Shared {
             constructor() { }
         
             login(stringLoginContext) {
+                initTopologies();
                 shared.loginContext = JSON.parse(stringLoginContext);
                 mainContentController.loadView(views.allViews.personal);
                 logoutController.loadComponent(views.AllComponents.logout);

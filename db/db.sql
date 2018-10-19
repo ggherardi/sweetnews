@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sweetnews` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sweetnews`;
--- MySQL dump 10.13  Distrib 5.5.61, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.5.60, for Win64 (AMD64)
 --
 -- Host: localhost    Database: sweetnews
 -- ------------------------------------------------------
--- Server version	5.5.61
+-- Server version	5.5.60
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -199,7 +199,7 @@ CREATE TABLE `flusso_approvativo_audit` (
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,10 +358,14 @@ DROP TABLE IF EXISTS `stato_approvativo`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stato_approvativo` (
   `id_stato_approvativo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_stato_approvativo_precedente` int(11) DEFAULT NULL,
   `codice_stato_approvativo` int(11) NOT NULL,
   `nome_stato_approvativo` varchar(45) NOT NULL,
-  PRIMARY KEY (`id_stato_approvativo`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  `stato_approvativo_isLeaf` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`id_stato_approvativo`),
+  KEY `fk_stato_stato_precedente_idx` (`id_stato_approvativo_precedente`),
+  CONSTRAINT `fk_stato_stato_precedente` FOREIGN KEY (`id_stato_approvativo_precedente`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +374,7 @@ CREATE TABLE `stato_approvativo` (
 
 LOCK TABLES `stato_approvativo` WRITE;
 /*!40000 ALTER TABLE `stato_approvativo` DISABLE KEYS */;
-INSERT INTO `stato_approvativo` VALUES (1,0,'bozza'),(2,10,'in approvazione'),(3,15,'non idonea'),(4,20,'idonea'),(5,25,'non approvata'),(6,30,'approvata');
+INSERT INTO `stato_approvativo` VALUES (1,NULL,0,'bozza',NULL),(2,1,5,'inviata',NULL),(3,2,10,'in validazione',NULL),(4,2,15,'non idonea',1),(5,2,20,'idonea',NULL),(6,5,25,'in approvazione',NULL),(7,5,30,'non approvata',1),(8,5,35,'approvata',0);
 /*!40000 ALTER TABLE `stato_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +393,10 @@ SET character_set_client = utf8;
   `id_ricetta` tinyint NOT NULL,
   `data_flusso` tinyint NOT NULL,
   `codice_stato_approvativo` tinyint NOT NULL,
-  `nome_stato_approvativo` tinyint NOT NULL
+  `nome_stato_approvativo` tinyint NOT NULL,
+  `id_stato_approvativo` tinyint NOT NULL,
+  `id_stato_approvativo_precedente` tinyint NOT NULL,
+  `stato_approvativo_isLeaf` tinyint NOT NULL
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -536,7 +543,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `stato_flusso_approvativo` AS select `fa`.`id_flusso_approvativo` AS `id_flusso_approvativo`,`fa`.`id_utente_creatore` AS `id_utente_creatore`,`fa`.`id_utente_approvatore` AS `id_utente_approvatore`,`fa`.`id_ricetta` AS `id_ricetta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo` from (`flusso_approvativo` `fa` join `stato_approvativo` `sa` on((`fa`.`id_stato_approvativo` = `sa`.`id_stato_approvativo`))) */;
+/*!50001 VIEW `stato_flusso_approvativo` AS select `fa`.`id_flusso_approvativo` AS `id_flusso_approvativo`,`fa`.`id_utente_creatore` AS `id_utente_creatore`,`fa`.`id_utente_approvatore` AS `id_utente_approvatore`,`fa`.`id_ricetta` AS `id_ricetta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_precedente` AS `id_stato_approvativo_precedente`,`sa`.`stato_approvativo_isLeaf` AS `stato_approvativo_isLeaf` from (`flusso_approvativo` `fa` join `stato_approvativo` `sa` on((`fa`.`id_stato_approvativo` = `sa`.`id_stato_approvativo`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -550,4 +557,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-19  1:20:50
+-- Dump completed on 2018-10-19 17:02:13

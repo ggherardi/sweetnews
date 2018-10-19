@@ -154,4 +154,11 @@ class ApprovalFlowApi extends RestClient {
         }
         return super.execute(); 
     }
+
+    getAllApprovaFlowSteps() {
+        this.data = {
+            action: "getAllApprovaFlowSteps"
+        }
+        return super.execute(); 
+    }    
 }

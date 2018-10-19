@@ -13,9 +13,9 @@ class Approval {
     static getStates() {
         return {
             bozza: 0,
-            in_approvazione: 10,
+            in_validazione: 10,
             non_idonea: 15,
-            idonea: 20,
+            in_approvazione: 20,
             non_approvata: 25,
             approvata: 30
         }
@@ -26,7 +26,7 @@ class Placeholders {
     constructor() {
         this.mainContentZone = "#mainContentContainer";
         this.secondaryContentZone = "#secondaryContentContainer";
-        this.sidebarZone = "#navbar";
+        this.sideMenu = "#navbar";
         this.breadcrumbContainer = "#breadcrumb";
         this.sharedModal = "#SharedModal";
         this.logoutContainer = "#logoutContainer";

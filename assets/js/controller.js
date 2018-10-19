@@ -106,7 +106,7 @@ class PageContentController {
 
 class Menu {
     constructor(menuItems) {
-        this.navbarId = placeholders.sidebarZone;
+        this.navbarId = placeholders.sideMenu;
         this.menuItems = menuItems;
         this.activeClassName = "active";
     }
