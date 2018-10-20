@@ -162,3 +162,17 @@ class ApprovalFlowApi extends RestClient {
         return super.execute(); 
     }    
 }
+
+class AccountsApi extends RestClient {
+    constructor() {
+        super();
+        this.endpoint = "php/AccountsApi.php";
+    }
+
+    getUsersAccounts() {
+        this.data = {
+            action: "getUsersAccounts"
+        }
+        return super.execute(); 
+    }    
+}

@@ -45,6 +45,24 @@ INSERT INTO `delega` VALUES (1,1),(3,1),(1,8),(1,66),(1,69);
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `deleghe_utente`
+--
+
+DROP TABLE IF EXISTS `deleghe_utente`;
+/*!50001 DROP VIEW IF EXISTS `deleghe_utente`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `deleghe_utente` (
+  `id_utente` tinyint NOT NULL,
+  `username` tinyint NOT NULL,
+  `nome` tinyint NOT NULL,
+  `cognome` tinyint NOT NULL,
+  `delega_codice` tinyint NOT NULL,
+  `delega_nome` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `dettaglio_utente_esterno`
 --
 
@@ -530,6 +548,25 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Final view structure for view `deleghe_utente`
+--
+
+/*!50001 DROP TABLE IF EXISTS `deleghe_utente`*/;
+/*!50001 DROP VIEW IF EXISTS `deleghe_utente`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `deleghe_utente` AS select `u`.`id_utente` AS `id_utente`,`u`.`username` AS `username`,`u`.`nome` AS `nome`,`u`.`cognome` AS `cognome`,`tp`.`delega_codice` AS `delega_codice`,`tp`.`delega_nome` AS `delega_nome` from ((`utente` `u` join `delega` `d` on((`u`.`id_utente` = `d`.`id_utente`))) join `tipo_delega` `tp` on((`tp`.`id_tipo_delega` = `d`.`id_tipo_delega`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `stato_flusso_approvativo`
 --
 
@@ -557,4 +594,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-20  1:34:18
+-- Dump completed on 2018-10-20 12:22:36

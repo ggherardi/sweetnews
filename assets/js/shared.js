@@ -11,7 +11,7 @@ class Shared {
                 accountController.loadComponent(views.AllComponents.account);
                 breadcrumb.rebuildBreadcrumb(views.allViews.personal);
                 menu.buildMenu();
-                menu.setMenuItemActive(views.allViews.personal);
+                menu.setMenuItemActive(shared.loginContext.delega_codice > 10 ?  views.allViews.approvaRecipes : views.allViews.personal);
             }
 
             logout() {

@@ -1,29 +1,24 @@
 window.RecipeId = 0;
-var userRecipesDTOptions = {
+var usersDTOptions = {
     dom: 'Bftpil',
     buttons: true,
     select: true,
     columns: [
         { data: "id_utente" },
-        { data: "id_dettaglio_utente_esterno" },
-        { data: "id_dettaglio_utente_interno" },
-        { data: "note" },
-        { data: "titolo_ricetta" },
-        { data: "tipologia" },
-        { data: "difficolta" },
-        { data: "tempo_cottura" },
-        { data: "porzioni" },
-        { data: "nome_stato_approvativo" }
+        { data: "username" },
+        { data: "nome" },
+        { data: "cognome" },
+        { data: "deleghe" },
     ],
     columnDefs: [{
-        targets: [ 0, 1, 2, 3 ],
+        targets: [ ],
         visible: false,
         searchable: false
     }],
     buttons: [
-        { text: "Crea nuova ricetta", action: createRecipe },
-        { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
-        { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+        // { text: "Crea nuova ricetta", action: createRecipe },
+        // { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
+        // { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
     ],
     language: dataTableLanguage.italian,
     responsive: {
@@ -32,82 +27,89 @@ var userRecipesDTOptions = {
         }
     }
 };
-var userRecipesDT = {};
-var userRecipesContainerSelector = "#userRecipesContainer";
-var userRecipesContainer = $(userRecipesContainerSelector);
+var usersDT = {};
+var usersContainerSelector = "#usersContainer";
+var usersContainer = $(usersContainerSelector);
 
-function initPersonalRecipes() {
-    var recipesApi = new RecipesApi();
-    var loader = new Loader(userRecipesContainerSelector); 
+function initAccounts() {
+    var accountsApi = new AccountsApi();
+    var loader = new Loader(usersContainerSelector); 
     loader.showLoader();
-    recipesApi.getRecipesForUser()
-        .done(getRecipesForUserSuccess)
+    accountsApi.getUsersAccounts()
+        .done(getUsersAccountsSuccess)
         .fail();
 }
 
-function getRecipesForUserSuccess(data) {
-    var recipes = JSON.parse(data);
-    var tableName = "UserRecipesTable";
+function getUsersAccountsSuccess(data) {
+    var accounts = JSON.parse(data);
+    var tableName = "UsersTable";
     var html = `<table class="table mt-3" id="${tableName}">`
     html +=         BuidUserRecipesTableHead();
     html +=        `<tbody>`;            
-    for(var i = 0; i < recipes.length; i++) {
-        var recipe = recipes[i];
-        var difficultyCell = formatDifficultyCell(i);
+    for(var i = 0; i < accounts.length; i++) {
+        var account = accounts[i].account[0];
+        var deleghe = accounts[i].deleghe
+        var identitiesCell = formatIdentitiesCell(deleghe);
             html +=     `<tr>
-                            <td>${recipe.id_ricetta}</td>
-                            <td>${recipe.codice_stato_approvativo}</td>
-                            <td>${recipe.preparazione}</td>  
-                            <td>${recipe.note}</td>                           
-                            <td>${recipe.titolo_ricetta}</td>
-                            <td>${recipe.nome_tipologia}</td>
-                            <td>${difficultyCell}</td>
-                            <td>${recipe.tempo_cottura} min</td>
-                            <td>${recipe.porzioni}</td>
-                            <td>${recipe.nome_stato_approvativo}</td>
+                            <td>${account.id_utente}</td>
+                            <td>${account.username}</td>
+                            <td>${account.nome}</td>  
+                            <td>${account.cognome}</td>                           
+                            <td>${identitiesCell}</td>
                         </tr>`;
     }	
     html += `       </tbody>
                 </table>`;
-    userRecipesContainer.html(html);
-    userRecipesDT = $(`#${tableName}`).DataTable(userRecipesDTOptions);
-    setDifficultyCellsInTable(recipes);
-    enableEditButtonLogic();
+    usersContainer.html(html);
+    usersDT = $(`#${tableName}`).DataTable(usersDTOptions);
+    // enableEditButtonLogic();
 }
 
 function BuidUserRecipesTableHead() {
     var html = `<thead>
                     <tr>`;
-    for(var i = 0; i < userRecipesDTOptions.columnDefs[0].targets.length; i++) {
+    for(var i = 0; i < usersDTOptions.columnDefs[0].targets.length; i++) {
         html += `       <th scope="col"></th>`;
     }
-    html += `           <th scope="col">Titolo</th>
-                        <th scope="col">Tipologia</th>
-                        <th scope="col">Difficoltà</th>
-                        <th scope="col">Tempo cottura</th>
-                        <th scope="col">Porzioni</th>
-                        <th scope="col">Stato approvazione</th>
+    html += `           <th scope="col">Id</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Cognome</th>
+                        <th scope="col">Deleghe</th>
                     </tr>
                 </thead>`;
     return html;
 }
 
-function enableEditButtonLogic() {
-    userRecipesDT.on("select deselect", (e, dt, node, config) => {
-        canEnableButton = dt.rows({selected: true}).data().length == 1 && dt.rows({selected: true}).data()[0].codice_stato_approvativo == Approval.getStates().bozza;
-        dt.buttons([".recipeEditButton"]).enable(canEnableButton);
-    });
+function formatIdentitiesCell(deleghe) {
+    var html = ``;
+    for(var i = 0; i < deleghe.length; i++) {
+        var delega = deleghe[i];
+        html += `${delega.delega_nome}`;
+        if(i < deleghe.length - 1) {
+            html += `, `;
+        }
+    }
+    html.trim()
+    return html;
 }
+
+// function enableEditButtonLogic() {
+//     usersDT.on("select deselect", (e, dt, node, config) => {
+//         canEnableButton = dt.rows({selected: true}).data().length == 1 && dt.rows({selected: true}).data()[0].codice_stato_approvativo == Approval.getStates().bozza;
+//         dt.buttons([".recipeEditButton"]).enable(canEnableButton);
+//     });
+// }
 
 /* BUTTONS */
 function createRecipe() {
-    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.newForm);
+    pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.newForm);
     pageContentController.switch();
 }
 
 function editRecipe(e, dt, node, config) {
     window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
-    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
+    pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.editForm);
     pageContentController.switch();
 }
 
@@ -115,7 +117,7 @@ function viewRecipe(e, dt, node, config) {
     var row = dt.rows({ selected: true }).data()[0];
     window.RecipeId = row.id_ricetta;
     window.RecipeApprovaFlowState = row.codice_stato_approvativo;
-    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
+    pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.viewForm);
     pageContentController.switch();
 }
 
@@ -125,5 +127,5 @@ function isRecipeEditable(e, dt, node, config) {
 }
 
 /* INIT */
-initPersonalRecipes();
+initAccounts();
 

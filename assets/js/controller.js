@@ -125,8 +125,8 @@ class Menu {
         this.html = "";
         for(var key in this.menuItems) {
             var item = this.menuItems[key];
-            var arePermissionsValid = item.needPermissions 
-                ? shared.loginContext.delega_codice >= item.needPermissions && (item.maxPermissions 
+            var arePermissionsValid = item.needPermissions || item.maxPermissions
+                ? shared.loginContext.delega_codice >= (item.needPermissions ? item.needPermissions : 0) && (item.maxPermissions 
                     ? shared.loginContext.delega_codice <= item.maxPermissions 
                     : true)
                 : true;
@@ -164,13 +164,15 @@ class Views {
     constructor() {
         class AllViews {
             constructor() {
-                this.home = { title: "Home", name: "home", path: "views/home/home" },
-                this.personal = { title: "Pagina personale", name: "personal", path: "views/personal/personal" }
-                this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false, parent: this.personal},
-                this.identities = { title: "Deleghe utente", name: "identities", path: "views/identities/identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]},
-                this.registration = { title: "Registrazione", name: "registration", path: "views/registration/registration", showInMenu: false, parent: this.personal },
-                this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", path: "views/manageRecipes/manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore }
-                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", path: "views/allRecipes/allRecipes", needPermissions: permissions.levels.visitatore }
+                this.home = { title: "Home", name: "home", path: "views/home/home" };
+                this.personal = { title: "Pagina personale", name: "personal", path: "views/personal/personal", maxPermissions: permissions.levels.visitatore };
+                this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false, parent: this.personal};
+                this.identities = { title: "Deleghe utente", name: "identities", path: "views/identities/identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]};
+                this.registration = { title: "Registrazione", name: "registration", path: "views/registration/registration", showInMenu: false, parent: this.personal };
+                this.approvaRecipes = { title: "Approvazione ricette", name: "approvaRecipes", path: "views/approvaRecipes/approvaRecipes", needPermissions: permissions.levels.redattore };
+                this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", path: "views/manageRecipes/manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore };
+                this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", path: "views/allRecipes/allRecipes", needPermissions: permissions.levels.visitatore };
+                this.manageAccounts = { title: "Gestione account", name: "manageAccounts", path: "views/manageAccounts/manageAccounts", needPermissions: permissions.levels.caporedattore };
             }
         };
         this.allViews = new AllViews();

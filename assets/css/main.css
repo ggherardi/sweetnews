@@ -333,7 +333,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	text-align: center;
 	padding: 0 20px 0 60px;
 	position: relative;
-	margin: 0 10px 0 0; 
+	margin: 10px 10px 10px 0; 
 	font-size: 17px;
 	text-decoration: none;
 	color: #fff!important;
