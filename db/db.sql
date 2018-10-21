@@ -40,7 +40,7 @@ CREATE TABLE `delega` (
 
 LOCK TABLES `delega` WRITE;
 /*!40000 ALTER TABLE `delega` DISABLE KEYS */;
-INSERT INTO `delega` VALUES (1,1),(3,1),(1,8),(1,66),(1,69);
+INSERT INTO `delega` VALUES (1,1),(3,1),(1,8),(1,66),(1,69),(2,85);
 /*!40000 ALTER TABLE `delega` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,9 +54,6 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE TABLE `deleghe_utente` (
   `id_utente` tinyint NOT NULL,
-  `username` tinyint NOT NULL,
-  `nome` tinyint NOT NULL,
-  `cognome` tinyint NOT NULL,
   `delega_codice` tinyint NOT NULL,
   `delega_nome` tinyint NOT NULL
 ) ENGINE=MyISAM */;
@@ -131,7 +128,7 @@ CREATE TABLE `dettaglio_utente_interno` (
   PRIMARY KEY (`id_dettaglio_utente_interno`),
   KEY `fk_dettaglio_utente_interno_utente_idx` (`id_utente`),
   CONSTRAINT `fk_dettaglio_utente_interno_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +137,7 @@ CREATE TABLE `dettaglio_utente_interno` (
 
 LOCK TABLES `dettaglio_utente_interno` WRITE;
 /*!40000 ALTER TABLE `dettaglio_utente_interno` DISABLE KEYS */;
-INSERT INTO `dettaglio_utente_interno` VALUES (1,1);
+INSERT INTO `dettaglio_utente_interno` VALUES (1,1),(12,85);
 /*!40000 ALTER TABLE `dettaglio_utente_interno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -391,6 +388,25 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Temporary table structure for view `ruoli_utente`
+--
+
+DROP TABLE IF EXISTS `ruoli_utente`;
+/*!50001 DROP VIEW IF EXISTS `ruoli_utente`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `ruoli_utente` (
+  `id_utente` tinyint NOT NULL,
+  `nome` tinyint NOT NULL,
+  `cognome` tinyint NOT NULL,
+  `username` tinyint NOT NULL,
+  `password` tinyint NOT NULL,
+  `delega_codice` tinyint NOT NULL,
+  `delega_nome` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `stato_approvativo`
 --
 
@@ -505,7 +521,7 @@ CREATE TABLE `utente` (
   `password` varchar(60) NOT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -514,7 +530,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES (1,'Gianmattia','Gherardi','admin','$2y$10$HhNbqwNnO/7X.3/pFg0R3OS4p6a5JiW4hx0dMinaKIc3jhA.GTRNq'),(8,'Mario','Rossi','visitatore1','$2y$10$OtI5mZz9tSfRfOk9zyYDLu6MED/ATkNERbvYat3WDO5sGsVMWF1vC'),(66,'Luigi','Verdi','visitatore2','$2y$10$XonoHcS8Yo6olVJNEzOyp.ETUiGURtO.9hNCeBoVaFTuCRE6u39ka'),(69,'Clara','Bruno','visitatore3','$2y$10$xGhsTZlx6ucrLOYNX5X7XewDOJ9YItKBGR4SSC2FlnZuF3LzJ5oPm');
+INSERT INTO `utente` VALUES (1,'Gianmattia','Gherardi','admin','$2y$10$HhNbqwNnO/7X.3/pFg0R3OS4p6a5JiW4hx0dMinaKIc3jhA.GTRNq'),(8,'Mario','Rossi','visitatore1','$2y$10$OtI5mZz9tSfRfOk9zyYDLu6MED/ATkNERbvYat3WDO5sGsVMWF1vC'),(66,'Luigi','Verdi','visitatore2','$2y$10$XonoHcS8Yo6olVJNEzOyp.ETUiGURtO.9hNCeBoVaFTuCRE6u39ka'),(69,'Clara','Bruno','visitatore3','$2y$10$xGhsTZlx6ucrLOYNX5X7XewDOJ9YItKBGR4SSC2FlnZuF3LzJ5oPm'),(85,'Miranda','Manna','Redattore1','$2y$10$EtXwmxGu//dLXsy4CO73bOVdYf.7cIuzntIbJ8Oam4rvcY1mqsVqu');
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -584,7 +600,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `deleghe_utente` AS select `u`.`id_utente` AS `id_utente`,`u`.`username` AS `username`,`u`.`nome` AS `nome`,`u`.`cognome` AS `cognome`,`tp`.`delega_codice` AS `delega_codice`,`tp`.`delega_nome` AS `delega_nome` from ((`utente` `u` join `delega` `d` on((`u`.`id_utente` = `d`.`id_utente`))) join `tipo_delega` `tp` on((`tp`.`id_tipo_delega` = `d`.`id_tipo_delega`))) */;
+/*!50001 VIEW `deleghe_utente` AS select `d`.`id_utente` AS `id_utente`,`tp`.`delega_codice` AS `delega_codice`,`tp`.`delega_nome` AS `delega_nome` from (`tipo_delega` `tp` join `delega` `d` on((`tp`.`id_tipo_delega` = `d`.`id_tipo_delega`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -604,6 +620,25 @@ DELIMITER ;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `dettagli_utente` AS select `u`.`id_utente` AS `id_utente`,`u`.`username` AS `username`,`u`.`nome` AS `nome`,`u`.`cognome` AS `cognome`,`dui`.`id_dettaglio_utente_interno` AS `id_dettaglio_utente_interno`,`due`.`id_dettaglio_utente_esterno` AS `id_dettaglio_utente_esterno`,`due`.`indirizzo` AS `indirizzo`,`due`.`telefono_abitazione` AS `telefono_abitazione`,`due`.`telefono_cellulare` AS `telefono_cellulare`,`due`.`email` AS `email`,`due`.`data_nascita` AS `data_nascita` from ((`utente` `u` left join `dettaglio_utente_interno` `dui` on((`u`.`id_utente` = `dui`.`id_utente`))) left join `dettaglio_utente_esterno` `due` on((`u`.`id_utente` = `due`.`id_utente`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `ruoli_utente`
+--
+
+/*!50001 DROP TABLE IF EXISTS `ruoli_utente`*/;
+/*!50001 DROP VIEW IF EXISTS `ruoli_utente`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `ruoli_utente` AS select `utente`.`id_utente` AS `id_utente`,`utente`.`nome` AS `nome`,`utente`.`cognome` AS `cognome`,`utente`.`username` AS `username`,`utente`.`password` AS `password`,`deleghe_utente`.`delega_codice` AS `delega_codice`,`deleghe_utente`.`delega_nome` AS `delega_nome` from (`utente` left join `deleghe_utente` on((`utente`.`id_utente` = `deleghe_utente`.`id_utente`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -636,4 +671,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-21  2:35:19
+-- Dump completed on 2018-10-21 13:03:46
