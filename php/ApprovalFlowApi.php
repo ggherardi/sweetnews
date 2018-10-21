@@ -51,7 +51,7 @@ class ApprovalFlowApi {
             %s";
         $query = sprintf($query, $maxState ? "AND codice_stato_approvativo <= ?" : "");
         $this->dbContext->PrepareStatement($query);
-        $this->dbContext->BindStatementParameters(($maxState ? "dd" : "d"), ($maxState ? array($minState) : array($minState, $maxState)));
+        $this->dbContext->BindStatementParameters(($maxState ? "dd" : "d"), ($maxState ? array($minState, $maxState) : array($minState)));
         $res = $this->dbContext->ExecuteStatement();
         $array = array();
         while($row = $res->fetch_assoc()) {
@@ -87,8 +87,8 @@ class ApprovalFlowApi {
             case "startApprovalFlow":
                 self::StartApprovalFlow();
                 break;
-            case "getAllRecipesWithState":
-                self::GetAllRecipesWithState();
+            case "getAllRecipesWithStateInRange":
+                self::GetAllRecipesWithStateInRange();
                 break;
             case "getAllApprovaFlowSteps":
                 self::GetAllApprovaFlowSteps();

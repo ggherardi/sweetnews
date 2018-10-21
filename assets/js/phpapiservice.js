@@ -157,7 +157,7 @@ class ApprovalFlowApi extends RestClient {
 
     getAllRecipesWithStateInRange(statesRange) {
         this.data = {
-            action: "getAllRecipesWithState",
+            action: "getAllRecipesWithStateInRange",
             minState: statesRange.minState,
             maxState: statesRange.maxState
         }

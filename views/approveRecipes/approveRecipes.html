@@ -1,20 +1,38 @@
 <section>
     <nav>
         <div class="nav nav-tabs mt-3" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-daPrendereInCarico-tab" data-toggle="tab" href="#nav-daPrendereInCarico" role="tab">Da prendere in carico</a>
-            <a class="nav-item nav-link" id="nav-inCarico-tab" data-toggle="tab" href="#nav-inCarico" role="tab">In carico</a>
-            <a class="nav-item nav-link" id="nav-tutte-tab" data-toggle="tab" href="#nav-tutte" role="tab">Tutte</a>
+            <a id="nav-daPrendereInCarico-tab" 
+                class="nav-item nav-link active" 
+                data-toggle="tab" 
+                href="#nav-daPrendereInCarico" 
+                role="tab"
+                data-relatedfunction="initDaPrendereInCaricoTab"
+                data-relatedtableid="#daPrendereInCaricoContainer">Da prendere in carico</a>
+            <a id="nav-inCarico-tab" 
+                class="nav-item nav-link" 
+                data-toggle="tab" 
+                href="#nav-inCarico" 
+                role="tab"
+                data-relatedfunction="initInCaricoTab"
+                data-relatedtableid="#inCaricoContainer">In carico</a>
+            <a id="nav-tutte-tab" 
+                class="nav-item nav-link" 
+                data-toggle="tab" 
+                href="#nav-tutte" 
+                role="tab"
+                data-relatedfunction="initTutteTab"
+                data-relatedtableid="#tutteContainer">Tutte</a>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-daPrendereInCarico" role="tabpanel">
-            <div id="daPrendereInCaricoContainer"></div>
+            <div id="daPrendereInCaricoContainer" class="approvalTableContainer"></div>
         </div>
         <div class="tab-pane fade" id="nav-inCarico" role="tabpanel">
-            <div id="inCaricoContainer"></div>
+            <div id="inCaricoContainer" class="approvalTableContainer"></div>
         </div>
         <div class="tab-pane fade" id="nav-tutte" role="tabpanel">
-            <div id="tutteContainer"></div>
+            <div id="tutteContainer" class="approvalTableContainer"></div>
         </div>
     </div>
 </section>

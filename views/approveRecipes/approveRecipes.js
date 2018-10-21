@@ -34,12 +34,12 @@ var approvalDTOptions = {
     }
 };
 var approvalDT = {};
-var daPrendereInCaricoContainerSelector = "#approvalContainer";
+var daPrendereInCaricoContainerSelector = "#daPrendereInCaricoContainer";
 var daPrendereInCaricoContainer = $(daPrendereInCaricoContainerSelector);
 var inCaricoContainerSelector = "#inCaricoContainer";
-var inCaricoContainer = $(daPrendereInCaricoContainerSelector);
+var inCaricoContainer = $(inCaricoContainerSelector);
 var tutteContainerSelector = "#tutteContainer";
-var tutteContainer = $(daPrendereInCaricoContainerSelector);
+var tutteContainer = $(tutteContainerSelector);
 var tablesMapping = {
     daPrendereInCarico: {
         states: [{
@@ -85,8 +85,10 @@ var tableMapping;
 
 function initApprovals() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        e.target // newly activated tab
-        e.relatedTarget // previous active tab
+        var tableId = e.relatedTarget.dataset["relatedtableid"]; // previous active tab
+        $(tableId).html("");
+        var func = e.target.dataset["relatedfunction"]; // previous active tab
+        window[func]();
       })
     // tableMapping = tablesMapping.filter(x => x.check())[0].permissions;
     initDaPrendereInCaricoTab();
@@ -94,38 +96,43 @@ function initApprovals() {
 
 function initDaPrendereInCaricoTab() {
     var tableMapping = tablesMapping.daPrendereInCarico;
+    var statePermissions = tableMapping.states.filter(x => x.check())[0];
     var approvalFlowApi = new ApprovalFlowApi();
     var loader = new Loader(daPrendereInCaricoContainerSelector); 
     loader.showLoader();
-    approvalFlowApi.getAllRecipesWithState(statePermissions.daPrendereInCarico.minState, statePermissions.daPrendereInCarico.maxState)
+    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
         .done(getAllRecipesWithStateSuccess.bind(tableMapping))
-        .fail(RestClient.redirectAccordingToError);
+        .fail(RestClient.redirectAccordingToError)
+        .always(() => loader.hideLoader());
 }
 
 function initInCaricoTab() {
     var tableMapping = tablesMapping.inCarico;
+    var statePermissions = tableMapping.states.filter(x => x.check())[0];
     var approvalFlowApi = new ApprovalFlowApi();
     var loader = new Loader(inCaricoContainerSelector); 
     loader.showLoader();
-    approvalFlowApi.getAllRecipesWithState(statePermissions.inCarico.minState, statePermissions.inCarico.maxState)
+    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
         .done(getAllRecipesWithStateSuccess.bind(tableMapping))
-        .fail(RestClient.redirectAccordingToError);
+        .fail(RestClient.redirectAccordingToError)
+        .always(() => loader.hideLoader());
 }
 
-function initDaPrendereInCaricoTab() {
+function initTutteTab() {
     var tableMapping = tablesMapping.tutte;
+    var statePermissions = tableMapping.states.filter(x => x.check())[0];
     var approvalFlowApi = new ApprovalFlowApi();
     var loader = new Loader(tutteContainerSelector); 
     loader.showLoader();
-    approvalFlowApi.getAllRecipesWithState(statePermissions.tutte.minState, statePermissions.tutte.maxState)
+    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
         .done(getAllRecipesWithStateSuccess.bind(tableMapping))
-        .fail(RestClient.redirectAccordingToError);
+        .fail(RestClient.redirectAccordingToError)
+        .always(() => loader.hideLoader());
 }
 
 function getAllRecipesWithStateSuccess(data) {
     var recipes = JSON.parse(data);
-    var tableName = "ApprovalTable";
-    var html = `<table class="table mt-3" id="${tableName}">`
+    var html = `<table class="table mt-3" id="${this.tableName}">`
     html +=         BuidUserRecipesTableHead();
     html +=        `<tbody>`;            
     for(var i = 0; i < recipes.length; i++) {
@@ -147,8 +154,8 @@ function getAllRecipesWithStateSuccess(data) {
     }	
     html += `       </tbody>
                 </table>`;
-    approvaContainer.html(html);
-    approvalDT = $(`#${tableName}`).DataTable(approvalDTOptions);
+    this.tableContainer.html(html);
+    approvalDT = $(`#${this.tableName}`).DataTable(approvalDTOptions);
     setDifficultyCellsInTable(recipes);
     // enableEditButtonLogic();
 }
