@@ -34,7 +34,7 @@ class RestClient {
 class AuthenticationApi extends RestClient {
     constructor() {
         super();
-        this.endpoint = "php/AuthenticationAPI.php";
+        this.endpoint = "php/AuthenticationApi.php";
     }
 
     registerUser(registrationForm) {
@@ -172,6 +172,31 @@ class AccountsApi extends RestClient {
     getUsersAccounts() {
         this.data = {
             action: "getUsersAccounts"
+        }
+        return super.execute(); 
+    }  
+    
+    getUserAccount(id_utente) {
+        this.data = {
+            action: "getUserAccount",
+            id_utente: id_utente
+        }
+        return super.execute(); 
+    }    
+
+    getBusinessRoles(delega_minima) {
+        this.data = {
+            action: "getBusinessRoles",
+            delega_minima: delega_minima
+        }
+        return super.execute(); 
+    }    
+
+    createBusinessAccount(accountNewForm) {
+        accountNewForm = JSON.stringify(accountNewForm);
+        this.data = {
+            action: "createBusinessAccount",
+            accountNewForm: accountNewForm
         }
         return super.execute(); 
     }    

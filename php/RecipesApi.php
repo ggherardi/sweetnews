@@ -275,7 +275,7 @@ class RecipesApi {
         $this->loginContext = json_decode(TokenGenerator::ValidateToken());
         if(!$this->loginContext) {
             Logger::Write("LoginContext is not valid, exiting scope.", $GLOBALS["CorrelationID"]);
-            exit(false);
+            exit(json_encode(false));
         }
         switch($_POST["action"]) {
             case "getRecipesForUser":

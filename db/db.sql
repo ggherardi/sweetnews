@@ -63,6 +63,29 @@ SET character_set_client = utf8;
 SET character_set_client = @saved_cs_client;
 
 --
+-- Temporary table structure for view `dettagli_utente`
+--
+
+DROP TABLE IF EXISTS `dettagli_utente`;
+/*!50001 DROP VIEW IF EXISTS `dettagli_utente`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `dettagli_utente` (
+  `id_utente` tinyint NOT NULL,
+  `username` tinyint NOT NULL,
+  `nome` tinyint NOT NULL,
+  `cognome` tinyint NOT NULL,
+  `id_dettaglio_utente_interno` tinyint NOT NULL,
+  `id_dettaglio_utente_esterno` tinyint NOT NULL,
+  `indirizzo` tinyint NOT NULL,
+  `telefono_abitazione` tinyint NOT NULL,
+  `telefono_cellulare` tinyint NOT NULL,
+  `email` tinyint NOT NULL,
+  `data_nascita` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `dettaglio_utente_esterno`
 --
 
@@ -91,7 +114,7 @@ CREATE TABLE `dettaglio_utente_esterno` (
 
 LOCK TABLES `dettaglio_utente_esterno` WRITE;
 /*!40000 ALTER TABLE `dettaglio_utente_esterno` DISABLE KEYS */;
-INSERT INTO `dettaglio_utente_esterno` VALUES (2,8,'Montione, Via Sergente Maggiore 25','0360 3499391','3495121835',' mariorossi@armyspy.com','1977-12-10',NULL),(3,1,'Roma, Largo Giuseppe Veratti 37','06216581563 ','345641236','admin@admin.com','1986-10-04',NULL),(5,66,'Roma, Via dei Gracchi 37','068463123','3158633125','luigiverdi@spyarmi.com','1988-01-29',NULL),(8,69,'','','3205467','ClaraBruno@rhyta.com','1958-07-25','DEFAULT');
+INSERT INTO `dettaglio_utente_esterno` VALUES (2,8,'Montione, Via Sergente Maggiore 25','0360 3499391','3495121835',' mariorossi@armyspy.com','1977-12-10',NULL),(3,1,'Roma, Largo Giuseppe Veratti 37','06216581563 ','345641236','admin@admin.com','1986-10-04',NULL),(5,66,'Roma, Via dei Gracchi 37','068463123','3158633125','luigiverdi@spyarmi.com','1988-01-29',NULL),(8,69,'','','3205467','ClaraBruno@rhyta.com','1958-07-25',NULL);
 /*!40000 ALTER TABLE `dettaglio_utente_esterno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +131,7 @@ CREATE TABLE `dettaglio_utente_interno` (
   PRIMARY KEY (`id_dettaglio_utente_interno`),
   KEY `fk_dettaglio_utente_interno_utente_idx` (`id_utente`),
   CONSTRAINT `fk_dettaglio_utente_interno_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -482,7 +505,7 @@ CREATE TABLE `utente` (
   `password` varchar(60) NOT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username_UNIQUE` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -567,6 +590,25 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `dettagli_utente`
+--
+
+/*!50001 DROP TABLE IF EXISTS `dettagli_utente`*/;
+/*!50001 DROP VIEW IF EXISTS `dettagli_utente`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `dettagli_utente` AS select `u`.`id_utente` AS `id_utente`,`u`.`username` AS `username`,`u`.`nome` AS `nome`,`u`.`cognome` AS `cognome`,`dui`.`id_dettaglio_utente_interno` AS `id_dettaglio_utente_interno`,`due`.`id_dettaglio_utente_esterno` AS `id_dettaglio_utente_esterno`,`due`.`indirizzo` AS `indirizzo`,`due`.`telefono_abitazione` AS `telefono_abitazione`,`due`.`telefono_cellulare` AS `telefono_cellulare`,`due`.`email` AS `email`,`due`.`data_nascita` AS `data_nascita` from ((`utente` `u` left join `dettaglio_utente_interno` `dui` on((`u`.`id_utente` = `dui`.`id_utente`))) left join `dettaglio_utente_esterno` `due` on((`u`.`id_utente` = `due`.`id_utente`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `stato_flusso_approvativo`
 --
 
@@ -594,4 +636,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-20 12:22:36
+-- Dump completed on 2018-10-21  2:35:19

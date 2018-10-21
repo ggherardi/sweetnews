@@ -187,6 +187,14 @@ class Views {
                     }
                 }
                 this.recipes = new RecipeForms(views);
+                
+                class AccountForms {
+                    constructor(views) {
+                        this.newForm = { title: "Nuovo account", name: "accountNewForm", path: "forms/account/accountNewForm/accountNewForm", parent: views.allViews.manageAccounts, ribbon: [ ribbon.buttons.back, ribbon.buttons.save ] };
+                        this.editForm = { title: "Modifica account", name: "accountEditForm", path: "forms/account/accountEditForm/accountEditForm", parent: views.allViews.manageAccounts, ribbon: [ ribbon.buttons.back, ribbon.buttons.save ] };    
+                    }
+                }
+                this.accounts = new AccountForms(views);
             }
         }
         this.allForms = new AllForms(this);

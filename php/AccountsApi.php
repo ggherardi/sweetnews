@@ -12,15 +12,7 @@ class AccountsApi {
 
     function __construct() { }
 
-    /** Metodo per eseguire le Query. Utilizza la classe ausiliare DBConnection */
-    private function ExecuteQuery($query = "") {        
-        if($this->dbContext == null) {
-            $this->dbContext = new DBConnection();
-        }
-        return $this->dbContext->ExecuteQuery($query);
-    }
-
-    public function GetUsersAccounts() {
+    function GetUsersAccounts() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
             TokenGenerator::CheckPermissions(array(PermissionsConstants::CAPOREDATTORE), "delega_codice"); 
@@ -31,12 +23,10 @@ class AccountsApi {
             $res = $this->dbContext->ExecuteStatement();
             $array = array();
             while($row = $res->fetch_assoc()) {
-                Logger::Write("ROW: ".json_encode($row), $GLOBALS["CorrelationID"]);
                 $identity = new AccountIdentity($row);
                 if(!$array[$row["id_utente"]]) {
                     $user = new User($row);                   
                     $array[$row["id_utente"]]["account"][] = $user;
-                    Logger::Write("USER: ".json_encode($array), $GLOBALS["CorrelationID"]);
                 }
                 $array[$row["id_utente"]]["deleghe"][] = $identity;       
             }
@@ -48,16 +38,130 @@ class AccountsApi {
         }
     }
 
+    function GetUserAccount() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::CAPOREDATTORE), "delega_codice"); 
+        $id_utente = $_POST["id_utente"];
+        $query = 
+            "SELECT *
+            FROM dettagli_utente
+            WHERE id_utente = ?";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("d", array($id_utente)); 
+        $res = $this->dbContext->ExecuteStatement();
+        $account = $res->fetch_assoc();        
+
+        $query = 
+            "SELECT *
+            FROM deleghe_utente
+            WHERE id_utente = ?";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("d", array($id_utente)); 
+        $res = $this->dbContext->ExecuteStatement();
+        while($row = $res->fetch_assoc()) {
+            $account["deleghe"][] = $row;
+        }
+
+        exit(json_encode($account));
+    }
+
+    function GetBusinessRoles() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::CAPOREDATTORE), "delega_codice");
+        $minimumRole = $_POST["delega_minima"];
+        $query = 
+            "SELECT *
+            FROM tipo_delega
+            %s";
+        $query = sprintf($query, $minimumRole ? "WHERE delega_codice >= ?" : "");
+        $this->dbContext->PrepareStatement($query);
+        if($minimumRole) {            
+            $this->dbContext->BindStatementParameters("d", array($minimumRole)); 
+        }
+        $res = $this->dbContext->ExecuteStatement();
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
+    function CreateBusinessAccount() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            $accountNewForm = json_decode($_POST["accountNewForm"]);
+            $this->dbContext->StartTransaction();
+            Logger::Write("DELEGHE: ".json_encode($accountNewForm), $GLOBALS["CorrelationID"]);
+
+            $query = 
+                "INSERT INTO utente
+                (nome, cognome, username, password)
+                VALUES
+                (?, ?, ?, ?)";
+            $this->dbContext->PrepareStatement($query);
+            $hashedPassword = password_hash($accountNewForm->password, PASSWORD_DEFAULT);     
+            $this->dbContext->BindStatementParameters("ssss", array($accountNewForm->nome, $accountNewForm->cognome, $accountNewForm->username, $hashedPassword));
+            $this->dbContext->ExecuteStatement();
+
+            $insertId = $this->dbContext->GetLastID();
+            $query = 
+                "INSERT INTO delega
+                (id_tipo_delega, id_utente)
+                VALUES
+                (?, ?)";
+            $this->dbContext->PrepareStatement($query);
+            for($i = 0; $i < count($accountNewForm->deleghe); $i++) {
+                $this->dbContext->BindStatementParameters("dd", array($accountNewForm->deleghe[$i], $insertId));
+                $this->dbContext->ExecuteStatement();
+            }            
+
+            $query = 
+                "INSERT INTO dettaglio_utente_interno
+                (id_utente)
+                VALUES
+                (?)";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array($insertId));
+            $this->dbContext->ExecuteStatement();   
+            $this->dbContext->RollBack();   
+            http_response_code(500); 
+            exit(false);
+            $this->dbContext->CommitTransaction();
+            exit(json_encode($insertId));
+        } 
+        catch (Throwable $ex) {
+            $this->dbContext->RollBack();            
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);
+            switch($ex->getMessage()) {
+                case 1062:
+                    http_response_code(409);
+                    break;
+                default:
+                    http_response_code(500); 
+                    break;
+            }            
+        }
+    }
+
     function Init(){
         $this->dbContext = new DBConnection();
         $this->loginContext = json_decode(TokenGenerator::ValidateToken());
         if(!$this->loginContext) {
             Logger::Write("LoginContext is not valid, exiting scope.", $GLOBALS["CorrelationID"]);
-            exit(false);
+            http_response_code(401);
         }
         switch($_POST["action"]) {
             case "getUsersAccounts":
                 self::GetUsersAccounts();
+                break;
+            case "getUserAccount":
+                self::GetUserAccount();
+                break;
+            case "getBusinessRoles":
+                self::GetBusinessRoles();
+                break;
+            case "createBusinessAccount":
+                self::CreateBusinessAccount();
                 break;
             default: 
                 exit(json_encode($_POST));

@@ -16,8 +16,8 @@ var usersDTOptions = {
         searchable: false
     }],
     buttons: [
-        // { text: "Crea nuova ricetta", action: createRecipe },
-        // { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
+        { text: "Crea account", action: createAccount },
+        { extend: "selectedSingle", text: "Modifica account", action: editAccount }
         // { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
     ],
     language: dataTableLanguage.italian,
@@ -94,36 +94,16 @@ function formatIdentitiesCell(deleghe) {
     return html;
 }
 
-// function enableEditButtonLogic() {
-//     usersDT.on("select deselect", (e, dt, node, config) => {
-//         canEnableButton = dt.rows({selected: true}).data().length == 1 && dt.rows({selected: true}).data()[0].codice_stato_approvativo == Approval.getStates().bozza;
-//         dt.buttons([".recipeEditButton"]).enable(canEnableButton);
-//     });
-// }
-
 /* BUTTONS */
-function createRecipe() {
+function createAccount() {
     pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.newForm);
     pageContentController.switch();
 }
 
-function editRecipe(e, dt, node, config) {
-    window.RecipeId = dt.rows({ selected: true }).data()[0].id_ricetta;
+function editAccount(e, dt, node, config) {
+    window.AccountId = dt.rows({ selected: true }).data()[0].id_utente;
     pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.editForm);
     pageContentController.switch();
-}
-
-function viewRecipe(e, dt, node, config) {
-    var row = dt.rows({ selected: true }).data()[0];
-    window.RecipeId = row.id_ricetta;
-    window.RecipeApprovaFlowState = row.codice_stato_approvativo;
-    pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.viewForm);
-    pageContentController.switch();
-}
-
-function isRecipeEditable(e, dt, node, config) {
-    console.log(dt);
-    return false;
 }
 
 /* INIT */

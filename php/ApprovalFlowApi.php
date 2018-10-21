@@ -12,14 +12,6 @@ class ApprovalFlowApi {
 
     function __construct() { }
 
-    /** Metodo per eseguire le Query. Utilizza la classe ausiliare DBConnection */
-    private function ExecuteQuery($query = "") {        
-        if($this->dbContext == null) {
-            $this->dbContext = new DBConnection();
-        }
-        return $this->dbContext->ExecuteQuery($query);
-    }
-
     public function StartApprovalFlow() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
@@ -68,7 +60,7 @@ class ApprovalFlowApi {
         $this->loginContext = json_decode(TokenGenerator::ValidateToken());
         if(!$this->loginContext) {
             Logger::Write("LoginContext is not valid, exiting scope.", $GLOBALS["CorrelationID"]);
-            exit(false);
+            http_response_code(401);
         }
         switch($_POST["action"]) {
             case "startApprovalFlow":

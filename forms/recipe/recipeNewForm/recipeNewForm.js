@@ -211,8 +211,7 @@ function insertRecipe(sender, e) {
     // Restart form initial state
 }
 
-function saveSuccess(data) {
-    console.log(data);
+function saveSuccess(data) {    
     RecipeId = data;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.editForm);
     initPersonalRecipes();
