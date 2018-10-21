@@ -2382,6 +2382,11 @@ input, select, textarea {
 				width: 1.65em;
 			}
 
+		input[type="checkbox"].checkboxDisabled + label:before {
+			background: #eff1f2!important;
+			border-color: #eff1f2!important;
+		}
+
 		input[type="checkbox"]:checked + label:before {
 		/* input[type="radio"]:checked + label:before { */
 			background: #3d4449;

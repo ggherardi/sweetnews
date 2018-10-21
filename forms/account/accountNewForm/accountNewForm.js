@@ -62,11 +62,11 @@ function saveSuccess(data) {
 
 function getAccountFromForm() {
     var accountNewForm = {
-        username : $("#accountNewForm__username").val(),
-        nome : $("#accountNewForm__name").val(),
-        cognome : $("#accountNewForm__surname").val(),        
-        password : $("#accountNewForm__password").val(),
-        deleghe : getDelegheFromCheckboxes()
+        username: $("#accountNewForm__username").val(),
+        nome: $("#accountNewForm__name").val(),
+        cognome: $("#accountNewForm__surname").val(),        
+        password: $("#accountNewForm__password").val(),
+        deleghe: getDelegheFromCheckboxes()
     };
     return accountNewForm;
 }

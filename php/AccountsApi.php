@@ -18,7 +18,7 @@ class AccountsApi {
             TokenGenerator::CheckPermissions(array(PermissionsConstants::CAPOREDATTORE), "delega_codice"); 
             $query = 
                 "SELECT * 
-                FROM deleghe_utente";
+                FROM ruoli_utente";
             $this->dbContext->PrepareStatement($query);
             $res = $this->dbContext->ExecuteStatement();
             $array = array();
@@ -53,7 +53,7 @@ class AccountsApi {
 
         $query = 
             "SELECT *
-            FROM deleghe_utente
+            FROM ruoli_utente
             WHERE id_utente = ?";
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters("d", array($id_utente)); 
@@ -89,9 +89,9 @@ class AccountsApi {
     function CreateBusinessAccount() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            $accountNewForm = json_decode($_POST["accountNewForm"]);
+            $accountEditForm = json_decode($_POST["accountNewForm"]);
             $this->dbContext->StartTransaction();
-            Logger::Write("DELEGHE: ".json_encode($accountNewForm), $GLOBALS["CorrelationID"]);
+            Logger::Write("DELEGHE: ".json_encode($accountEditForm), $GLOBALS["CorrelationID"]);
 
             $query = 
                 "INSERT INTO utente
@@ -99,8 +99,8 @@ class AccountsApi {
                 VALUES
                 (?, ?, ?, ?)";
             $this->dbContext->PrepareStatement($query);
-            $hashedPassword = password_hash($accountNewForm->password, PASSWORD_DEFAULT);     
-            $this->dbContext->BindStatementParameters("ssss", array($accountNewForm->nome, $accountNewForm->cognome, $accountNewForm->username, $hashedPassword));
+            $hashedPassword = password_hash($accountEditForm->password, PASSWORD_DEFAULT);     
+            $this->dbContext->BindStatementParameters("ssss", array($accountEditForm->nome, $accountEditForm->cognome, $accountEditForm->username, $hashedPassword));
             $this->dbContext->ExecuteStatement();
 
             $insertId = $this->dbContext->GetLastID();
@@ -110,8 +110,8 @@ class AccountsApi {
                 VALUES
                 (?, ?)";
             $this->dbContext->PrepareStatement($query);
-            for($i = 0; $i < count($accountNewForm->deleghe); $i++) {
-                $this->dbContext->BindStatementParameters("dd", array($accountNewForm->deleghe[$i], $insertId));
+            for($i = 0; $i < count($accountEditForm->deleghe); $i++) {
+                $this->dbContext->BindStatementParameters("dd", array($accountEditForm->deleghe[$i], $insertId));
                 $this->dbContext->ExecuteStatement();
             }            
 
@@ -123,11 +123,71 @@ class AccountsApi {
             $this->dbContext->PrepareStatement($query);
             $this->dbContext->BindStatementParameters("d", array($insertId));
             $this->dbContext->ExecuteStatement();   
-            $this->dbContext->RollBack();   
-            http_response_code(500); 
-            exit(false);
+
             $this->dbContext->CommitTransaction();
             exit(json_encode($insertId));
+        } 
+        catch (Throwable $ex) {
+            $this->dbContext->RollBack();            
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);
+            switch($ex->getMessage()) {
+                case 1062:
+                    http_response_code(409);
+                    break;
+                default:
+                    http_response_code(500); 
+                    break;
+            }            
+        }
+    }
+
+    function EditBusinessAccount() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            $accountEditForm = json_decode($_POST["accountEditForm"]);
+            $this->dbContext->StartTransaction();
+            Logger::Write("DELEGHE: ".json_encode($accountEditForm), $GLOBALS["CorrelationID"]);
+
+            $query = 
+                "UPDATE utente
+                SET 
+                nome = ?,
+                cognome = ?, 
+                username = ?
+                WHERE
+                id_utente = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("ssss", array($accountEditForm->nome, $accountEditForm->cognome, $accountEditForm->username, $accountEditForm->id_utente));
+            $this->dbContext->ExecuteStatement();
+
+            $insertId = $this->dbContext->GetLastID();
+            $query = 
+                "DELETE FROM delega
+                WHERE 
+                id_utente = ?
+                AND id_tipo_delega IN (SELECT id_tipo_delega 
+                                        FROM tipo_delega 
+                                        WHERE delega_codice > ?)";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("dd", array($accountEditForm->id_utente, PermissionsConstants::VISITATORE));
+            $this->dbContext->ExecuteStatement();    
+
+            if(count($accountEditForm->deleghe) > 0) {
+                $insertId = $this->dbContext->GetLastID();
+                $query = 
+                    "INSERT INTO delega
+                    (id_tipo_delega, id_utente)
+                    VALUES
+                    (?, ?)";
+                $this->dbContext->PrepareStatement($query);
+                for($i = 0; $i < count($accountEditForm->deleghe); $i++) {
+                    $this->dbContext->BindStatementParameters("dd", array($accountEditForm->deleghe[$i], $accountEditForm->id_utente));
+                    $this->dbContext->ExecuteStatement();
+                }     
+            }
+         
+            $this->dbContext->CommitTransaction();
+            exit(json_encode(true));
         } 
         catch (Throwable $ex) {
             $this->dbContext->RollBack();            
@@ -162,6 +222,9 @@ class AccountsApi {
                 break;
             case "createBusinessAccount":
                 self::CreateBusinessAccount();
+                break;
+            case "editBusinessAccount":
+                self::EditBusinessAccount();
                 break;
             default: 
                 exit(json_encode($_POST));

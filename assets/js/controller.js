@@ -95,10 +95,8 @@ class PageContentController {
 
     switchBreadcrumb() {
         if(this.isMainPageActive) {
-            // this.activePage--;
             breadcrumb.rebuildBreadcrumb(this.secondaryPageView);
         } else {
-            // this.activePage++;
             breadcrumb.rebuildBreadcrumb(this.primaryPageView);
         }
     }

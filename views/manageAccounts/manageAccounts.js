@@ -85,7 +85,7 @@ function formatIdentitiesCell(deleghe) {
     var html = ``;
     for(var i = 0; i < deleghe.length; i++) {
         var delega = deleghe[i];
-        html += `${delega.delega_nome}`;
+        html += `${delega.delega_nome ? delega.delega_nome : "Nessun ruolo"}`;
         if(i < deleghe.length - 1) {
             html += `, `;
         }

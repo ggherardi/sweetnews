@@ -57,7 +57,7 @@ function getBusinessRolesSuccess(data) {
             var hasDelega = Account.deleghe.filter((a) => a.delega_codice == role.delega_codice).length;
             html += `<input id="delegaCheckbox_${i}" type="checkbox" name="${role.delega_nome}" 
                         value="${role.id_tipo_delega}" 
-                        ${role.delega_codice < 20 ? "disabled" : ""}
+                        ${role.delega_codice < 20 ? `disabled class="checkboxDisabled"` : ""}
                         ${hasDelega ? "checked" : ""}>
                         <label class="mt-2" for="delegaCheckbox_${i}">${role.delega_nome}</label><br>`;
         }
@@ -69,31 +69,42 @@ function getBusinessRolesSuccess(data) {
 /* EVENTS */
 function editAccount(sender, e) {
     e.preventDefault();
-    var loader = new Loader("#accountNewForm");
+    var loader = new Loader("#accountEditForm");
     loader.showLoader();
-    var accountNewForm = getAccountFromForm();
+    var accountEditForm = getAccountFromForm();
     var accountsApi = new AccountsApi();
-    // accountsApi.createBusinessAccount(accountNewForm)
-    //     .done(saveSuccess)
-    //     .fail(RestClient.reportError)
-    //     .always(() => loader.hideLoader());
+    accountsApi.editBusinessAccount(accountEditForm)
+        .done(saveSuccess)
+        .fail(RestClient.reportError)
+        .always(() => loader.hideLoader());
 }
 
 function saveSuccess(data) {
-    window.AccountId = data;
-    pageContentController.setSwitchableSecondaryPage(views.allForms.accounts.editForm);
     initAccounts();
 }
 
 function getAccountFromForm() {
-    var accountNewForm = {
-        username : $("#accountNewForm__username").val(),
-        nome : $("#accountNewForm__name").val(),
-        cognome : $("#accountNewForm__surname").val(),        
-        password : $("#accountNewForm__password").val(),
-        id_tipo_delega : $("#accountNewForm__delega").val()
+    var accountEditForm = {
+        id_utente: AccountId,
+        username: $("#accountEditForm__username").val(),
+        nome: $("#accountEditForm__name").val(),
+        cognome: $("#accountEditForm__surname").val(),        
+        password: $("#accountEditForm__password").val(),
+        deleghe: getDelegheFromCheckboxes()
     };
-    return accountNewForm;
+    return accountEditForm;
+}
+
+function getDelegheFromCheckboxes() {
+    var deleghe = [];
+    var checkboxes = $("#accountEditForm__delega").find("input");
+    for(var i = 0; i < checkboxes.length; i++) {
+        var checkbox = checkboxes[i];
+        if(checkbox.checked && !checkbox.disabled) {
+            deleghe.push(checkbox.value);
+        }        
+    }
+    return deleghe;
 }
 
 /* AUX */

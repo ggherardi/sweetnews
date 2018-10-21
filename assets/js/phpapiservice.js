@@ -199,5 +199,14 @@ class AccountsApi extends RestClient {
             accountNewForm: accountNewForm
         }
         return super.execute(); 
-    }    
+    }   
+
+    editBusinessAccount(accountEditForm) {
+        accountEditForm = JSON.stringify(accountEditForm);
+        this.data = {
+            action: "editBusinessAccount",
+            accountEditForm: accountEditForm
+        }
+        return super.execute(); 
+    }     
 }
