@@ -88,7 +88,7 @@ function populateIngredientsControl() {
 
 function createNewIngredientControl() {
     var ingredientsControlsContainer = $("#recipeEditForm__ingredients");
-    var ingredientsCount = $("#recipeEditForm__ingredients .form-row").length;    
+    var ingredientsCount = $("#recipeEditForm__ingredients .ingredientRow").length;    
     var currentControlNumber = ingredientsCount + 1;
     var html = `<div id="ingredientRow_${currentControlNumber}" class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
                     <input id="recipeEditForm__ingredient_id_${currentControlNumber}" class="ingredient_id_${currentControlNumber}" type="hidden">
@@ -103,7 +103,7 @@ function createNewIngredientControl() {
                         <input id="recipeEditForm__ingredient_quantita_${currentControlNumber}" 
                             class="form-control ingredient_quantita_${currentControlNumber}" 
                             type="number" 
-                            min="0" 
+                            min="0.01" 
                             placeholder="qt." 
                             title="quantità" 
                             step="0.01" 

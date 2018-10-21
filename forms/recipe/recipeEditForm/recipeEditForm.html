@@ -4,31 +4,52 @@
         <div id="flowStepsCrumb" class="mt-2"></div>
     </div>
     <div>
-        <form id="recipeEditForm" class="form mt-3 recipeForm itemForm" onsubmit="editRecipe(this, event);return false;">
-            <input id="recipeEditForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" required>
-            <select id="recipeEditForm__tipologia" class="form-control mt-2" type="select" placeholder="tipologia" required></select>
-            <div id="recipeEditForm__difficolta" class="rate mt-2 mb-2 box recipeForm__difficolta" required>
-                <div><span>difficoltà*</span></div>
-                <input type="radio" id="star5" name="rate" value="5" />
-                <label for="star5" title="text">5 stars</label>
-                <input type="radio" id="star4" name="rate" value="4" />
-                <label for="star4" title="text">4 stars</label>
-                <input type="radio" id="star3" name="rate" value="3" />
-                <label for="star3" title="text">3 stars</label>
-                <input type="radio" id="star2" name="rate" value="2" />
-                <label for="star2" title="text">2 stars</label>
-                <input type="radio" id="star1" name="rate" value="1" />
-                <label for="star1" title="text">1 star</label>
+            <form id="recipeEditForm" class="form mt-3 recipeForm itemForm" onsubmit="editRecipe(this, event);return false;">
+            <label for="recipeEditForm__titolo">Titolo</label>
+            <input id="recipeEditForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*">
+            <label for="recipeEditForm__tipologia" class="mt-2">Tipologia</label>
+            <select id="recipeEditForm__tipologia" class="form-control" type="select" placeholder="tipologia"></select>
+            <label class="mt-2">Difficoltà</label>
+            <div class="d-inlineblock">
+                <div id="recipeEditForm__difficolta" class="rate mb-2 box recipeForm__difficolta">
+                    <input type="radio" id="star5" name="rate" value="5" />
+                    <label for="star5" title="text">5 stars</label>
+                    <input type="radio" id="star4" name="rate" value="4" />
+                    <label for="star4" title="text">4 stars</label>
+                    <input type="radio" id="star3" name="rate" value="3" />
+                    <label for="star3" title="text">3 stars</label>
+                    <input type="radio" id="star2" name="rate" value="2" />
+                    <label for="star2" title="text">2 stars</label>
+                    <input type="radio" id="star1" name="rate" value="1" />
+                    <label for="star1" title="text">1 star</label>
+                </div>
             </div>
-            <input id="recipeEditForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" required>
-            <textarea id="recipeEditForm__preparazione" class="form-control mt-2" rows="6" placeholder="preparazione ricetta*" required></textarea>
-            <input id="recipeEditForm__porzioni" class="form-control mt-2" type="number" placeholder="numero porzioni*" min="0" max="20" required>
-            <textarea id="recipeEditForm__note" class="form-control mt-2" row="6" placeholder="note"></textarea>
-            <textarea id="recipeEditForm__messaggio" class="form-control mt-2" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)"></textarea>
-            <div id="recipeEditForm__ingredients" class="recipeForm__ingredients"></div>
+            <label for="recipeEditForm__tempo_cottura">Tempo di cottura (min)</label>
+            <input id="recipeEditForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200">
+            <label for="recipeEditForm__preparazione" class="mt-2">Preparazione</label>
+            <textarea id="recipeEditForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*"></textarea>
+            <label for="recipeEditForm__porzioni" class="mt-2">Porzioni</label>
+            <input id="recipeEditForm__porzioni" class="form-control" type="number" placeholder="numero porzioni*" min="0" max="20">
+            <label for="recipeEditForm__note" class="mt-2">Note</label>
+            <textarea id="recipeEditForm__note" class="form-control" row="6" placeholder="note"></textarea>
+            <label for="recipeEditForm__messaggio" class="mt-2">Messaggio per la redazione</label>
+            <textarea id="recipeEditForm__messaggio" class="form-control" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)"></textarea>
+            <label for="recipeEditForm__ingredients" class="mt-2">Ingredienti</label>
+            <div id="recipeEditForm__ingredients" class="recipeForm__ingredients">
+                <div class="form-row">
+                    <div class="col-sm-5">
+                        <span>Nome</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>Grammi</span>
+                    </div>
+                    <div class="col-sm-3">
+                        <span>Calorie</span>
+                    </div>
+                </div>
+            </div>
             <div class="mt-2 ta-center"><button class="secondary" id="createIngredientControl" type="button" onclick="createNewIngredientControl();">Aggiungi ingrediente</button></div>
             <button id="submitForm" class="d-none"></button>
         </form>
     </div>
-    
 </section>

@@ -167,7 +167,7 @@ class Views {
                 this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false, parent: this.personal};
                 this.identities = { title: "Deleghe utente", name: "identities", path: "views/identities/identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]};
                 this.registration = { title: "Registrazione", name: "registration", path: "views/registration/registration", showInMenu: false, parent: this.personal };
-                this.approvaRecipes = { title: "Approvazione ricette", name: "approvaRecipes", path: "views/approvaRecipes/approvaRecipes", needPermissions: permissions.levels.redattore };
+                this.approveRecipes = { title: "Approvazione ricette", name: "approveRecipes", path: "views/approveRecipes/approveRecipes", needPermissions: permissions.levels.redattore };
                 this.manageRecipes = { title: "Crea/modifica ricette", name: "manageRecipes", path: "views/manageRecipes/manageRecipes", needPermissions: permissions.levels.visitatore, maxPermissions: permissions.levels.visitatore };
                 this.allRecipes = { title: "Catalogo ricette", name: "allRecipes", path: "views/allRecipes/allRecipes", needPermissions: permissions.levels.visitatore };
                 this.manageAccounts = { title: "Gestione account", name: "manageAccounts", path: "views/manageAccounts/manageAccounts", needPermissions: permissions.levels.caporedattore };

@@ -1,3 +1,20 @@
 <section>
-    <div id="userRecipesContainer"></div>
+    <nav>
+        <div class="nav nav-tabs mt-3" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-daPrendereInCarico-tab" data-toggle="tab" href="#nav-daPrendereInCarico" role="tab">Da prendere in carico</a>
+            <a class="nav-item nav-link" id="nav-inCarico-tab" data-toggle="tab" href="#nav-inCarico" role="tab">In carico</a>
+            <a class="nav-item nav-link" id="nav-tutte-tab" data-toggle="tab" href="#nav-tutte" role="tab">Tutte</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-daPrendereInCarico" role="tabpanel">
+            <div id="daPrendereInCaricoContainer"></div>
+        </div>
+        <div class="tab-pane fade" id="nav-inCarico" role="tabpanel">
+            <div id="inCaricoContainer"></div>
+        </div>
+        <div class="tab-pane fade" id="nav-tutte" role="tabpanel">
+            <div id="tutteContainer"></div>
+        </div>
+    </div>
 </section>

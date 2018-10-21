@@ -39,6 +39,27 @@ class ApprovalFlowApi {
         }
     }
 
+    public function GetAllRecipesWithStateInRange() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");
+        $minState = $_POST["minState"];        
+        $maxState = $_POST["maxState"];            
+        $query = 
+            "SELECT *
+            FROM anteprime_ricetta
+            WHERE codice_stato_approvativo >= ?
+            %s";
+        $query = sprintf($query, $maxState ? "AND codice_stato_approvativo <= ?" : "");
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters(($maxState ? "dd" : "d"), ($maxState ? array($minState) : array($minState, $maxState)));
+        $res = $this->dbContext->ExecuteStatement();
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
     public function GetAllApprovaFlowSteps() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
@@ -65,6 +86,9 @@ class ApprovalFlowApi {
         switch($_POST["action"]) {
             case "startApprovalFlow":
                 self::StartApprovalFlow();
+                break;
+            case "getAllRecipesWithState":
+                self::GetAllRecipesWithState();
                 break;
             case "getAllApprovaFlowSteps":
                 self::GetAllApprovaFlowSteps();

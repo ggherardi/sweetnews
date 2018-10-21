@@ -59,7 +59,7 @@ function populateIngredientsControl() {
 
 function createNewIngredientControl() {
     var ingredientsControlsContainer = $("#recipeNewForm__ingredients");
-    var ingredientsCount = $("#recipeNewForm__ingredients .form-row").length;    
+    var ingredientsCount = $("#recipeNewForm__ingredients .ingredientRow").length;    
     if(ingredientsCount == 0) {
         removeWarning(WarningMessages.noIngredientsWarning);
     }
@@ -80,18 +80,19 @@ function createNewIngredientControl() {
                         <input id="recipeNewForm__ingredient_quantita_${currentControlNumber}" 
                             class="form-control ingredient_quantita_${currentControlNumber}" 
                             type="number" 
-                            min="0" 
-                            placeholder="qt."
+                            min="1" 
+                            placeholder="gr"
                             title="quantità" 
                             step="0.01" 
                             required>
                     </div>
                     <div class="col-sm-3">
+                        <input id="recipeNewForm__ingredient_calorie_hidden_${currentControlNumber}" class="ingredient_calorie_hidden_${currentControlNumber}" type="hidden">
                         <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" 
                             class="form-control ingredient_calorie_${currentControlNumber}" 
                             type="number" 
                             min="0" 
-                            placeholder="cal." 
+                            placeholder="kcal/g" 
                             title="calorie" 
                             step="0.01" 
                             required 
@@ -101,7 +102,9 @@ function createNewIngredientControl() {
                 </div>`;
     ingredientsControlsContainer.append(html);
     var ingredient = $(`#recipeNewForm__ingredient_nome_${currentControlNumber}`)[0];
+    var quantity = $(`#recipeNewForm__ingredient_quantita_${currentControlNumber}`)[0];
     ingredient.addEventListener("change", checkCurrentstate);
+    quantity.addEventListener("keyup", recalculateCalories);
     initAutoComplete(ingredient.id);
     switchAddIngredientButtonState(currentControlNumber);
 }
@@ -131,6 +134,15 @@ function restoreIngredientRowStateToPristine(inputs) {
             FormInitialState[row.id].isDirty = false;
         }
     }
+}
+
+function recalculateCalories(e) {
+    var jqElement = $(e.srcElement);    
+    var newQuantity = jqElement.val() ? parseFloat(jqElement.val()) : 1;
+    var rowid = jqElement.parent().parent().get(0).dataset["rowid"];
+    var calories = parseFloat(jqElement.parent().siblings().find(`.ingredient_calorie_hidden_${rowid}`).val());
+    var newCaloriesAmount = newQuantity * calories;
+    jqElement.parent().siblings().find(`.ingredient_calorie_${rowid}`).val(newCaloriesAmount);
 }
 
 function switchAddIngredientButtonState(ingredientControlNumber) {

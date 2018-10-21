@@ -38,9 +38,11 @@ function autocomplete(inp, arr) {
         var ingredient = JSON.parse(this.getElementsByTagName("input")[0].value);
         var row = inp.parentElement.parentElement;
         var controlNumber = row.dataset.rowid;
-        $(`.ingredient_id_${controlNumber}`)[0].value = ingredient.id_ingrediente;
+        $(`.ingredient_id_${controlNumber}`).get(0).value = ingredient.id_ingrediente;
         inp.value = ingredient.nome_ingrediente;
-        $(`.ingredient_calorie_${controlNumber}`)[0].value = ingredient.calorie;
+        var quantity = $(`.ingredient_quantita_${controlNumber}`).val() ? parseFloat($(`.ingredient_quantita_${controlNumber}`).val()) : 1;
+        $(`.ingredient_calorie_${controlNumber}`).get(0).value = parseFloat(ingredient.calorie) * quantity;
+        $(`.ingredient_calorie_hidden_${controlNumber}`).get(0).value = parseFloat(ingredient.calorie);
         closeAllLists();
     }
 

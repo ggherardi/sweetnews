@@ -72,6 +72,10 @@ button:focus
 	cursor: pointer;
 }
 
+
+.d-inlineblock {
+	display: inline-block;
+}
 .td-underline {
 	text-decoration: underline;
 }
@@ -207,6 +211,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 .recipeForm__difficolta {
 	padding: 0 5px!important;
 	height: auto!important;
+	margin-bottom: 0!important;
 }
 
 .recipeForm__difficolta span,

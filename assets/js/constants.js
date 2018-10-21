@@ -13,11 +13,13 @@ class Approval {
     static getStates() {
         return {
             bozza: 0,
+            inviata: 5,
             in_validazione: 10,
             non_idonea: 15,
-            in_approvazione: 20,
-            non_approvata: 25,
-            approvata: 30
+            idonea: 20,
+            in_approvazione: 25,
+            non_approvata: 30,
+            approvata: 35
         }
     }
 }
