@@ -89,7 +89,6 @@ function initApprovals() {
         var func = e.target.dataset["relatedfunction"]; // previous active tab
         window[func]();
       })
-    // tableMapping = tablesMapping.filter(x => x.check())[0].permissions;
     initDaPrendereInCaricoTab();
 }
 
@@ -137,7 +136,6 @@ function getAllRecipesWithStateSuccess(data) {
     for(var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i];
         var dateCell = formatDateCell(recipe.data_flusso);
-        var difficultyCell = formatDifficultyCell(i);
             html +=     `<tr>
                             <td>${recipe.id_ricetta}</td>
                             <td>${recipe.id_utente_creatore}</td>
@@ -155,7 +153,6 @@ function getAllRecipesWithStateSuccess(data) {
                 </table>`;
     this.tableContainer.html(html);
     approvalDT = $(`#${this.tableName}`).DataTable(approvalDTOptions);
-    // setDifficultyCellsInTable(recipes);
     // enableEditButtonLogic();
 }
 
@@ -174,23 +171,6 @@ function BuidUserRecipesTableHead() {
                     </tr>
                 </thead>`;
     return html;
-}
-
-function formatDifficultyCell(i) {
-    return `<form>
-                <div class="rate rate-displayOnly">
-                    <input type="radio" id="star5_${i}" name="rate" value="5" disabled />
-                    <label for="star5_${i}" title="text">5 stars</label>
-                    <input type="radio" id="star4_${i}" name="rate" value="4" disabled />
-                    <label for="star4_${i}" title="text">4 stars</label>
-                    <input type="radio" id="star3_${i}" name="rate" value="3" disabled />
-                    <label for="star3_${i}" title="text">3 stars</label>
-                    <input type="radio" id="star2_${i}" name="rate" value="2" disabled />
-                    <label for="star2_${i}" title="text">2 stars</label>
-                    <input type="radio" id="star1_${i}" name="rate" value="1" disabled />
-                    <label for="star1_${i}" title="text">1 star</label>
-                </div>
-            </form>`;
 }
 
 function formatDateCell(strDate) {
@@ -238,7 +218,7 @@ function isRecipeEditable(e, dt, node, config) {
 
 /* RIBBON BUTTONS ENABLE SCRIPTS */
 function enableRecipeTakeCharge() {
-    return Recipe.codice_stato_approvativo == Approval.getStates().inviata && shared.loginContext.delega_codice == permissions.levels.redattore
+    return window.RecipeApprovaFlowState == Approval.getStates().inviata && shared.loginContext.delega_codice == permissions.levels.redattore
 }
 
 /* INIT */

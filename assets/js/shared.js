@@ -5,17 +5,18 @@ class Shared {
         
             login(stringLoginContext) {
                 initTopologies();
-                shared.loginContext = JSON.parse(stringLoginContext);
-                mainContentController.loadView(views.allViews.personal);
+                // shared.loginContext = JSON.parse(stringLoginContext);
+                shared.loginContext = new LoginContext(stringLoginContext);
+                mainContentController.loadView(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal);
                 logoutController.loadComponent(views.AllComponents.logout);
                 accountController.loadComponent(views.AllComponents.account);
                 breadcrumb.rebuildBreadcrumb(views.allViews.personal);
                 menu.buildMenu();
-                menu.setMenuItemActive(shared.loginContext.delega_codice > 10 ?  views.allViews.approveRecipes : views.allViews.personal);
+                menu.setMenuItemActive(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal);
             }
 
             logout() {
-                shared.loginContext = { delega_codice: 0 };
+                shared.loginContext = new LoginContext(JSON.stringify({ delega_codice: 0 }));
                 $(placeholders.logoutContainer).html("");
                 $(placeholders.accountContainer).html("");
                 $("#navbar__home").children().first().click();
@@ -23,6 +24,7 @@ class Shared {
                 menu.setMenuItemActive(views.allViews.home);
             }
         }
+
         this.buildRepeaterHtml = function(htmlTemplate, array, containerSelector) {
             var html = ``;
             for(var i = 0; i < array.length; i++) {
@@ -63,13 +65,21 @@ class Shared {
         }
         this.dateUtilities = new DateUtilities();
 
-        this.loginContext = {
-            username: null,
-            nome: null,
-            id_utente: null,
-            delega_codice: null,
-            delega_nome: null
-        };
+        class LoginContext {
+            constructor(ctxJSON) {
+                var ctx = JSON.parse(ctxJSON ? ctxJSON : JSON.stringify({ delega_codice: 0 }));
+                this.username = ctx.username,
+                this.nome = ctx.nome,
+                this.id_utente = ctx.id_utente,
+                this.delega_codice = ctx.delega_codice,
+                this.delega_nome = ctx.delega_nome,
+                this.isRedattore = this.delega_codice == 20,
+                this.isCapoRedattore = this.delega_codice == 30,
+                this.isDipendente = this.delega_codice > 10
+            }
+        }
+        this.loginContext = new LoginContext();
+
         this.userIdentities = [{
             delega_codice: null,
             delega_nome: null,

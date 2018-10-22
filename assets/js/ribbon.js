@@ -5,7 +5,7 @@ class Ribbon {
                 title: `Indietro`,
                 label: `Indietro`,
                 action: `back();`,
-                icon: `chevron-left`,
+                icon: `fas fa-arrow-left`,
                 cssClass: `purple`,
                 order: 1,
                 permissions: permissions.levels.anonimo
@@ -14,8 +14,8 @@ class Ribbon {
                 title: `Salva modifiche`,
                 label: `Salva`,
                 action: `save();`,
-                icon: `circle-check`,
-                cssClass: `confirmFillColor`,
+                icon: `far fa-save`,
+                cssClass: `saveButton`,
                 order: 2,
                 permissions: permissions.levels.visitatore
             },
@@ -23,8 +23,8 @@ class Ribbon {
                 title: `Invia in approvazione`,
                 label: `Invia`,
                 action: `send();`,
-                icon: `share-boxed`,
-                cssClass: `grey`,
+                icon: `fas fa-code-branch`,
+                cssClass: `startApprovalButton`,
                 order: 3,
                 permissions: permissions.levels.visitatore
             },
@@ -71,14 +71,16 @@ class Ribbon {
         for(var i = 0; i < ribbon.length; i++) {
             var button = ribbon[i];
             var enableScriptName = button.enableScript;
-            var buttonDisabled = button.enableScript ? window[enableScriptName]() : true;
+            var buttonEnabled = button.enableScript && typeof(window[enableScriptName]) == "function" ? window[enableScriptName]() : true;
             if(parseInt(shared.loginContext.delega_codice) >= button.permissions) {
-                this.ribbonHTML += `<div class="c-pointer ribbonButton mr-4 ${buttonDisabled ? "ribbonDisabled" : ""}" onclick="${button.action}" title="${button.title}">
-                                        <svg class="baseIcon ${button.cssClass}">
-                                            <use xlink:href="/assets/svg/sprite.svg#${button.icon}"></use>
-                                        </svg>
-                                        <span>${button.label}</span>
-                                    </div>`;
+                this.ribbonHTML += `<div class="ribbonButton mr-2 c-pointer ${buttonEnabled ? "" : "ribbonDisabled"}" onclick="${button.action}" title="${button.title}">
+                                        <div class="">
+                                            <i class="${button.icon} ribbonIcon ${button.cssClass}"></i>
+                                        </div>
+                                        <div>
+                                            <span>${button.label}</span>
+                                        </div>
+                                    </div>`
             }            
         }
         this.ribbonHTML += `</div><div id="warningBanner"></div>`

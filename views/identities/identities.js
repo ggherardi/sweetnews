@@ -1,6 +1,6 @@
 loginController = new Controller("#login");
 
-function switchToLogin() {
+function back() {
     pageContentController.switch();
 }
 
@@ -9,24 +9,11 @@ function buildIdentitiesList() {
     for(var i = 0; i < shared.userIdentities.length; i++) {
         var identity = shared.userIdentities[i];
         var codice = parseInt(identity.delega_codice);
-        var icon;
-        switch(codice) {
-            case 10:
-                icon = "person";
-                break;
-            case 20:
-                icon = "pie-chart";
-                break;
-            case 30:
-                icon = "briefcase";
-                break;
-        }
+        var icon = ImagesUtilities.getAccountImage(codice);
         html += `   <div class="identityRow c-pointer" onclick="loginWithIdentity(${identity.id_utente}, ${identity.delega_codice})">
                         <div class="row">
                             <div class="col-sm-4">
-                                <svg class="identityIcon purple">
-                                    <use xlink:href="/assets/svg/sprite.svg#${icon}"></use>
-                                </svg>
+                                <i class="${icon} identityIcon purple"></i>
                             </div>
                         <div class="col-sm-8">${identity.delega_nome}</div>
                         </div>

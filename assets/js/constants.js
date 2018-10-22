@@ -9,6 +9,24 @@ class Permissions {
     }
 }
 
+class ImagesUtilities {
+    static getAccountImage(codice) {
+        var icon = "";
+        switch(codice) {
+            case permissions.levels.visitatore:
+                icon = "fas fa-user";
+                break;
+            case permissions.levels.redattore:
+                icon = "far fa-id-badge";
+                break;
+            case permissions.levels.caporedattore:
+                icon = "fas fa-user-tie";
+                break;
+        }
+        return icon;
+    }
+}
+
 class Approval {    
     static getStates() {
         return {
@@ -72,6 +90,7 @@ class DataTableLanguage {
 }
 
 var permissions = new Permissions();
+var imagesUtilities = new ImagesUtilities();
 var placeholders = new Placeholders();
 var httpUtilities = new HttpUtilities();
 var dataTableLanguage = new DataTableLanguage();
