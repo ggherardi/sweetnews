@@ -141,6 +141,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	max-width: 70px;
 	text-align: center;
 	transition: all 0.5s ease-in-out;
+	display: inline-block;
 }
 
 .ribbonButton:hover {
@@ -149,6 +150,11 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 
 .icon-floppy-disk::after {
 	color: lightblue;
+}
+
+.ribbonDisabled {
+	opacity: 0.25;
+	pointer-events: none;
 }
 
 #warningBanner {
@@ -414,6 +420,23 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	border-left-color: #f56a6a;
 }
 
+@media screen and (min-width: 1280px) and (max-width: 1530px) {
+	.crumbs ul li a {
+		line-height: 3.4;
+		padding: 0 10px 0 55px;
+		margin: 10px 10px 10px 0; 
+		font-size: 14px;
+	}
+}
+
+@media screen and (min-width: 1280px) and (max-width: 1370px) {
+	.crumbs ul li a {
+		line-height: 4;
+		padding: 0 5px 0 55px;
+		margin: 10px 10px 10px 0; 
+		font-size: 12px;
+	}
+}
 
 /* .crumbs ul li:first-child a {
 	border-top-left-radius: 10px; border-bottom-left-radius: 10px;

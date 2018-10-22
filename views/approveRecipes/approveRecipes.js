@@ -10,7 +10,6 @@ var approvalDTOptions = {
         { data: "codice_stato_approvativo" },
         { data: "titolo_ricetta" },
         { data: "nome_tipologia" },
-        { data: "difficolta" },
         { data: "username_utente_creatore" },
         { data: "username_utente_approvatore" },
         { data: "nome_stato_approvativo" },
@@ -24,7 +23,7 @@ var approvalDTOptions = {
     buttons: [
         // { text: "Crea nuova ricetta", action: createRecipe },
         // { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
-        // { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+        { extend: "selectedSingle", text: "Visualizza e prendi in carico ricetta", action: viewRecipe }
     ],
     language: dataTableLanguage.italian,
     responsive: {
@@ -137,6 +136,7 @@ function getAllRecipesWithStateSuccess(data) {
     html +=        `<tbody>`;            
     for(var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i];
+        var dateCell = formatDateCell(recipe.data_flusso);
         var difficultyCell = formatDifficultyCell(i);
             html +=     `<tr>
                             <td>${recipe.id_ricetta}</td>
@@ -145,18 +145,17 @@ function getAllRecipesWithStateSuccess(data) {
                             <td>${recipe.codice_stato_approvativo}</td>
                             <td>${recipe.titolo_ricetta}</td>  
                             <td>${recipe.nome_tipologia}</td>                           
-                            <td>${difficultyCell}</td>
                             <td>${recipe.username_utente_creatore}</td>
                             <td>${recipe.username_utente_approvatore ? recipe.username_utente_approvatore : "da prendere in carico"}</td>
                             <td>${recipe.nome_stato_approvativo}</td>
-                            <td>${recipe.data_flusso}</td>
+                            <td>${dateCell}</td>
                         </tr>`;
     }	
     html += `       </tbody>
                 </table>`;
     this.tableContainer.html(html);
     approvalDT = $(`#${this.tableName}`).DataTable(approvalDTOptions);
-    setDifficultyCellsInTable(recipes);
+    // setDifficultyCellsInTable(recipes);
     // enableEditButtonLogic();
 }
 
@@ -168,7 +167,6 @@ function BuidUserRecipesTableHead() {
     }
     html += `           <th scope="col">Titolo ricetta</th>
                         <th scope="col">Tipologia</th>
-                        <th scope="col">Difficoltà</th>
                         <th scope="col">Autore</th>
                         <th scope="col">Approvatore</th>
                         <th scope="col">Stato approvativo</th>
@@ -193,6 +191,10 @@ function formatDifficultyCell(i) {
                     <label for="star1_${i}" title="text">1 star</label>
                 </div>
             </form>`;
+}
+
+function formatDateCell(strDate) {
+    return shared.dateUtilities.formatDateFromString(strDate);
 }
 
 function setDifficultyCellsInTable(recipes) {
@@ -232,6 +234,11 @@ function viewRecipe(e, dt, node, config) {
 function isRecipeEditable(e, dt, node, config) {
     console.log(dt);
     return false;
+}
+
+/* RIBBON BUTTONS ENABLE SCRIPTS */
+function enableRecipeTakeCharge() {
+    return Recipe.codice_stato_approvativo == Approval.getStates().inviata && shared.loginContext.delega_codice == permissions.levels.redattore
 }
 
 /* INIT */

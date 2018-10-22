@@ -27,6 +27,36 @@ class Ribbon {
                 cssClass: `grey`,
                 order: 3,
                 permissions: permissions.levels.visitatore
+            },
+            takeCharge: {
+                title: `Prendi in carico la ricetta corrente`,
+                label: `Prendi in carico`,
+                action: `takeCharge();`,
+                enableScript: `enableRecipeTakeCharge`,
+                icon: `share-boxed`,
+                cssClass: `grey`,
+                order: 4,
+                permissions: permissions.levels.redattore
+            },
+            validate: {
+                title: `Approva ricetta`,
+                label: `Approva`,
+                action: `approve();`,
+                enableScript: `enableApprove`,
+                icon: `share-boxed`,
+                cssClass: `grey`,
+                order: 4,
+                permissions: permissions.levels.redattore
+            },
+            reject: {
+                title: `Rifiuta ricetta`,
+                label: `Rifiuta`,
+                action: `validate();`,
+                enableScript: `enableReject`,
+                icon: `share-boxed`,
+                cssClass: `grey`,
+                order: 5,
+                permissions: permissions.levels.redattore
             }
         }
     }
@@ -40,8 +70,10 @@ class Ribbon {
         this.ribbonHTML = ` <div id="ribbon" class="mt-3">`;
         for(var i = 0; i < ribbon.length; i++) {
             var button = ribbon[i];
+            var enableScriptName = button.enableScript;
+            var buttonDisabled = button.enableScript ? window[enableScriptName]() : true;
             if(parseInt(shared.loginContext.delega_codice) >= button.permissions) {
-                this.ribbonHTML += `<div class="c-pointer ribbonButton mr-4" style="display: inline-block" onclick="${button.action}" title="${button.title}">
+                this.ribbonHTML += `<div class="c-pointer ribbonButton mr-4 ${buttonDisabled ? "ribbonDisabled" : ""}" onclick="${button.action}" title="${button.title}">
                                         <svg class="baseIcon ${button.cssClass}">
                                             <use xlink:href="/assets/svg/sprite.svg#${button.icon}"></use>
                                         </svg>

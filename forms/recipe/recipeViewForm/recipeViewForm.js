@@ -26,7 +26,7 @@ function init() {
 }
 
 function initControlsPopulation(data) {
-    if(data) {
+    if(data && JSON.parse(data)) {
         Recipe = JSON.parse(data);
         populateTextControls();
         populateRadioControl();

@@ -34,6 +34,35 @@ class Shared {
             return html;
         }
         this.loginManager = new LoginManager();
+
+        class DateUtilities {
+            constructor() { }
+
+            formatDateFromString(dateString) {
+                var date = new Date(dateString);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+                return `${day < 10 ? `0${day}` : day}-${month < 10 ? `0${month}` : month}-${year}`;
+            }
+            
+            formatDateToday() {
+                var today = new Date();
+                var day = today.getDate();
+                var month = today.getMonth() + 1;
+                var year = today.getFullYear();
+                return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`;
+            }
+            
+            switchDateDigitsPosition(dateString) {
+                dateString = dateString.replace(/\//g, "-");
+                var arr = dateString.split("-");
+                var newDateString = `${arr[2]}-${arr[1]}-${arr[0]}`;
+                return newDateString;
+            }
+        }
+        this.dateUtilities = new DateUtilities();
+
         this.loginContext = {
             username: null,
             nome: null,

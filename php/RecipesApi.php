@@ -84,6 +84,8 @@ class RecipesApi {
             TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");
             $id_ricetta = $_POST["id_ricetta"];
             $id_utente = $this->loginContext->id_utente;
+            $isRedattore = $this->loginContext->delega_codice >= PermissionsConstants::REDATTORE;
+            Logger::Write("LOGINCONTEXT: ".json_encode( $this->loginContext), $GLOBALS["CorrelationID"]);
             $query = 
                 "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, ri.messaggio,
                     ti.id_tipologia, ti.nome_tipologia, sfa.data_flusso, sfa.id_stato_approvativo, sfa.id_stato_approvativo_precedente,
@@ -94,9 +96,10 @@ class RecipesApi {
                 INNER JOIN stato_flusso_approvativo sfa
                 ON ri.id_ricetta = sfa.id_ricetta      
                 WHERE ri.id_ricetta = ?
-                AND ri.id_utente = ?";
+                %s";
+            $query = sprintf($query, $isRedattore ? "" : "AND ri.id_utente = ?");
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("dd", array($id_ricetta, $id_utente));
+            $this->dbContext->BindStatementParameters(($isRedattore ? "d" : "dd"), ($isRedattore ? array($id_ricetta) : array($id_ricetta, $id_utente)));
             $res = $this->dbContext->ExecuteStatement();
             $recipeRow = $res->fetch_assoc();
             Logger::Write("ROW ".json_encode($row), $GLOBALS["CorrelationID"]);
