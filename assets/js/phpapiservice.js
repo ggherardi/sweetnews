@@ -201,6 +201,15 @@ class AccountsApi extends RestClient {
         return super.execute(); 
     }    
 
+    getRecipeAuthorDetails(id_utente) {
+        this.data = {
+            action: "getRecipeAuthorDetails",
+            id_utente: id_utente
+        }
+        return super.execute(); 
+    }    
+
+
     createBusinessAccount(accountNewForm) {
         accountNewForm = JSON.stringify(accountNewForm);
         this.data = {

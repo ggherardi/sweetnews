@@ -20,6 +20,7 @@ class ApprovalFlowConstants {
 class LoginContext {
     public $username;
     public $id_utente;
+    public $id_tipo_delega;
     public $delega_codice;
     public $delega_nome;
     public $matricola;
@@ -32,6 +33,7 @@ class LoginContext {
     public function __construct($row) {
         $this->username = $row["username"];
         $this->id_utente = $row["id_utente"];
+        $this->id_tipo_delega = $row["id_tipo_delega"];
         $this->delega_codice = $row["delega_codice"];
         $this->delega_nome = $row["delega_nome"];
         $this->matricola = $row["id_utente"];

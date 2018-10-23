@@ -33,8 +33,8 @@ class Ribbon {
                 label: `Prendi in carico`,
                 action: `takeCharge();`,
                 enableScript: `enableRecipeTakeCharge`,
-                icon: `share-boxed`,
-                cssClass: `grey`,
+                icon: `fas fa-tasks`,
+                cssClass: `takeChargeButton`,
                 order: 4,
                 permissions: permissions.levels.redattore
             },
@@ -72,12 +72,13 @@ class Ribbon {
             var button = ribbon[i];
             var enableScriptName = button.enableScript;
             var buttonEnabled = button.enableScript && typeof(window[enableScriptName]) == "function" ? window[enableScriptName]() : true;
+            var isLongText = button.label.length > 9;
             if(parseInt(shared.loginContext.delega_codice) >= button.permissions) {
                 this.ribbonHTML += `<div class="ribbonButton mr-2 c-pointer ${buttonEnabled ? "" : "ribbonDisabled"}" onclick="${button.action}" title="${button.title}">
                                         <div class="">
                                             <i class="${button.icon} ribbonIcon ${button.cssClass}"></i>
                                         </div>
-                                        <div>
+                                        <div ${isLongText ? `class="twoRowsButton"` : ""}>
                                             <span>${button.label}</span>
                                         </div>
                                     </div>`

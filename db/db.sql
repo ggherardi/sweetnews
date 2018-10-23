@@ -63,7 +63,7 @@ CREATE TABLE `delega` (
 
 LOCK TABLES `delega` WRITE;
 /*!40000 ALTER TABLE `delega` DISABLE KEYS */;
-INSERT INTO `delega` VALUES (1,1),(3,1),(1,8),(1,66),(1,69),(2,85);
+INSERT INTO `delega` VALUES (1,1),(2,1),(3,1),(1,8),(1,66),(1,69),(2,85);
 /*!40000 ALTER TABLE `delega` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -439,12 +439,24 @@ DROP TABLE IF EXISTS `stato_approvativo`;
 CREATE TABLE `stato_approvativo` (
   `id_stato_approvativo` int(11) NOT NULL AUTO_INCREMENT,
   `id_stato_approvativo_precedente` int(11) DEFAULT NULL,
+  `id_stato_approvativo_valutazione` int(11) DEFAULT NULL,
+  `id_stato_approvativo_approvazione` int(11) DEFAULT NULL,
+  `id_stato_approvativo_rifiuto` int(11) DEFAULT NULL,
   `codice_stato_approvativo` int(11) NOT NULL,
   `nome_stato_approvativo` varchar(45) NOT NULL,
   `stato_approvativo_isLeaf` tinyint(4) DEFAULT NULL,
+  `id_delega_necessaria` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_stato_approvativo`),
   KEY `fk_stato_stato_precedente_idx` (`id_stato_approvativo_precedente`),
-  CONSTRAINT `fk_stato_stato_precedente` FOREIGN KEY (`id_stato_approvativo_precedente`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_stato_stato_valutazione_idx` (`id_stato_approvativo_valutazione`),
+  KEY `fk_stato_stato_approvazione_idx` (`id_stato_approvativo_approvazione`),
+  KEY `fk_stato_stato_rifiuto_idx` (`id_stato_approvativo_rifiuto`),
+  KEY `fk_stato_approvativo_tipo_delega_idx` (`id_delega_necessaria`),
+  CONSTRAINT `fk_stato_approvativo_tipo_delega` FOREIGN KEY (`id_delega_necessaria`) REFERENCES `tipo_delega` (`id_tipo_delega`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_stato_stato_approvazione` FOREIGN KEY (`id_stato_approvativo_approvazione`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_stato_stato_precedente` FOREIGN KEY (`id_stato_approvativo_precedente`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_stato_stato_rifiuto` FOREIGN KEY (`id_stato_approvativo_rifiuto`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_stato_stato_valutazione` FOREIGN KEY (`id_stato_approvativo_valutazione`) REFERENCES `stato_approvativo` (`id_stato_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -454,7 +466,7 @@ CREATE TABLE `stato_approvativo` (
 
 LOCK TABLES `stato_approvativo` WRITE;
 /*!40000 ALTER TABLE `stato_approvativo` DISABLE KEYS */;
-INSERT INTO `stato_approvativo` VALUES (1,NULL,0,'bozza',0),(2,1,5,'inviata',0),(3,2,10,'in validazione',0),(4,2,15,'non idonea',1),(5,2,20,'idonea',0),(6,5,25,'in approvazione',0),(7,5,30,'non approvata',1),(8,5,35,'approvata',0);
+INSERT INTO `stato_approvativo` VALUES (1,NULL,NULL,NULL,NULL,0,'bozza',0,1),(2,1,3,NULL,NULL,5,'inviata',0,2),(3,2,NULL,5,4,10,'in validazione',0,2),(4,2,NULL,NULL,NULL,15,'non idonea',1,NULL),(5,2,6,NULL,NULL,20,'idonea',0,3),(6,5,NULL,8,7,25,'in approvazione',0,3),(7,5,NULL,NULL,NULL,30,'non approvata',1,NULL),(8,5,NULL,NULL,NULL,35,'approvata',0,NULL);
 /*!40000 ALTER TABLE `stato_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -713,4 +725,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-21 22:57:00
+-- Dump completed on 2018-10-24  1:18:20

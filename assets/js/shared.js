@@ -8,17 +8,16 @@ class Shared {
                 // shared.loginContext = JSON.parse(stringLoginContext);
                 shared.loginContext = new LoginContext(stringLoginContext);
                 mainContentController.loadView(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal);
-                logoutController.loadComponent(views.AllComponents.logout);
+                logoutController.loadComponent(views.AllComponents.logout);                
                 accountController.loadComponent(views.AllComponents.account);
                 breadcrumb.rebuildBreadcrumb(views.allViews.personal);
                 menu.buildMenu();
-                menu.setMenuItemActive(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal);
             }
 
             logout() {
                 shared.loginContext = new LoginContext(JSON.stringify({ delega_codice: 0 }));
                 $(placeholders.logoutContainer).html("");
-                $(placeholders.accountContainer).html("");
+                accountController.loadComponent(views.AllComponents.account);
                 $("#navbar__home").children().first().click();
                 menu.buildMenu();
                 menu.setMenuItemActive(views.allViews.home);

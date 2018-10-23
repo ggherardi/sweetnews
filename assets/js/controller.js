@@ -202,6 +202,7 @@ class Views {
                 this.sidebar = { title: "Sidebar", name: "sidebar", path: "components/sidebar/sidebar" };
                 this.logout = { title: "Logout", name: "logout", path: "components/account/logout" };
                 this.account = { title: "Account", name: "account", path: "components/account/account" };
+                this.author = { title: "Author", name: "author", path: "components/author/author" };
             }
         }
         this.AllComponents = new AllComponents();

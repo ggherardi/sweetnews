@@ -3,15 +3,17 @@
         <span class="ml-2">Stato approvazione ricetta:</span>
         <div id="flowStepsCrumb" class="mt-2"></div>
     </div>
+    <div id="authorView" class="mt-4 mb-2 text-left"></div>
+    <div id="approverView" class="mt-2 mb-2 text-left"></div>
     <div>
-        <form id="recipeEditForm" class="form mt-3 recipeForm">
-            <label for="recipeEditForm__titolo">Titolo</label>
-            <input id="recipeEditForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" disabled>
-            <label for="recipeEditForm__tipologia" class="mt-2">Tipologia</label>
-            <select id="recipeEditForm__tipologia" class="form-control" type="select" placeholder="tipologia" disabled></select>
+        <form id="recipreViewForm" class="form mt-3 recipeForm">
+            <label for="recipreViewForm__titolo">Titolo</label>
+            <input id="recipreViewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" disabled>
+            <label for="recipreViewForm__tipologia" class="mt-2">Tipologia</label>
+            <select id="recipreViewForm__tipologia" class="form-control" type="select" placeholder="tipologia" disabled></select>
             <label class="mt-2">Difficoltà</label>
             <div class="d-inlineblock">
-                <div id="recipeEditForm__difficolta" class="rate mb-2 box rate-disabled rate-displayOnly recipeForm__difficolta" disabled>
+                <div id="recipreViewForm__difficolta" class="rate mb-2 box rate-disabled rate-displayOnly recipeForm__difficolta" disabled>
                     <input type="radio" id="star5" name="rate" value="5" disabled />
                     <label for="star5" title="text">5 stars</label>
                     <input type="radio" id="star4" name="rate" value="4" disabled />
@@ -24,17 +26,17 @@
                     <label for="star1" title="text">1 star</label>
                 </div>
             </div>
-            <label for="recipeEditForm__tempo_cottura">Tempo di cottura (min)</label>
-            <input id="recipeEditForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" disabled>
-            <label for="recipeEditForm__preparazione" class="mt-2">Preparazione</label>
-            <textarea id="recipeEditForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*" disabled></textarea>
-            <label for="recipeEditForm__porzioni" class="mt-2">Porzioni</label>
-            <input id="recipeEditForm__porzioni" class="form-control" type="number" placeholder="numero porzioni*" min="0" max="20" disabled>
-            <label for="recipeEditForm__note" class="mt-2">Note</label>
-            <textarea id="recipeEditForm__note" class="form-control" row="6" placeholder="note" disabled></textarea>
-            <label for="recipeEditForm__messaggio" class="mt-2">Messaggio per la redazione</label>
-            <textarea id="recipeEditForm__messaggio" class="form-control" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)" disabled></textarea>
-            <div id="recipeEditForm__ingredients" class="recipeForm__ingredients">
+            <label for="recipreViewForm__tempo_cottura">Tempo di cottura (min)</label>
+            <input id="recipreViewForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" disabled>
+            <label for="recipreViewForm__preparazione" class="mt-2">Preparazione</label>
+            <textarea id="recipreViewForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*" disabled></textarea>
+            <label for="recipreViewForm__porzioni" class="mt-2">Porzioni</label>
+            <input id="recipreViewForm__porzioni" class="form-control" type="number" placeholder="numero porzioni*" min="0" max="20" disabled>
+            <label for="recipreViewForm__note" class="mt-2">Note</label>
+            <textarea id="recipreViewForm__note" class="form-control" row="6" placeholder="note" disabled></textarea>
+            <label for="recipreViewForm__messaggio" class="mt-2">Messaggio per la redazione</label>
+            <textarea id="recipreViewForm__messaggio" class="form-control" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)" disabled></textarea>
+            <div id="recipreViewForm__ingredients" class="recipeForm__ingredients">
                 <div class="form-row mt-2">
                     <div class="col-sm-6">
                         <span>Ingrediente</span>

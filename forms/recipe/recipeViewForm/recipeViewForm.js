@@ -14,15 +14,24 @@ function back() {
     pageContentController.switch();
 }
 
+function takeCharge() {
+    
+}
+
 /* FORM POPULATION */
 function init() {
-    var loader = new Loader("#recipeEditForm");
+    var loader = new Loader("#recipreViewForm");
     loader.showLoader();
     var recipesApi = new RecipesApi();
     recipesApi.getRecipe(window.RecipeId)
         .done(initControlsPopulation)
         .fail(RestClient.reportError)
         .always(() => loader.hideLoader());
+
+    if(window.RecipeApprovaFlowState && window.RecipeApprovaFlowState >= Approval.getStates().inviata) {
+        var recipeAuthorController = new Controller("#authorView");
+        recipeAuthorController.loadComponent(views.AllComponents.author);
+    }
 }
 
 function initControlsPopulation(data) {
@@ -41,12 +50,12 @@ function initControlsPopulation(data) {
 }
 
 function populateTextControls() {
-    $("#recipeEditForm__titolo").val(Recipe.titolo_ricetta);
-    $("#recipeEditForm__tempo_cottura").val(Recipe.tempo_cottura);
-    $("#recipeEditForm__preparazione").val(Recipe.preparazione);
-    $("#recipeEditForm__porzioni").val(Recipe.porzioni);
-    $("#recipeEditForm__note").val(Recipe.note);
-    $("#recipeEditForm__messaggio").val(Recipe.messaggio);
+    $("#recipreViewForm__titolo").val(Recipe.titolo_ricetta);
+    $("#recipreViewForm__tempo_cottura").val(Recipe.tempo_cottura);
+    $("#recipreViewForm__preparazione").val(Recipe.preparazione);
+    $("#recipreViewForm__porzioni").val(Recipe.porzioni);
+    $("#recipreViewForm__note").val(Recipe.note);
+    $("#recipreViewForm__messaggio").val(Recipe.messaggio);
 }
 
 function populateRadioControl() {
@@ -62,7 +71,7 @@ function populateTipologiaSelect() {
 
 function getRecipeTopologiesSuccess(data) {
     topologies = JSON.parse(data);
-    var topologiesSelect = document.getElementById("recipeEditForm__tipologia");
+    var topologiesSelect = document.getElementById("recipreViewForm__tipologia");
     for(var i = 0; i < topologies.length; i++) {
         let topology = topologies[i];
         let option = document.createElement("option");
@@ -79,28 +88,28 @@ function populateIngredientsControl() {
         var ingredient = Recipe.ingredienti[i];
         var controlNumber = i + 1;
         createNewIngredientControl();
-        $(`#recipeEditForm__ingredient_id_${controlNumber}`).val(ingredient.id_ingrediente);
-        $(`#recipeEditForm__ingredient_nome_${controlNumber}`).val(ingredient.nome_ingrediente);
-        $(`#recipeEditForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
-        $(`#recipeEditForm__ingredient_calorie_${controlNumber}`).val(ingredient.calorie);
+        $(`#recipreViewForm__ingredient_id_${controlNumber}`).val(ingredient.id_ingrediente);
+        $(`#recipreViewForm__ingredient_nome_${controlNumber}`).val(ingredient.nome_ingrediente);
+        $(`#recipreViewForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
+        $(`#recipreViewForm__ingredient_calorie_${controlNumber}`).val(ingredient.calorie);
     }
 }
 
 function createNewIngredientControl() {
-    var ingredientsControlsContainer = $("#recipeEditForm__ingredients");
-    var ingredientsCount = $("#recipeEditForm__ingredients .ingredientRow").length;    
+    var ingredientsControlsContainer = $("#recipreViewForm__ingredients");
+    var ingredientsCount = $("#recipreViewForm__ingredients .ingredientRow").length;    
     var currentControlNumber = ingredientsCount + 1;
     var html = `<div id="ingredientRow_${currentControlNumber}" class="ingredientRow form-row mt-2" data-rowid="${currentControlNumber}">
-                    <input id="recipeEditForm__ingredient_id_${currentControlNumber}" class="ingredient_id_${currentControlNumber}" type="hidden">
+                    <input id="recipreViewForm__ingredient_id_${currentControlNumber}" class="ingredient_id_${currentControlNumber}" type="hidden">
                     <div class="col-sm-6 autocomplete">
-                        <input id="recipeEditForm__ingredient_nome_${currentControlNumber}" 
+                        <input id="recipreViewForm__ingredient_nome_${currentControlNumber}" 
                             class="form-control ingredient_nome_${currentControlNumber}" 
                             type="text" 
                             placeholder="ingrediente" 
                             disabled>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeEditForm__ingredient_quantita_${currentControlNumber}" 
+                        <input id="recipreViewForm__ingredient_quantita_${currentControlNumber}" 
                             class="form-control ingredient_quantita_${currentControlNumber}" 
                             type="number" 
                             min="0.01" 
@@ -110,7 +119,7 @@ function createNewIngredientControl() {
                             disabled>
                     </div>
                     <div class="col-sm-3">
-                        <input id="recipeEditForm__ingredient_calorie_${currentControlNumber}" 
+                        <input id="recipreViewForm__ingredient_calorie_${currentControlNumber}" 
                             class="form-control ingredient_calorie_${currentControlNumber}" 
                             type="number" 
                             min="0" 

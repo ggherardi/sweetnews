@@ -70,10 +70,10 @@ function initTopologies() {
 
 function initMasterpageComponents() {
     menu.buildMenu();
+    accountController.loadComponent(views.AllComponents.account);
     initHome();
     if(shared.loginContext.delega_codice > 0) {
         logoutController.loadComponent(views.AllComponents.logout);
-        accountController.loadComponent(views.AllComponents.account);
     }
 }
 

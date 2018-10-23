@@ -207,6 +207,8 @@ function viewRecipe(e, dt, node, config) {
     var row = dt.rows({ selected: true }).data()[0];
     window.RecipeId = row.id_ricetta;
     window.RecipeApprovaFlowState = row.codice_stato_approvativo;
+    window.RecipeAuthor = row.id_utente_creatore;
+    window.RecipeApprover = row.id_utente_approvatore;
     pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
     pageContentController.switch();
 }

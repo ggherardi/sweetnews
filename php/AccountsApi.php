@@ -86,6 +86,23 @@ class AccountsApi {
         exit(json_encode($array));
     }
 
+    function GetRecipeAuthorDetails() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");
+        $id_utente = $_POST["id_utente"];
+        $query = 
+            "SELECT u.username, u.nome, u.cognome, due.indirizzo, due.telefono_abitazione, due.telefono_cellulare, due.email, due.data_nascita
+            FROM utente u
+            INNER JOIN dettaglio_utente_esterno due
+            USING (id_utente)
+            WHERE ? ";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("d", array($id_utente)); 
+        $res = $this->dbContext->ExecuteStatement();
+        $row = $res->fetch_assoc();  
+        exit(json_encode($row));
+    }
+
     function CreateBusinessAccount() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
@@ -219,6 +236,9 @@ class AccountsApi {
                 break;
             case "getBusinessRoles":
                 self::GetBusinessRoles();
+                break;
+            case "getRecipeAuthorDetails":
+                self::GetRecipeAuthorDetails();
                 break;
             case "createBusinessAccount":
                 self::CreateBusinessAccount();
