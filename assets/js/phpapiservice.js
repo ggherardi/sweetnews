@@ -155,11 +155,39 @@ class ApprovalFlowApi extends RestClient {
         return super.execute(); 
     }
 
-    getAllRecipesWithStateInRange(statesRange) {
+    startApprovalValidation(parameters) {
+        parameters = JSON.stringify(parameters);
+        this.data = {
+            action: "startApprovalValidation",
+            parameters: parameters
+        }
+        return super.execute(); 
+    }
+    
+    approveRejectRecipe(parameters) {
+        parameters = JSON.stringify(parameters);
+        this.data = {
+            action: "approveRejectRecipe",
+            parameters: parameters
+        }
+        return super.execute(); 
+    }
+
+    getAllRecipesWithStateInRange(args) {
+        if(!args.minState) {
+            return this.getRejectedRecipes();
+        }
+        args = JSON.stringify(args);
         this.data = {
             action: "getAllRecipesWithStateInRange",
-            minState: statesRange.minState,
-            maxState: statesRange.maxState
+            args: args
+        }
+        return super.execute(); 
+    }   
+
+    getRejectedRecipes() {
+        this.data = {
+            action: "getRejectedRecipes"
         }
         return super.execute(); 
     }   

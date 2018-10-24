@@ -51,7 +51,7 @@ function initHomepageAnonymous() {
 
 function initUser(loginContext) {
     if(shared.loginContext.delega_codice == 0) {
-        shared.loginContext = loginContext;
+        shared.loginContext = new LoginContext(JSON.stringify(loginContext));
         shared.loginContext.isAdmin = shared.loginContext.delega_codice >= 30;
     }
 }

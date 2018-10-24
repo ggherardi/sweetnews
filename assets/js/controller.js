@@ -181,7 +181,7 @@ class Views {
                     constructor(views) {
                         this.newForm = { title: "Nuova ricetta", name: "recipeNewForm", path: "forms/recipe/recipeNewForm/recipeNewForm", parent: views.allViews.manageRecipes, ribbon: [ ribbon.buttons.back, ribbon.buttons.save ] };
                         this.editForm = { title: "Modifica e invia ricetta", name: "recipeNewForm", path: "forms/recipe/recipeEditForm/recipeEditForm", parent: views.allViews.manageRecipes, ribbon: [ ribbon.buttons.back, ribbon.buttons.save, ribbon.buttons.send ] };    
-                        this.viewForm = { title: "Visualizza ricetta", name: "recipeViewForm", path: "forms/recipe/recipeViewForm/recipeViewForm", parent: views.allViews.manageRecipes, ribbon: [ ribbon.buttons.back, ribbon.buttons.takeCharge ] };    
+                        this.viewForm = { title: "Visualizza ricetta", name: "recipeViewForm", path: "forms/recipe/recipeViewForm/recipeViewForm", parent: views.allViews.manageRecipes, ribbon: [ ribbon.buttons.back, ribbon.buttons.takeCharge, ribbon.buttons.approve, ribbon.buttons.reject ] };    
                     }
                 }
                 this.recipes = new RecipeForms(views);

@@ -4,6 +4,7 @@ WarningIds = [];
 AllIngredients = [];
 InitialIngredientsCount = 0;
 WarningMessages = {
+    approvalFlowWarning: "approvalFlowWarning",
     saveWarning: "saveWarning",
     noIngredientsWarning: "noIngredientsWarning",
     loadingError: "loadingError"
@@ -15,11 +16,64 @@ function back() {
 }
 
 function takeCharge() {
-    
+    Ribbon.removeMessage(WarningIds[WarningMessages.approvalFlowWarning]);
+    var approvalFlowApi = new ApprovalFlowApi();
+    var parameters = {
+        id_stato_approvativo_valutazione: Recipe.id_stato_approvativo_valutazione,
+        id_ricetta: Recipe.id_ricetta
+    };
+    approvalFlowApi.startApprovalValidation(parameters)
+        .done(startApprovalValidationSuccess)
+        .fail(RestClient.reportError);
+}
+
+function startApprovalValidationSuccess(data) {
+    if(data && JSON.parse(data)) {
+        data = JSON.parse(data);
+        window.RecipeApprover = data.id_utente_approvatore;
+        window.RecipeApprovaFlowState = data.codice_stato_approvativo;
+        pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
+        initApprovals();
+    } else {
+        flowError();
+    }
+}
+
+function approve() {
+    approveReject(Recipe.id_stato_approvativo_approvazione);
+}
+
+function reject() {
+    approveReject(Recipe.id_stato_approvativo_rifiuto);
+} 
+
+function approveReject(idNextstep) {
+    Ribbon.removeMessage(WarningIds[WarningMessages.approvalFlowWarning]);
+    var approvalFlowApi = new ApprovalFlowApi();
+    var parameters = {
+        idNextStep: idNextstep,
+        id_ricetta: Recipe.id_ricetta
+    };
+    approvalFlowApi.approveRejectRecipe(parameters)
+        .done(approveRejectSuccess)
+        .fail(RestClient.reportError);
+}
+
+function approveRejectSuccess(data) {
+    if(data && JSON.parse(data)) {
+        data = JSON.parse(data);
+        window.RecipeApprover = data.id_utente_approvatore;
+        window.RecipeApprovaFlowState = data.codice_stato_approvativo;
+        pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
+        initApprovals();
+    } else {
+        flowError();
+    }
 }
 
 /* FORM POPULATION */
 function init() {
+    initErrorMessages();
     var loader = new Loader("#recipreViewForm");
     loader.showLoader();
     var recipesApi = new RecipesApi();
@@ -32,6 +86,13 @@ function init() {
         var recipeAuthorController = new Controller("#authorView");
         recipeAuthorController.loadComponent(views.AllComponents.author);
     }
+}
+
+function initErrorMessages() {
+    for(var i = 0; i < window.ButtonEnablingWarningMessages.length; i ++) {
+        Ribbon.setMessage(window.ButtonEnablingWarningMessages[i]);        
+    }
+    delete window.ButtonEnablingWarningMessages;
 }
 
 function initControlsPopulation(data) {
@@ -87,11 +148,12 @@ function populateIngredientsControl() {
     for(var i = 0; i < Recipe.ingredienti.length; i++) {
         var ingredient = Recipe.ingredienti[i];
         var controlNumber = i + 1;
+        var ingredientCalories = parseFloat(ingredient.quantita) * parseFloat(ingredient.calorie);
         createNewIngredientControl();
         $(`#recipreViewForm__ingredient_id_${controlNumber}`).val(ingredient.id_ingrediente);
         $(`#recipreViewForm__ingredient_nome_${controlNumber}`).val(ingredient.nome_ingrediente);
         $(`#recipreViewForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
-        $(`#recipreViewForm__ingredient_calorie_${controlNumber}`).val(ingredient.calorie);
+        $(`#recipreViewForm__ingredient_calorie_${controlNumber}`).val(ingredientCalories);
     }
 }
 
@@ -154,6 +216,11 @@ function resetVariables() {
     delete AllIngredients;
     delete InitialIngredientsCount;
     delete WarningMessages;
+}
+
+function flowError() {
+    var messageId = Ribbon.setMessage("Si è verificato un errore durante l'avanzamento del flusso.");
+    WarningIds[WarningMessages.approvalFlowWarning] = messageId;
 }
 
 /* Init */

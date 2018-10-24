@@ -164,6 +164,14 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	color: #000000;
 }
 
+.approveButton {
+	color: #41ba00;
+}
+
+.rejectButton {
+	color: #c40000;
+}
+
 .ribbonIcon {
 	font-size: 40px;
 }
@@ -462,17 +470,12 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	}
 }
 
-/* .crumbs ul li:first-child a {
-	border-top-left-radius: 10px; border-bottom-left-radius: 10px;
-} */
-
 .crumbs ul li:first-child a:before {
 	display: none; 
 }
 
 .crumbs ul li:last-child a {
 	padding-right: 50px;
-	/* border-top-right-radius: 10px; border-bottom-right-radius: 10px; */
 }
 .crumbs ul li:last-child a:after {
 	display: none; 

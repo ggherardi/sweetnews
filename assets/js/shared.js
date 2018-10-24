@@ -1,3 +1,17 @@
+class LoginContext {
+    constructor(ctxJSON) {
+        var ctx = JSON.parse(ctxJSON ? ctxJSON : JSON.stringify({ delega_codice: 0 }));
+        this.username = ctx.username,
+        this.nome = ctx.nome,
+        this.id_utente = ctx.id_utente,
+        this.delega_codice = ctx.delega_codice,
+        this.delega_nome = ctx.delega_nome,
+        this.isRedattore = this.delega_codice == 20,
+        this.isCapoRedattore = this.delega_codice == 30,
+        this.isDipendente = this.delega_codice > 10
+    }
+}
+
 class Shared {
     constructor() {
         class LoginManager {
@@ -63,20 +77,6 @@ class Shared {
             }
         }
         this.dateUtilities = new DateUtilities();
-
-        class LoginContext {
-            constructor(ctxJSON) {
-                var ctx = JSON.parse(ctxJSON ? ctxJSON : JSON.stringify({ delega_codice: 0 }));
-                this.username = ctx.username,
-                this.nome = ctx.nome,
-                this.id_utente = ctx.id_utente,
-                this.delega_codice = ctx.delega_codice,
-                this.delega_nome = ctx.delega_nome,
-                this.isRedattore = this.delega_codice == 20,
-                this.isCapoRedattore = this.delega_codice == 30,
-                this.isDipendente = this.delega_codice > 10
-            }
-        }
         this.loginContext = new LoginContext();
 
         this.userIdentities = [{

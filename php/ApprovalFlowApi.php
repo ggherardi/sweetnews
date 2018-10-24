@@ -42,19 +42,74 @@ class ApprovalFlowApi {
     public function StartApprovalValidation() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE, PermissionsConstants::REDATTORE), "delega_codice"); 
-            $id_ricetta = $_POST["id_ricetta"];           
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice"); 
+            $parameters = json_decode($_POST["parameters"]);           
             $id_utente = $this->loginContext->id_utente;
             $query = 
                 "UPDATE flusso_approvativo
-                SET id_stato_approvativo = ?
+                SET 
+                id_stato_approvativo = ?,
+                id_utente_approvatore = ?,
+                data_flusso = DEFAULT  
                 WHERE id_ricetta = ?                                                                
                 AND id_utente_creatore <> ?
-                AND id_stato_approvativo = ?";
+                AND id_stato_approvativo IN (SELECT id_stato_approvativo 
+                                            FROM stato_approvativo
+                                            WHERE codice_stato_approvativo = ?
+                                            OR codice_stato_approvativo = ?)";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("dddd", array(ApprovalFlowConstants::INVIATA, $id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
+            $this->dbContext->BindStatementParameters("dddddd", array($parameters->id_stato_approvativo_valutazione, $id_utente, $parameters->id_ricetta, 
+                $id_utente, ApprovalFlowConstants::INVIATA, ApprovalFlowConstants::IDONEA));
             $res = $this->dbContext->ExecuteStatement();
-            exit(json_encode($res));
+
+            $query = 
+                "SELECT codice_stato_approvativo, id_utente_approvatore
+                FROM stato_flusso_approvativo
+                WHERE id_ricetta = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array($parameters->id_ricetta));
+            $res = $this->dbContext->ExecuteStatement();
+            $row = $res->fetch_assoc();
+            exit(json_encode($row));
+        } 
+        catch (Throwable $ex) {          
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
+            http_response_code(500); 
+        }
+    }
+
+    public function ApproveRejectRecipe() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice"); 
+            $parameters = json_decode($_POST["parameters"]);           
+            $id_utente = $this->loginContext->id_utente;
+            $query = 
+                "UPDATE flusso_approvativo
+                SET 
+                id_stato_approvativo = ?,
+                id_utente_approvatore = NULL,
+                data_flusso = DEFAULT  
+                WHERE id_ricetta = ?                                                                
+                AND id_utente_creatore <> ?
+                AND id_stato_approvativo IN (SELECT id_stato_approvativo 
+                                            FROM stato_approvativo
+                                            WHERE codice_stato_approvativo = ?
+                                            OR codice_stato_approvativo = ?)";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("ddddd", array($parameters->idNextStep, $parameters->id_ricetta, 
+                $id_utente, ApprovalFlowConstants::IN_VALIDAZIONE, ApprovalFlowConstants::IN_APPROVAZIONE));
+            $res = $this->dbContext->ExecuteStatement();
+
+            $query = 
+                "SELECT codice_stato_approvativo, id_utente_approvatore
+                FROM stato_flusso_approvativo
+                WHERE id_ricetta = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("d", array($parameters->id_ricetta));
+            $res = $this->dbContext->ExecuteStatement();
+            $row = $res->fetch_assoc();
+            exit(json_encode($row));
         } 
         catch (Throwable $ex) {          
             Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
@@ -64,17 +119,64 @@ class ApprovalFlowApi {
 
     public function GetAllRecipesWithStateInRange() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-        TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");
-        $minState = $_POST["minState"];        
-        $maxState = $_POST["maxState"];            
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");         
+        $args = json_decode($_POST["args"]);
+        $id_utente = $this->loginContext->id_utente;
         $query = 
             "SELECT *
             FROM anteprime_ricetta
-            WHERE codice_stato_approvativo >= ?
+            WHERE id_stato_approvativo NOT IN (SELECT id_stato_approvativo
+                                                    FROM stato_approvativo
+                                                    WHERE codice_stato_approvativo = ?
+                                                    OR codice_stato_approvativo = ?) 
+            AND codice_stato_approvativo >= ?
             %s";
-        $query = sprintf($query, $maxState ? "AND codice_stato_approvativo <= ?" : "");
+        $parametersTypes = "ddd";
+        $parameters = array();
+        $parameters[] = ApprovalFlowConstants::NON_IDONEA;
+        $parameters[] = ApprovalFlowConstants::NON_APPROVATA;
+        $parameters[] = $args->minState;
+        if($args->maxState) {
+            $query = sprintf($query, "AND codice_stato_approvativo <= ? %s");
+            $parametersTypes .= "d";
+            $parameters[] = $args->maxState;
+        } else {
+            $query = sprintf($query, "%s");
+        }
+        if($args->needsUserValidation) {
+            if($args->currentUser) {
+                $query = sprintf($query, "AND (id_utente_approvatore = ? AND id_utente_approvatore is not NULL)");
+            } else {
+                $query = sprintf($query, "AND (id_utente_approvatore <> ? OR id_utente_approvatore is NULL)");
+            }
+            $parametersTypes .= "d";
+            $parameters[] = $id_utente;
+        } else {
+            $query = sprintf($query, "");
+        }
         $this->dbContext->PrepareStatement($query);
-        $this->dbContext->BindStatementParameters(($maxState ? "dd" : "d"), ($maxState ? array($minState, $maxState) : array($minState)));
+        $this->dbContext->BindStatementParameters($parametersTypes, $parameters);
+        $res = $this->dbContext->ExecuteStatement();
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
+    public function GetRejectedRecipes() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");         
+        $id_utente = $this->loginContext->id_utente;
+        $query = 
+            "SELECT *
+            FROM anteprime_ricetta
+            WHERE id_stato_approvativo IN (SELECT id_stato_approvativo
+                                            FROM stato_approvativo
+                                            WHERE codice_stato_approvativo = ?
+                                            OR codice_stato_approvativo = ?)";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("dd", array(ApprovalFlowConstants::NON_IDONEA, ApprovalFlowConstants::NON_APPROVATA));
         $res = $this->dbContext->ExecuteStatement();
         $array = array();
         while($row = $res->fetch_assoc()) {
@@ -110,8 +212,17 @@ class ApprovalFlowApi {
             case "startApprovalFlow":
                 self::StartApprovalFlow();
                 break;
+            case "startApprovalValidation":
+                self::StartApprovalValidation();
+                break;
+            case "approveRejectRecipe":
+                self::ApproveRejectRecipe();
+                break;
             case "getAllRecipesWithStateInRange":
                 self::GetAllRecipesWithStateInRange();
+                break;
+            case "getRejectedRecipes":
+                self::GetRejectedRecipes();
                 break;
             case "getAllApprovaFlowSteps":
                 self::GetAllApprovaFlowSteps();

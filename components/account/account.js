@@ -6,7 +6,7 @@ function initAccount() {
     } else {
         var container = $("#account__username");
         container.parents("div").first().on("click", () => mainContentController.loadView(views.allViews.personal));
-        container.addClass("c-pointer");
+        container.parents("div").first().addClass("c-pointer");
         container.text("Accedi");
         $("#loginAccountIcon").addClass("fas fa-sign-in-alt");
     }

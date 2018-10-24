@@ -6,22 +6,29 @@
                 data-toggle="tab" 
                 href="#nav-daPrendereInCarico" 
                 role="tab"
-                data-relatedfunction="initDaPrendereInCaricoTab"
+                data-tablemapping="tablesMapping.daPrendereInCarico"
                 data-relatedtableid="#daPrendereInCaricoContainer">Da prendere in carico</a>
             <a id="nav-inCarico-tab" 
                 class="nav-item nav-link" 
                 data-toggle="tab" 
                 href="#nav-inCarico" 
                 role="tab"
-                data-relatedfunction="initInCaricoTab"
+                data-tablemapping="tablesMapping.inCarico"
                 data-relatedtableid="#inCaricoContainer">In carico</a>
             <a id="nav-tutte-tab" 
                 class="nav-item nav-link" 
                 data-toggle="tab" 
                 href="#nav-tutte" 
                 role="tab"
-                data-relatedfunction="initTutteTab"
-                data-relatedtableid="#tutteContainer">Tutte</a>
+                data-tablemapping="tablesMapping.tutte"
+                data-relatedtableid="#tutteContainer">Tutte</a>        
+            <a id="nav-rifiutate-tab" 
+                class="nav-item nav-link" 
+                data-toggle="tab" 
+                href="#nav-rifiutate" 
+                role="tab"
+                data-tablemapping="tablesMapping.rifiutate"
+                data-relatedtableid="#rifiutateContainer">Non approvate</a>
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -33,6 +40,9 @@
         </div>
         <div class="tab-pane fade" id="nav-tutte" role="tabpanel">
             <div id="tutteContainer" class="approvalTableContainer"></div>
+        </div>
+        <div class="tab-pane fade" id="nav-rifiutate" role="tabpanel">
+            <div id="rifiutateContainer" class="approvalTableContainer"></div>
         </div>
     </div>
 </section>

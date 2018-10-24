@@ -85,11 +85,8 @@ class RecipesApi {
             $id_ricetta = $_POST["id_ricetta"];
             $id_utente = $this->loginContext->id_utente;
             $isRedattore = $this->loginContext->delega_codice >= PermissionsConstants::REDATTORE;
-            Logger::Write("LOGINCONTEXT: ".json_encode( $this->loginContext), $GLOBALS["CorrelationID"]);
             $query = 
-                "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, ri.messaggio,
-                    ti.id_tipologia, ti.nome_tipologia, sfa.data_flusso, sfa.id_stato_approvativo, sfa.id_stato_approvativo_precedente,
-                    sfa.nome_stato_approvativo, sfa.stato_approvativo_isLeaf, sfa.codice_stato_approvativo
+                "SELECT *
                 FROM ricetta ri
                 INNER JOIN tipologia ti
                 ON ri.id_tipologia = ti.id_tipologia
@@ -102,7 +99,6 @@ class RecipesApi {
             $this->dbContext->BindStatementParameters(($isRedattore ? "d" : "dd"), ($isRedattore ? array($id_ricetta) : array($id_ricetta, $id_utente)));
             $res = $this->dbContext->ExecuteStatement();
             $recipeRow = $res->fetch_assoc();
-            Logger::Write("ROW ".json_encode($row), $GLOBALS["CorrelationID"]);
             if($recipeRow) {
                 $query = 
                     "SELECT li.id_ricetta, li.quantita, ing.id_ingrediente, ing.nome_ingrediente, ing.calorie                    
@@ -118,7 +114,6 @@ class RecipesApi {
                     $recipeRow["ingredienti"][] = $ingredient;
                 }
             }            
-            Logger::Write("FINAL ROW ".json_encode($recipeRow), $GLOBALS["CorrelationID"]);
             exit(json_encode($recipeRow));
         } 
         catch (Throwable $ex) {          

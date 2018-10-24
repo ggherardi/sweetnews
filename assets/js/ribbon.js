@@ -38,24 +38,24 @@ class Ribbon {
                 order: 4,
                 permissions: permissions.levels.redattore
             },
-            validate: {
+            approve: {
                 title: `Approva ricetta`,
                 label: `Approva`,
                 action: `approve();`,
-                enableScript: `enableApprove`,
-                icon: `share-boxed`,
-                cssClass: `grey`,
-                order: 4,
+                enableScript: `enableApprovalButtons`,
+                icon: `fas fa-thumbs-up`,
+                cssClass: `approveButton`,
+                order: 5,
                 permissions: permissions.levels.redattore
             },
             reject: {
                 title: `Rifiuta ricetta`,
                 label: `Rifiuta`,
-                action: `validate();`,
-                enableScript: `enableReject`,
-                icon: `share-boxed`,
-                cssClass: `grey`,
-                order: 5,
+                action: `reject();`,
+                enableScript: `enableApprovalButtons`,
+                icon: `fas fa-thumbs-down`,
+                cssClass: `rejectButton`,
+                order: 6,
                 permissions: permissions.levels.redattore
             }
         }

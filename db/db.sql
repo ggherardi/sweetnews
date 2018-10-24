@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sweetnews` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sweetnews`;
--- MySQL dump 10.13  Distrib 5.5.60, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.5.61, for Win64 (AMD64)
 --
 -- Host: localhost    Database: sweetnews
 -- ------------------------------------------------------
--- Server version	5.5.60
+-- Server version	5.5.61
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -200,7 +200,7 @@ CREATE TABLE `flusso_approvativo` (
 
 LOCK TABLES `flusso_approvativo` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo` VALUES (18,1,NULL,2,20,'2018-10-17 21:18:26'),(22,1,NULL,1,24,'2018-10-18 10:02:44'),(23,8,NULL,2,25,'2018-10-21 16:24:12'),(24,8,NULL,1,26,'2018-10-21 17:41:37'),(25,8,NULL,1,27,'2018-10-21 19:17:43'),(26,66,NULL,2,28,'2018-10-21 19:20:57'),(27,66,NULL,2,29,'2018-10-21 19:23:47'),(28,69,NULL,2,30,'2018-10-21 19:29:43'),(29,69,NULL,2,31,'2018-10-21 19:31:43'),(30,69,NULL,1,32,'2018-10-21 19:33:51');
+INSERT INTO `flusso_approvativo` VALUES (18,1,NULL,2,20,'2018-10-17 21:18:26'),(22,1,NULL,1,24,'2018-10-18 10:02:44'),(23,8,1,3,25,'2018-10-21 16:24:12'),(24,8,NULL,1,26,'2018-10-21 17:41:37'),(25,8,NULL,1,27,'2018-10-21 19:17:43'),(26,66,85,3,28,'2018-10-24 22:25:09'),(27,66,NULL,2,29,'2018-10-21 19:23:47'),(28,69,NULL,5,30,'2018-10-24 23:14:05'),(29,69,NULL,2,31,'2018-10-21 19:31:43'),(30,69,NULL,1,32,'2018-10-21 19:33:51');
 /*!40000 ALTER TABLE `flusso_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -264,7 +264,7 @@ CREATE TABLE `flusso_approvativo_audit` (
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +273,7 @@ CREATE TABLE `flusso_approvativo_audit` (
 
 LOCK TABLES `flusso_approvativo_audit` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo_audit` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,20,1,0,'2018-10-17 21:18:26'),(7,22,1,24,1,0,'2018-10-18 10:02:44'),(15,18,2,20,1,NULL,'2018-10-17 21:18:26'),(16,23,1,25,8,NULL,'2018-10-21 16:24:12'),(17,24,1,26,8,NULL,'2018-10-21 17:41:37'),(18,23,2,25,8,NULL,'2018-10-21 16:24:12'),(19,25,1,27,8,NULL,'2018-10-21 19:17:43'),(20,26,1,28,66,NULL,'2018-10-21 19:20:57'),(21,27,1,29,66,NULL,'2018-10-21 19:23:47'),(22,26,2,28,66,NULL,'2018-10-21 19:20:57'),(23,27,2,29,66,NULL,'2018-10-21 19:23:47'),(24,28,1,30,69,NULL,'2018-10-21 19:29:43'),(25,29,1,31,69,NULL,'2018-10-21 19:31:43'),(26,29,2,31,69,NULL,'2018-10-21 19:31:43'),(27,28,2,30,69,NULL,'2018-10-21 19:29:43'),(28,30,1,32,69,NULL,'2018-10-21 19:33:51');
+INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,20,1,0,'2018-10-17 21:18:26'),(7,22,1,24,1,0,'2018-10-18 10:02:44'),(15,18,2,20,1,NULL,'2018-10-17 21:18:26'),(16,23,1,25,8,NULL,'2018-10-21 16:24:12'),(17,24,1,26,8,NULL,'2018-10-21 17:41:37'),(18,23,2,25,8,NULL,'2018-10-21 16:24:12'),(19,25,1,27,8,NULL,'2018-10-21 19:17:43'),(23,27,2,29,66,NULL,'2018-10-21 19:23:47'),(28,30,1,32,69,NULL,'2018-10-21 19:33:51'),(40,23,3,25,8,NULL,'2018-10-21 16:24:12'),(41,23,3,25,8,1,'2018-10-21 16:24:12'),(56,26,3,28,66,85,'2018-10-24 22:25:09'),(66,28,3,30,69,85,'2018-10-24 23:14:00'),(67,28,5,30,69,NULL,'2018-10-24 23:14:05');
 /*!40000 ALTER TABLE `flusso_approvativo_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -492,7 +492,10 @@ SET character_set_client = utf8;
   `nome_stato_approvativo` tinyint NOT NULL,
   `id_stato_approvativo` tinyint NOT NULL,
   `id_stato_approvativo_precedente` tinyint NOT NULL,
-  `stato_approvativo_isLeaf` tinyint NOT NULL
+  `stato_approvativo_isLeaf` tinyint NOT NULL,
+  `id_stato_approvativo_valutazione` tinyint NOT NULL,
+  `id_stato_approvativo_approvazione` tinyint NOT NULL,
+  `id_stato_approvativo_rifiuto` tinyint NOT NULL
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -715,7 +718,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `stato_flusso_approvativo` AS select `fa`.`id_flusso_approvativo` AS `id_flusso_approvativo`,`fa`.`id_utente_creatore` AS `id_utente_creatore`,`fa`.`id_utente_approvatore` AS `id_utente_approvatore`,`fa`.`id_ricetta` AS `id_ricetta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_precedente` AS `id_stato_approvativo_precedente`,`sa`.`stato_approvativo_isLeaf` AS `stato_approvativo_isLeaf` from (`flusso_approvativo` `fa` join `stato_approvativo` `sa` on((`fa`.`id_stato_approvativo` = `sa`.`id_stato_approvativo`))) */;
+/*!50001 VIEW `stato_flusso_approvativo` AS select `fa`.`id_flusso_approvativo` AS `id_flusso_approvativo`,`fa`.`id_utente_creatore` AS `id_utente_creatore`,`fa`.`id_utente_approvatore` AS `id_utente_approvatore`,`fa`.`id_ricetta` AS `id_ricetta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_precedente` AS `id_stato_approvativo_precedente`,`sa`.`stato_approvativo_isLeaf` AS `stato_approvativo_isLeaf`,`sa`.`id_stato_approvativo_valutazione` AS `id_stato_approvativo_valutazione`,`sa`.`id_stato_approvativo_approvazione` AS `id_stato_approvativo_approvazione`,`sa`.`id_stato_approvativo_rifiuto` AS `id_stato_approvativo_rifiuto` from (`flusso_approvativo` `fa` join `stato_approvativo` `sa` on((`fa`.`id_stato_approvativo` = `sa`.`id_stato_approvativo`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -729,4 +732,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-24 17:13:21
+-- Dump completed on 2018-10-25  1:15:05

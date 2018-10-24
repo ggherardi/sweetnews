@@ -20,11 +20,6 @@ var approvalDTOptions = {
         visible: false,
         searchable: false
     }],
-    buttons: [
-        // { text: "Crea nuova ricetta", action: createRecipe },
-        // { text: "Modifica/Invia ricetta", className:"recipeEditButton", action: editRecipe, enabled: false },
-        { extend: "selectedSingle", text: "Visualizza e prendi in carico ricetta", action: viewRecipe }
-    ],
     language: dataTableLanguage.italian,
     responsive: {
         details: {
@@ -39,6 +34,8 @@ var inCaricoContainerSelector = "#inCaricoContainer";
 var inCaricoContainer = $(inCaricoContainerSelector);
 var tutteContainerSelector = "#tutteContainer";
 var tutteContainer = $(tutteContainerSelector);
+var rifiutateContainerSelector = "#rifiutateContainer";
+var rifiutateContainer = $(rifiutateContainerSelector);
 var tablesMapping = {
     daPrendereInCarico: {
         states: [{
@@ -50,8 +47,15 @@ var tablesMapping = {
             minState: Approval.getStates().inviata,
             maxState: Approval.getStates().inviata
         }],
+        userValidation: {
+            needed: true,
+            currentUser: false
+        },
         tableName: "daPrendereInCaricoTable",
-        tableContainer: daPrendereInCaricoContainer
+        tableContainer: daPrendereInCaricoContainer,
+        buttons: [
+            { extend: "selectedSingle", text: "Visualizza e prendi in carico ricetta", action: viewRecipe }
+        ]
     },
     inCarico: {
         states: [{
@@ -63,8 +67,15 @@ var tablesMapping = {
             minState: Approval.getStates().in_validazione,
             maxState: Approval.getStates().idonea
         }],
+        userValidation: {
+            needed: true,
+            currentUser: true
+        },
         tableName: "inCaricoTable",
-        tableContainer: inCaricoContainer
+        tableContainer: inCaricoContainer,
+        buttons: [
+            { extend: "selectedSingle", text: "Approva/Rifiuta Ricetta", action: viewRecipe }
+        ]
     },
     tutte: {
         states: [{
@@ -76,8 +87,35 @@ var tablesMapping = {
             minState: Approval.getStates().inviata,
             maxState: Approval.getStates().approvata
         }],
+        userValidation: {
+            needed: false,
+            currentUser: true
+        },
         tableName: "tutteTable",
-        tableContainer: tutteContainer
+        tableContainer: tutteContainer,
+        buttons: [
+            { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+        ]
+    },
+    rifiutate: {
+        states: [{
+            check: function() { return permissions.levels.caporedattore == shared.loginContext.delega_codice},
+            minState: null,
+            maxState: null
+        }, {
+            check: function() { return permissions.levels.redattore == shared.loginContext.delega_codice},
+            minState: null,
+            maxState: null
+        }],
+        userValidation: {
+            needed: null,
+            currentUser: null
+        },
+        tableName: "rifiutateTable",
+        tableContainer: rifiutateContainer,
+        buttons: [
+            { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+        ]
     }
 };
 var tableMapping;
@@ -86,43 +124,24 @@ function initApprovals() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var tableId = e.relatedTarget.dataset["relatedtableid"]; // previous active tab
         $(tableId).html("");
-        var func = e.target.dataset["relatedfunction"]; // previous active tab
-        window[func]();
+        var mapping = e.target.dataset["tablemapping"]; // previous active tab
+        initTabs(eval(mapping));
       })
-    initDaPrendereInCaricoTab();
+    initTabs(tablesMapping.daPrendereInCarico);
 }
 
-function initDaPrendereInCaricoTab() {
-    var tableMapping = tablesMapping.daPrendereInCarico;
-    var statePermissions = tableMapping.states.filter(x => x.check())[0];
-    var approvalFlowApi = new ApprovalFlowApi();
-    var loader = new Loader(daPrendereInCaricoContainerSelector); 
+function initTabs(tableMapping) {
+    var loader = new Loader(tableMapping.tableContainer); 
     loader.showLoader();
-    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
-        .done(getAllRecipesWithStateSuccess.bind(tableMapping))
-        .fail(RestClient.redirectAccordingToError)
-        .always(() => loader.hideLoader());
-}
-
-function initInCaricoTab() {
-    var tableMapping = tablesMapping.inCarico;
     var statePermissions = tableMapping.states.filter(x => x.check())[0];
+    var args = {
+        minState: statePermissions.minState,
+        maxState: statePermissions.maxState,
+        needsUserValidation: tableMapping.userValidation.needed,
+        currentUser: tableMapping.userValidation.currentUser
+    };
     var approvalFlowApi = new ApprovalFlowApi();
-    var loader = new Loader(inCaricoContainerSelector); 
-    loader.showLoader();
-    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
-        .done(getAllRecipesWithStateSuccess.bind(tableMapping))
-        .fail(RestClient.redirectAccordingToError)
-        .always(() => loader.hideLoader());
-}
-
-function initTutteTab() {
-    var tableMapping = tablesMapping.tutte;
-    var statePermissions = tableMapping.states.filter(x => x.check())[0];
-    var approvalFlowApi = new ApprovalFlowApi();
-    var loader = new Loader(tutteContainerSelector); 
-    loader.showLoader();
-    approvalFlowApi.getAllRecipesWithStateInRange(statePermissions)
+    approvalFlowApi.getAllRecipesWithStateInRange(args)
         .done(getAllRecipesWithStateSuccess.bind(tableMapping))
         .fail(RestClient.redirectAccordingToError)
         .always(() => loader.hideLoader());
@@ -152,8 +171,8 @@ function getAllRecipesWithStateSuccess(data) {
     html += `       </tbody>
                 </table>`;
     this.tableContainer.html(html);
+    approvalDTOptions.buttons = this.buttons;
     approvalDT = $(`#${this.tableName}`).DataTable(approvalDTOptions);
-    // enableEditButtonLogic();
 }
 
 function BuidUserRecipesTableHead() {
@@ -176,20 +195,6 @@ function BuidUserRecipesTableHead() {
 function formatDateCell(strDate) {
     return shared.dateUtilities.formatDateFromString(strDate);
 }
-
-function setDifficultyCellsInTable(recipes) {
-    for(var i = 0; i < recipes.length; i++) {
-        var recipe = recipes[i];
-        $(`#star${recipe.difficolta}_${i}`).prop("checked", true);
-    }
-}
-
-// function enableEditButtonLogic() {
-//     approvalDT.on("select deselect", (e, dt, node, config) => {
-//         canEnableButton = dt.rows({selected: true}).data().length == 1 && dt.rows({selected: true}).data()[0].codice_stato_approvativo == Approval.getStates().bozza;
-//         dt.buttons([".recipeEditButton"]).enable(canEnableButton);
-//     });
-// }
 
 /* BUTTONS */
 function createRecipe() {
@@ -220,9 +225,32 @@ function isRecipeEditable(e, dt, node, config) {
 
 /* RIBBON BUTTONS ENABLE SCRIPTS */
 function enableRecipeTakeCharge() {
-    return window.RecipeApprovaFlowState == Approval.getStates().inviata && shared.loginContext.delega_codice == permissions.levels.redattore
+    var enabled = false;
+    window.ButtonEnablingWarningMessages = [];
+    if(shared.loginContext.id_utente == window.RecipeAuthor 
+        && window.RecipeApprovaFlowState == Approval.getStates().inviata 
+        && !shared.loginContext.isCapoRedattore) {
+        window.ButtonEnablingWarningMessages.push("Non è possibile prendere in carico ricette create da se stessi.")
+    }
+    if(window.RecipeApprovaFlowState == Approval.getStates().inviata) {
+        enabled = shared.loginContext.isRedattore && shared.loginContext.id_utente != window.RecipeAuthor;
+    } else if(window.RecipeApprovaFlowState == Approval.getStates().idonea) {
+        enabled = shared.loginContext.isCapoRedattore;
+    }
+    return enabled;
+}
+
+function enableApprovalButtons() {
+    var enabled = false;
+    if(window.RecipeApprover == shared.loginContext.id_utente) {
+        if(window.RecipeApprovaFlowState == Approval.getStates().in_validazione) {
+            enabled = shared.loginContext.isRedattore && shared.loginContext.id_utente != window.RecipeAuthor;
+        } else if(window.RecipeApprovaFlowState == Approval.getStates().in_approvazione) {
+            enabled = shared.loginContext.isCapoRedattore;
+        }
+    }
+    return enabled;
 }
 
 /* INIT */
 initApprovals();
-
