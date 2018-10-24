@@ -39,6 +39,29 @@ class ApprovalFlowApi {
         }
     }
 
+    public function StartApprovalValidation() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE, PermissionsConstants::REDATTORE), "delega_codice"); 
+            $id_ricetta = $_POST["id_ricetta"];           
+            $id_utente = $this->loginContext->id_utente;
+            $query = 
+                "UPDATE flusso_approvativo
+                SET id_stato_approvativo = ?
+                WHERE id_ricetta = ?                                                                
+                AND id_utente_creatore <> ?
+                AND id_stato_approvativo = ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("dddd", array(ApprovalFlowConstants::INVIATA, $id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
+            $res = $this->dbContext->ExecuteStatement();
+            exit(json_encode($res));
+        } 
+        catch (Throwable $ex) {          
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
+            http_response_code(500); 
+        }
+    }
+
     public function GetAllRecipesWithStateInRange() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         TokenGenerator::CheckPermissions(array(PermissionsConstants::REDATTORE), "delega_codice");

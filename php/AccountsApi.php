@@ -95,7 +95,7 @@ class AccountsApi {
             FROM utente u
             INNER JOIN dettaglio_utente_esterno due
             USING (id_utente)
-            WHERE ? ";
+            WHERE id_utente = ? ";
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters("d", array($id_utente)); 
         $res = $this->dbContext->ExecuteStatement();
