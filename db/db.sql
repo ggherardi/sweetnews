@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sweetnews` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sweetnews`;
--- MySQL dump 10.13  Distrib 5.5.61, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.5.60, for Win64 (AMD64)
 --
 -- Host: localhost    Database: sweetnews
 -- ------------------------------------------------------
--- Server version	5.5.61
+-- Server version	5.5.60
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,6 +33,10 @@ SET character_set_client = utf8;
   `data_flusso` tinyint NOT NULL,
   `nome_stato_approvativo` tinyint NOT NULL,
   `codice_stato_approvativo` tinyint NOT NULL,
+  `id_stato_approvativo` tinyint NOT NULL,
+  `id_stato_approvativo_valutazione` tinyint NOT NULL,
+  `id_stato_approvativo_approvazione` tinyint NOT NULL,
+  `id_stato_approvativo_rifiuto` tinyint NOT NULL,
   `id_utente_creatore` tinyint NOT NULL,
   `username_utente_creatore` tinyint NOT NULL,
   `id_utente_approvatore` tinyint NOT NULL,
@@ -635,7 +639,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `anteprime_ricetta` AS select `r`.`id_ricetta` AS `id_ricetta`,`r`.`titolo_ricetta` AS `titolo_ricetta`,`t`.`nome_tipologia` AS `nome_tipologia`,`r`.`difficolta` AS `difficolta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`uc`.`id_utente` AS `id_utente_creatore`,`uc`.`username` AS `username_utente_creatore`,`ua`.`id_utente` AS `id_utente_approvatore`,`ua`.`username` AS `username_utente_approvatore` from (((((`ricetta` `r` join `flusso_approvativo` `fa` on((`r`.`id_ricetta` = `fa`.`id_ricetta`))) join `utente` `uc` on((`uc`.`id_utente` = `fa`.`id_utente_creatore`))) join `tipologia` `t` on((`t`.`id_tipologia` = `r`.`id_tipologia`))) left join `utente` `ua` on((`ua`.`id_utente` = `fa`.`id_utente_approvatore`))) join `stato_approvativo` `sa` on((`sa`.`id_stato_approvativo` = `fa`.`id_stato_approvativo`))) order by `sa`.`codice_stato_approvativo` */;
+/*!50001 VIEW `anteprime_ricetta` AS select `r`.`id_ricetta` AS `id_ricetta`,`r`.`titolo_ricetta` AS `titolo_ricetta`,`t`.`nome_tipologia` AS `nome_tipologia`,`r`.`difficolta` AS `difficolta`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_valutazione` AS `id_stato_approvativo_valutazione`,`sa`.`id_stato_approvativo_approvazione` AS `id_stato_approvativo_approvazione`,`sa`.`id_stato_approvativo_rifiuto` AS `id_stato_approvativo_rifiuto`,`uc`.`id_utente` AS `id_utente_creatore`,`uc`.`username` AS `username_utente_creatore`,`ua`.`id_utente` AS `id_utente_approvatore`,`ua`.`username` AS `username_utente_approvatore` from (((((`ricetta` `r` join `flusso_approvativo` `fa` on((`r`.`id_ricetta` = `fa`.`id_ricetta`))) join `utente` `uc` on((`uc`.`id_utente` = `fa`.`id_utente_creatore`))) join `tipologia` `t` on((`t`.`id_tipologia` = `r`.`id_tipologia`))) left join `utente` `ua` on((`ua`.`id_utente` = `fa`.`id_utente_approvatore`))) join `stato_approvativo` `sa` on((`sa`.`id_stato_approvativo` = `fa`.`id_stato_approvativo`))) order by `sa`.`codice_stato_approvativo` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -725,4 +729,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-24  1:18:20
+-- Dump completed on 2018-10-24 17:13:21
