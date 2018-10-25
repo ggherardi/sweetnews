@@ -27,7 +27,7 @@ class RecipesApi {
             $id_utente = $this->loginContext->id_utente;
             $query = 
                 "SELECT ri.titolo_ricetta, ri.id_ricetta, ri.difficolta, ri.tempo_cottura, ri.preparazione, ri.porzioni, ri.note, 
-                    ti.nome_tipologia, sfa.data_flusso, sfa.codice_stato_approvativo, sfa.nome_stato_approvativo
+                    ri.calorie_totali, ti.nome_tipologia, sfa.data_flusso, sfa.codice_stato_approvativo, sfa.nome_stato_approvativo
                 FROM ricetta ri
                 INNER JOIN tipologia ti
                 ON ri.id_tipologia = ti.id_tipologia      
@@ -170,12 +170,13 @@ class RecipesApi {
             $this->dbContext->StartTransaction();
             $query = 
                 "INSERT INTO ricetta
-                (id_utente, id_tipologia, titolo_ricetta, difficolta, tempo_cottura, preparazione, porzioni, note, messaggio)
+                (id_utente, id_tipologia, titolo_ricetta, difficolta, tempo_cottura, preparazione, porzioni, calorie_totali, note, messaggio)
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("ddsddsdss", array($id_utente, $recipeForm->id_tipologia, $recipeForm->titolo_ricetta, 
-                $recipeForm->difficolta, $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->note, $recipeForm->messaggio));
+            $this->dbContext->BindStatementParameters("ddsddsddss", array($id_utente, $recipeForm->id_tipologia, $recipeForm->titolo_ricetta, 
+                $recipeForm->difficolta, $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipe->calorie_totali,
+                $recipeForm->note, $recipeForm->messaggio));
             $res = $this->dbContext->ExecuteStatement();
             $recipeId = $this->dbContext->GetLastId();
 
@@ -221,14 +222,22 @@ class RecipesApi {
                 "UPDATE ricetta ri
                 INNER JOIN stato_flusso_approvativo sfa
                 ON ri.id_ricetta = sfa.id_ricetta
-                SET ri.id_tipologia = ?, ri.titolo_ricetta = ?, ri.difficolta = ?, ri.tempo_cottura = ?, ri.preparazione = ?, ri.porzioni = ?, ri.note = ?, ri.messaggio = ?
+                SET ri.id_tipologia = ?, 
+                    ri.titolo_ricetta = ?, 
+                    ri.difficolta = ?, 
+                    ri.tempo_cottura = ?, 
+                    ri.preparazione = ?, 
+                    ri.porzioni = ?, 
+                    ri.calorie_totali = ?,
+                    ri.note = ?, 
+                    ri.messaggio = ?
                 WHERE ri.id_ricetta = ?
                 AND ri.id_utente = ?
                 AND sfa.codice_stato_approvativo = ?";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("dsddsdssddd", array($recipeForm->id_tipologia, $recipeForm->titolo_ricetta, $recipeForm->difficolta, 
-                $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->note, $recipeForm->messaggio, $recipeForm->id_ricetta, 
-                $id_utente, ApprovalFlowConstants::BOZZA));
+            $this->dbContext->BindStatementParameters("dsddsddssddd", array($recipeForm->id_tipologia, $recipeForm->titolo_ricetta, $recipeForm->difficolta, 
+                $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->calorie_totali, $recipeForm->note, $recipeForm->messaggio, 
+                $recipeForm->id_ricetta, $id_utente, ApprovalFlowConstants::BOZZA));
             $res = $this->dbContext->ExecuteStatement();
 
             // Per ora cancello e ricreo, con più tempo creerò un metodo per controllare quali ingredienti sono stati cancellati e quali aggiunti

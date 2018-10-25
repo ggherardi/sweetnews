@@ -117,6 +117,7 @@ function populateIngredientsControl() {
         $(`#recipeEditForm__ingredient_calorie_hidden_${controlNumber}`).val(ingredient.calorie);
         $(`#recipeEditForm__ingredient_calorie_${controlNumber}`).val(ingredient.calorie * ingredient.quantita);
     }
+    $("#recipeEditForm__ingredient_calorie_totali").val(parseFloat(Recipe.calorie_totali));
 }
 
 function createNewIngredientControl() {
@@ -151,7 +152,7 @@ function createNewIngredientControl() {
                     <div class="col-sm-3">
                         <input id="recipeEditForm__ingredient_calorie_hidden_${currentControlNumber}" class="ingredient_calorie_hidden_${currentControlNumber}" type="hidden">
                         <input id="recipeEditForm__ingredient_calorie_${currentControlNumber}" 
-                            class="form-control ingredient_calorie_${currentControlNumber}" 
+                            class="form-control ingredient_calorie_${currentControlNumber} caloriesToSum" 
                             type="number" 
                             min="0" 
                             placeholder="kcal/g" 
@@ -167,6 +168,7 @@ function createNewIngredientControl() {
     var quantity = $(`#recipeEditForm__ingredient_quantita_${currentControlNumber}`)[0];
     ingredient.addEventListener("change", checkCurrentstate);
     quantity.addEventListener("keyup", recalculateCalories);
+    quantity.addEventListener("keyup", recalculateTotalCalories);
     initAutoComplete(ingredient.id);
     switchAddIngredientButtonState(currentControlNumber);
 }
@@ -204,7 +206,16 @@ function recalculateCalories(e) {
     var rowid = jqElement.parent().parent().get(0).dataset["rowid"];
     var calories = parseFloat(jqElement.parent().siblings().find(`.ingredient_calorie_hidden_${rowid}`).val());
     var newCaloriesAmount = newQuantity * calories;
-    jqElement.parent().siblings().find(`.ingredient_calorie_${rowid}`).val(newCaloriesAmount);
+    jqElement.parent().siblings().find(`.ingredient_calorie_${rowid}`).val(new Number(newCaloriesAmount.toFixed(2)));
+}
+
+function recalculateTotalCalories() {
+    var calories = $(".caloriesToSum");
+    var total = 0;
+    for(var i = 0; i < calories.length; i++) {
+        total += parseFloat(calories[i].value);
+    }
+    $("#recipeEditForm__ingredient_calorie_totali").val(new Number(total).toFixed(1));
 }
 
 function switchAddIngredientButtonState(ingredientControlNumber) {
@@ -297,6 +308,7 @@ function saveFail(jqXHR) {
 }
 
 function getRecipeFromForm() {
+    var ingredients = getIngredientsFromForm();
     var recipe = {
         id_tipologia : $("#recipeEditForm__tipologia").val(),
         titolo_ricetta : $("#recipeEditForm__titolo").val(),
@@ -306,21 +318,27 @@ function getRecipeFromForm() {
         porzioni : $("#recipeEditForm__porzioni").val(),
         note : $("#recipeEditForm__note").val(),
         messaggio : $("#recipeEditForm__messaggio").val(),
-        lista_ingredienti : getIngredientsFromForm()
+        lista_ingredienti : ingredients.list,
+        calorie_totali: ingredients.totalCalories
     };
     return recipe;
 }
 
 function getIngredientsFromForm() {
-    var ingredients = [];
+    var ingredients = {
+        list: [],
+        totalCalories: 0
+    }
     var ingredientsRows = $("#recipeEditForm__ingredients .ingredientRow");
     for(var i = 0; i < ingredientsRows.length; i++) {
         var ingredientRow = ingredientsRows[i];
         var rowid = ingredientRow.dataset["rowid"];
+        var calories = $(`#recipeEditForm__ingredient_calorie_${rowid}`).val();
+        ingredients.totalCalories += parseFloat(calories);
         var ingredient = {};
         ingredient.id_ingrediente = $(`#recipeEditForm__ingredient_id_${rowid}`).val(),
         ingredient.quantita = $(`#recipeEditForm__ingredient_quantita_${rowid}`).val()
-        ingredients.push(ingredient);
+        ingredients.list.push(ingredient);
     }
     return ingredients;
 }

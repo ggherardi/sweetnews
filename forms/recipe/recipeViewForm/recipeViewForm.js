@@ -12,7 +12,7 @@ WarningMessages = {
 
 /* RIBBON ACTIONS */
 function back() {
-    mainContentController.loadView(views.allViews.approveRecipes);
+    // mainContentController.loadView(views.allViews.approveRecipes);
     pageContentController.switch();
 }
 
@@ -90,10 +90,12 @@ function init() {
 }
 
 function initErrorMessages() {
-    for(var i = 0; i < window.ButtonEnablingWarningMessages.length; i ++) {
-        Ribbon.setMessage(window.ButtonEnablingWarningMessages[i]);        
+    if(window.ButtonEnablingWarningMessages) {
+        for(var i = 0; i < window.ButtonEnablingWarningMessages.length; i ++) {
+            Ribbon.setMessage(window.ButtonEnablingWarningMessages[i]);        
+        }
+        delete window.ButtonEnablingWarningMessages;
     }
-    delete window.ButtonEnablingWarningMessages;
 }
 
 function initControlsPopulation(data) {
@@ -156,6 +158,7 @@ function populateIngredientsControl() {
         $(`#recipreViewForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
         $(`#recipreViewForm__ingredient_calorie_${controlNumber}`).val(ingredientCalories);
     }
+    $("#recipeViewForm__ingredient_calorie_totali").val(parseFloat(Recipe.calorie_totali));
 }
 
 function createNewIngredientControl() {
@@ -183,7 +186,7 @@ function createNewIngredientControl() {
                     </div>
                     <div class="col-sm-3">
                         <input id="recipreViewForm__ingredient_calorie_${currentControlNumber}" 
-                            class="form-control ingredient_calorie_${currentControlNumber}" 
+                            class="form-control ingredient_calorie_${currentControlNumber} caloriesToSum" 
                             type="number" 
                             min="0" 
                             placeholder="cal." 
@@ -193,6 +196,15 @@ function createNewIngredientControl() {
                     </div>
                 </div>`;
     ingredientsControlsContainer.append(html);
+}
+
+function recalculateTotalCalories() {
+    var calories = $(".caloriesToSum");
+    var total = 0;
+    for(var i = 0; i < calories.length; i++) {
+        total += parseFloat(calories[i].value);
+    }
+    $("#recipeViewForm__ingredient_calorie_totali").val(new Number(total).toFixed(1));
 }
 
 function initFlowSteps() {

@@ -12,7 +12,7 @@ var userRecipesDTOptions = {
         { data: "tipologia" },
         { data: "difficolta" },
         { data: "tempo_cottura" },
-        { data: "porzioni" },
+        { data: "calorie_totali" },
         { data: "nome_stato_approvativo" }
     ],
     columnDefs: [{
@@ -63,7 +63,7 @@ function getRecipesForUserSuccess(data) {
                             <td>${recipe.nome_tipologia}</td>
                             <td>${difficultyCell}</td>
                             <td>${recipe.tempo_cottura} min</td>
-                            <td>${recipe.porzioni}</td>
+                            <td>${recipe.calorie_totali}</td>
                             <td>${recipe.nome_stato_approvativo}</td>
                         </tr>`;
     }	
@@ -85,7 +85,7 @@ function BuidUserRecipesTableHead() {
                         <th scope="col">Tipologia</th>
                         <th scope="col">Difficoltà</th>
                         <th scope="col">Tempo cottura</th>
-                        <th scope="col">Porzioni</th>
+                        <th scope="col">Calorie</th>
                         <th scope="col">Stato approvazione</th>
                     </tr>
                 </thead>`;

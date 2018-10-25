@@ -89,7 +89,7 @@ function createNewIngredientControl() {
                     <div class="col-sm-3">
                         <input id="recipeNewForm__ingredient_calorie_hidden_${currentControlNumber}" class="ingredient_calorie_hidden_${currentControlNumber}" type="hidden">
                         <input id="recipeNewForm__ingredient_calorie_${currentControlNumber}" 
-                            class="form-control ingredient_calorie_${currentControlNumber}" 
+                            class="form-control ingredient_calorie_${currentControlNumber} caloriesToSum" 
                             type="number" 
                             min="0" 
                             placeholder="kcal/g" 
@@ -105,6 +105,7 @@ function createNewIngredientControl() {
     var quantity = $(`#recipeNewForm__ingredient_quantita_${currentControlNumber}`)[0];
     ingredient.addEventListener("change", checkCurrentstate);
     quantity.addEventListener("keyup", recalculateCalories);
+    quantity.addEventListener("keyup", recalculateTotalCalories);
     initAutoComplete(ingredient.id);
     switchAddIngredientButtonState(currentControlNumber);
 }
@@ -143,6 +144,15 @@ function recalculateCalories(e) {
     var calories = parseFloat(jqElement.parent().siblings().find(`.ingredient_calorie_hidden_${rowid}`).val());
     var newCaloriesAmount = newQuantity * calories;
     jqElement.parent().siblings().find(`.ingredient_calorie_${rowid}`).val(newCaloriesAmount);
+}
+
+function recalculateTotalCalories() {
+    var calories = $(".caloriesToSum");
+    var total = 0;
+    for(var i = 0; i < calories.length; i++) {
+        total += parseFloat(calories[i].value);
+    }
+    $("#recipeViewForm__ingredient_calorie_totali").val(new Number(total).toFixed(1));
 }
 
 function switchAddIngredientButtonState(ingredientControlNumber) {
@@ -230,6 +240,7 @@ function saveSuccess(data) {
 }
 
 function getRecipeFromForm() {
+    var ingredients = getIngredientsFromForm();
     var recipe = {
         id_tipologia : $("#recipeNewForm__tipologia").val(),
         titolo_ricetta : $("#recipeNewForm__titolo").val(),
@@ -239,22 +250,27 @@ function getRecipeFromForm() {
         porzioni : $("#recipeNewForm__porzioni").val(),
         note : $("#recipeNewForm__note").val(),
         messaggio : $("#recipeNewForm__messaggio").val(),
-        lista_ingredienti : getIngredientsFromForm()
+        lista_ingredienti : ingredients.list,
+        calorie_totali: ingredients.totalCalories
     };
-
     return recipe;
 }
 
 function getIngredientsFromForm() {
-    var ingredients = [];
+    var ingredients = {
+        list: [],
+        totalCalories: 0
+    }
     var ingredientsRows = $("#recipeNewForm__ingredients .ingredientRow");
     for(var i = 0; i < ingredientsRows.length; i++) {
         var ingredientRow = ingredientsRows[i];
         var rowid = ingredientRow.dataset["rowid"];
+        var calories = $(`#recipeNewForm__ingredient_calorie_${rowid}`).val();
+        ingredients.totalCalories += parseFloat(calories);
         var ingredient = {};
         ingredient.id_ingrediente = $(`#recipeNewForm__ingredient_id_${rowid}`).val(),
-        ingredient.quantita = $(`#recipeNewForm__ingredient_quantita_${rowid}`).val()
-        ingredients.push(ingredient);
+        ingredient.quantita = $(`#recipeNewForm__ingredient_quantita_${rowid}`).val(),
+        ingredients.list.push(ingredient);
     }
     return ingredients;
 }
