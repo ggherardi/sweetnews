@@ -12,6 +12,7 @@ WarningMessages = {
 
 /* RIBBON ACTIONS */
 function back() {
+    mainContentController.loadView(views.allViews.approveRecipes);
     pageContentController.switch();
 }
 
