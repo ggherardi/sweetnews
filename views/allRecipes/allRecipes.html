@@ -1,0 +1,23 @@
+<section>
+        <form id="filtersForm" class="form placeholder-center" onsubmit="return findRecipes(this, event); return false;">
+            <div class="form-row">
+                <div class="col">
+                    <input id="filtersForm__tipologia" class="form-control" type="text" placeholder="nome*" required>
+                </div>
+                <div class="col">
+                    <input id="filtersForm__tempo_cottura" class="form-control" type="text" placeholder="cognome*" required>
+                </div>
+            </div>
+            <input id="registrationForm__email" type="text" class="form-control mt-2" placeholder="email*" required>
+            <div class="form-row">
+                <div class="col">
+                    <input id="filtersForm__difficolta" class="form-control mt-2" type="text" placeholder="cellulare">
+                </div>
+                <div class="col">
+                    <input id="filtersForm__calorie" class="form-control mt-2" type="text" placeholder="telefono casa">            
+                </div>
+            </div>
+            <button type="submit" class="mt-4">Ricerca</button>
+        </form>
+    <div id="publicRecipesContainer"></div>
+</section>
