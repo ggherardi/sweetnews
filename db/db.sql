@@ -18,6 +18,24 @@ USE `sweetnews`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Temporary table structure for view `abstract_ricette`
+--
+
+DROP TABLE IF EXISTS `abstract_ricette`;
+/*!50001 DROP VIEW IF EXISTS `abstract_ricette`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `abstract_ricette` (
+  `id_ricetta` tinyint NOT NULL,
+  `titolo_ricetta` tinyint NOT NULL,
+  `difficolta` tinyint NOT NULL,
+  `calorie_totali` tinyint NOT NULL,
+  `preparazione` tinyint NOT NULL,
+  `codice_stato_approvativo` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Temporary table structure for view `anteprime_ricetta`
 --
 
@@ -28,9 +46,11 @@ SET character_set_client = utf8;
 /*!50001 CREATE TABLE `anteprime_ricetta` (
   `id_ricetta` tinyint NOT NULL,
   `titolo_ricetta` tinyint NOT NULL,
-  `nome_tipologia` tinyint NOT NULL,
   `difficolta` tinyint NOT NULL,
+  `tempo_cottura` tinyint NOT NULL,
   `calorie_totali` tinyint NOT NULL,
+  `id_tipologia` tinyint NOT NULL,
+  `nome_tipologia` tinyint NOT NULL,
   `data_flusso` tinyint NOT NULL,
   `nome_stato_approvativo` tinyint NOT NULL,
   `codice_stato_approvativo` tinyint NOT NULL,
@@ -201,7 +221,7 @@ CREATE TABLE `flusso_approvativo` (
 
 LOCK TABLES `flusso_approvativo` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo` VALUES (18,1,NULL,2,20,'2018-10-17 21:18:26'),(22,1,NULL,1,24,'2018-10-18 10:02:44'),(23,8,1,3,25,'2018-10-21 16:24:12'),(24,8,NULL,1,26,'2018-10-21 17:41:37'),(25,8,NULL,1,27,'2018-10-21 19:17:43'),(26,66,85,3,28,'2018-10-24 22:25:09'),(27,66,NULL,2,29,'2018-10-21 19:23:47'),(28,69,NULL,8,30,'2018-10-25 16:39:21'),(29,69,NULL,2,31,'2018-10-21 19:31:43'),(30,69,NULL,1,32,'2018-10-21 19:33:51');
+INSERT INTO `flusso_approvativo` VALUES (18,1,NULL,2,20,'2018-10-17 21:18:26'),(22,1,NULL,1,24,'2018-10-18 10:02:44'),(23,8,1,3,25,'2018-10-21 16:24:12'),(24,8,NULL,1,26,'2018-10-21 17:41:37'),(25,8,NULL,1,27,'2018-10-21 19:17:43'),(26,66,NULL,5,28,'2018-09-27 15:24:34'),(27,66,NULL,2,29,'2018-10-21 19:23:47'),(28,69,NULL,8,30,'2018-10-25 16:39:21'),(29,69,NULL,2,31,'2018-10-21 19:31:43'),(30,69,NULL,1,32,'2018-10-21 19:33:51');
 /*!40000 ALTER TABLE `flusso_approvativo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -265,7 +285,7 @@ CREATE TABLE `flusso_approvativo_audit` (
   PRIMARY KEY (`id_flusso_approvativo_audit`),
   KEY `fk_flusso_approvativo_audit_flusso_approvativo_idx` (`id_flusso_approvativo`),
   CONSTRAINT `fk_flusso_approvativo_audit_flusso_approvativo` FOREIGN KEY (`id_flusso_approvativo`) REFERENCES `flusso_approvativo` (`id_flusso_approvativo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +294,7 @@ CREATE TABLE `flusso_approvativo_audit` (
 
 LOCK TABLES `flusso_approvativo_audit` WRITE;
 /*!40000 ALTER TABLE `flusso_approvativo_audit` DISABLE KEYS */;
-INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,20,1,0,'2018-10-17 21:18:26'),(7,22,1,24,1,0,'2018-10-18 10:02:44'),(15,18,2,20,1,NULL,'2018-10-17 21:18:26'),(16,23,1,25,8,NULL,'2018-10-21 16:24:12'),(17,24,1,26,8,NULL,'2018-10-21 17:41:37'),(18,23,2,25,8,NULL,'2018-10-21 16:24:12'),(19,25,1,27,8,NULL,'2018-10-21 19:17:43'),(23,27,2,29,66,NULL,'2018-10-21 19:23:47'),(28,30,1,32,69,NULL,'2018-10-21 19:33:51'),(40,23,3,25,8,NULL,'2018-10-21 16:24:12'),(41,23,3,25,8,1,'2018-10-21 16:24:12'),(56,26,3,28,66,85,'2018-10-24 22:25:09'),(66,28,3,30,69,85,'2018-10-24 23:14:00'),(67,28,5,30,69,NULL,'2018-10-24 23:14:05'),(68,28,6,30,69,1,'2018-10-25 16:39:14'),(69,28,8,30,69,NULL,'2018-10-25 16:39:21');
+INSERT INTO `flusso_approvativo_audit` VALUES (3,18,1,20,1,0,'2018-10-17 21:18:26'),(7,22,1,24,1,0,'2018-10-18 10:02:44'),(15,18,2,20,1,NULL,'2018-10-17 21:18:26'),(16,23,1,25,8,NULL,'2018-10-21 16:24:12'),(17,24,1,26,8,NULL,'2018-10-21 17:41:37'),(18,23,2,25,8,NULL,'2018-10-21 16:24:12'),(19,25,1,27,8,NULL,'2018-10-21 19:17:43'),(23,27,2,29,66,NULL,'2018-10-21 19:23:47'),(28,30,1,32,69,NULL,'2018-10-21 19:33:51'),(40,23,3,25,8,NULL,'2018-10-21 16:24:12'),(41,23,3,25,8,1,'2018-10-21 16:24:12'),(56,26,3,28,66,85,'2018-10-24 22:25:09'),(66,28,3,30,69,85,'2018-10-24 23:14:00'),(67,28,5,30,69,NULL,'2018-10-24 23:14:05'),(68,28,6,30,69,1,'2018-10-25 16:39:14'),(69,28,8,30,69,NULL,'2018-10-25 16:39:21'),(70,26,5,28,66,NULL,'2018-10-27 15:24:34'),(71,26,5,28,66,NULL,'2018-09-27 15:24:34');
 /*!40000 ALTER TABLE `flusso_approvativo_audit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -631,6 +651,25 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Final view structure for view `abstract_ricette`
+--
+
+/*!50001 DROP TABLE IF EXISTS `abstract_ricette`*/;
+/*!50001 DROP VIEW IF EXISTS `abstract_ricette`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `abstract_ricette` AS select `r`.`id_ricetta` AS `id_ricetta`,`r`.`titolo_ricetta` AS `titolo_ricetta`,`r`.`difficolta` AS `difficolta`,`r`.`calorie_totali` AS `calorie_totali`,`r`.`preparazione` AS `preparazione`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo` from ((`ricetta` `r` join `flusso_approvativo` `fa` on((`fa`.`id_ricetta` = `r`.`id_ricetta`))) join `stato_approvativo` `sa` on((`fa`.`id_stato_approvativo` = `sa`.`id_stato_approvativo`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `anteprime_ricetta`
 --
 
@@ -644,7 +683,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `anteprime_ricetta` AS select `r`.`id_ricetta` AS `id_ricetta`,`r`.`titolo_ricetta` AS `titolo_ricetta`,`t`.`nome_tipologia` AS `nome_tipologia`,`r`.`difficolta` AS `difficolta`,`r`.`calorie_totali` AS `calorie_totali`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_valutazione` AS `id_stato_approvativo_valutazione`,`sa`.`id_stato_approvativo_approvazione` AS `id_stato_approvativo_approvazione`,`sa`.`id_stato_approvativo_rifiuto` AS `id_stato_approvativo_rifiuto`,`uc`.`id_utente` AS `id_utente_creatore`,`uc`.`username` AS `username_utente_creatore`,`ua`.`id_utente` AS `id_utente_approvatore`,`ua`.`username` AS `username_utente_approvatore` from (((((`ricetta` `r` join `flusso_approvativo` `fa` on((`r`.`id_ricetta` = `fa`.`id_ricetta`))) join `utente` `uc` on((`uc`.`id_utente` = `fa`.`id_utente_creatore`))) join `tipologia` `t` on((`t`.`id_tipologia` = `r`.`id_tipologia`))) left join `utente` `ua` on((`ua`.`id_utente` = `fa`.`id_utente_approvatore`))) join `stato_approvativo` `sa` on((`sa`.`id_stato_approvativo` = `fa`.`id_stato_approvativo`))) order by `sa`.`codice_stato_approvativo` */;
+/*!50001 VIEW `anteprime_ricetta` AS select `r`.`id_ricetta` AS `id_ricetta`,`r`.`titolo_ricetta` AS `titolo_ricetta`,`r`.`difficolta` AS `difficolta`,`r`.`tempo_cottura` AS `tempo_cottura`,`r`.`calorie_totali` AS `calorie_totali`,`t`.`id_tipologia` AS `id_tipologia`,`t`.`nome_tipologia` AS `nome_tipologia`,`fa`.`data_flusso` AS `data_flusso`,`sa`.`nome_stato_approvativo` AS `nome_stato_approvativo`,`sa`.`codice_stato_approvativo` AS `codice_stato_approvativo`,`sa`.`id_stato_approvativo` AS `id_stato_approvativo`,`sa`.`id_stato_approvativo_valutazione` AS `id_stato_approvativo_valutazione`,`sa`.`id_stato_approvativo_approvazione` AS `id_stato_approvativo_approvazione`,`sa`.`id_stato_approvativo_rifiuto` AS `id_stato_approvativo_rifiuto`,`uc`.`id_utente` AS `id_utente_creatore`,`uc`.`username` AS `username_utente_creatore`,`ua`.`id_utente` AS `id_utente_approvatore`,`ua`.`username` AS `username_utente_approvatore` from (((((`ricetta` `r` join `flusso_approvativo` `fa` on((`r`.`id_ricetta` = `fa`.`id_ricetta`))) join `utente` `uc` on((`uc`.`id_utente` = `fa`.`id_utente_creatore`))) join `tipologia` `t` on((`t`.`id_tipologia` = `r`.`id_tipologia`))) left join `utente` `ua` on((`ua`.`id_utente` = `fa`.`id_utente_approvatore`))) join `stato_approvativo` `sa` on((`sa`.`id_stato_approvativo` = `fa`.`id_stato_approvativo`))) order by `sa`.`codice_stato_approvativo` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -734,4 +773,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-26  1:01:06
+-- Dump completed on 2018-10-27 21:46:31
