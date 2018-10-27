@@ -108,6 +108,15 @@ class RecipesApi extends RestClient {
         return super.execute(); 
     }
 
+    getRecipesAbstractsWithFilters(clientFilters) {
+        clientFilters = JSON.stringify(clientFilters);
+        this.data = {
+            action: "getRecipesAbstractsWithFilters",
+            clientFilters: clientFilters
+        }
+        return super.execute(); 
+    }
+
     getRecipeTopologies() {
         this.data = {
             action: "getRecipeTopologies"
@@ -118,6 +127,13 @@ class RecipesApi extends RestClient {
     getIngredients() {
         this.data = {
             action: "getIngredients"
+        }
+        return super.execute();
+    }
+
+    getMaxCaloriesRecipe() {
+        this.data = {
+            action: "getMaxCaloriesRecipe"
         }
         return super.execute();
     }

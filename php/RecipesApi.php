@@ -126,10 +126,69 @@ class RecipesApi {
         return $a->id_ricetta > $b->id_ricetta;
     }
 
+    function GetRecipesAbstractsWithFilters() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        $clientFilters = json_decode($_POST["clientFilters"]);
+        $query = 
+            "SELECT *
+            FROM abstract_ricette ar
+            %s
+            codice_stato_approvativo >= ?";
+        $parametersTypes = "";
+        $parameters = array();
+        if(count($clientFilters->lista_ingredienti) > 0) {
+            $query = sprintf($query, "INNER JOIN lista_ingredienti li
+                                      USING(id_ricetta)
+                                      WHERE li.id_ingrediente IN (%s)
+                                      AND ");
+            $idsString = "";
+            foreach($clientFilters->lista_ingredienti as $ingredient) {   
+                $idsString .= "?, ";
+                $parameters[] = $ingredient;
+            }
+            $idsString = rtrim($idsString);
+            $idsString = rtrim($idsString, ",");
+            $query = sprintf($query, $idsString);
+        } else {
+            $query = sprintf($query, "WHERE ");
+        }
+        $parametersTypes .= "d";
+        $parameters[] = ApprovalFlowConstants::APPROVATA;
+        $filtersTemplates = self::GetFiltersTemplates();
+        foreach($clientFilters as $clientFilter) {
+            $serverFilter = $filtersTemplates[$clientFilter->name];
+            if($serverFilter) {
+                $parametersTypes .= $serverFilter->sqlType;
+                $query .= $serverFilter->condition;
+                foreach($clientFilter->values as $clientFilterValue) {
+                    $parameters[] = $clientFilterValue;
+                }
+            }
+        }
+
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters($parametersTypes, $parameters);
+        $res = $this->dbContext->ExecuteStatement();
+        $array = array();
+        while($row = $res->fetch_assoc()) {
+            $array[] = $row;
+        }
+        exit(json_encode($array));
+    }
+
+    private function GetFiltersTemplates() {
+        $filtersTemplates = array();
+        $filtersTemplates["titolo_ricetta"] = new Filter("s", "AND titolo_ricetta LIKE '%?%'");
+        $filtersTemplates["tipologia"] = new Filter("d", "AND id_tipologia = ?");
+        $filtersTemplates["tempo_cottura"] = new Filter("d", "AND tempo_cottura = ?");
+        $filtersTemplates["calorie_totali"] = new Filter("dd", "AND calorie_totali >= ? AND calorie_totali <= ?");
+        $filtersTemplates["difficolta"] = new Filter("d", "AND difficolta = ?");
+        return $filtersTemplates;
+    }
+
     function GetRecipeTopologies() {
         try {
             Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-            TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
             $query = 
                 "SELECT *
                 FROM tipologia";
@@ -148,7 +207,6 @@ class RecipesApi {
 
     function GetIngredients() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
-        TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE), "delega_codice");            
         $query = 
             "SELECT * FROM ingrediente";
         $res = self::ExecuteQuery($query);
@@ -157,6 +215,16 @@ class RecipesApi {
             $array[] = $row;
         }
         exit(json_encode($array));
+    }
+
+    function GetMaxCaloriesRecipe() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        $query = 
+            "SELECT MAX(calorie_totali) as calorie_massime FROM ricetta";
+        $res = self::ExecuteQuery($query);
+        $array = array();
+        $row = $res->fetch_assoc();
+        exit(json_encode($row));
     }
 
     function InsertRecipe() {
@@ -280,10 +348,6 @@ class RecipesApi {
     function Init(){
         $this->dbContext = new DBConnection();
         $this->loginContext = json_decode(TokenGenerator::ValidateToken());
-        if(!$this->loginContext) {
-            Logger::Write("LoginContext is not valid, exiting scope.", $GLOBALS["CorrelationID"]);
-            exit(json_encode(false));
-        }
         switch($_POST["action"]) {
             case "getRecipesForUser":
                 self::GetRecipesForUser();
@@ -296,6 +360,12 @@ class RecipesApi {
                 break;
             case "getRecipe":
                 self::GetRecipe();
+                break;
+            case "getRecipesAbstractsWithFilters":
+                self::GetRecipesAbstractsWithFilters();
+                break;
+            case "getMaxCaloriesRecipe":
+                self::GetMaxCaloriesRecipe();
                 break;
             case "insertRecipe":
                 self::InsertRecipe();
@@ -334,6 +404,16 @@ class Ingredient {
         $this->nome_ingrediente = $row["nome_ingrediente"];
         $this->calorie = $row["calorie"];
         $this->quantita = $row["quantita"];
+    }
+}
+
+class Filter {
+    public $sqlType;
+    public $condition;
+
+    function __construct($sqlType, $condition) {
+        $this->sqlType = $sqlType;
+        $this->condition = $condition;
     }
 }
 ?>

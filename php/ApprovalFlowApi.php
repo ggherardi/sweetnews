@@ -92,13 +92,14 @@ class ApprovalFlowApi {
                 data_flusso = DEFAULT  
                 WHERE id_ricetta = ?                                                                
                 AND id_utente_creatore <> ?
-                AND id_stato_approvativo IN (SELECT id_stato_approvativo 
+                ANd id_utente_approvatore = ?
+                AND id_stato_approvativo IN (SELECT id_stato_approvativo
                                             FROM stato_approvativo
                                             WHERE codice_stato_approvativo = ?
                                             OR codice_stato_approvativo = ?)";
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("ddddd", array($parameters->idNextStep, $parameters->id_ricetta, 
-                $id_utente, ApprovalFlowConstants::IN_VALIDAZIONE, ApprovalFlowConstants::IN_APPROVAZIONE));
+            $this->dbContext->BindStatementParameters("dddddd", array($parameters->idNextStep, $parameters->id_ricetta, 
+                $id_utente, $id_utente, ApprovalFlowConstants::IN_VALIDAZIONE, ApprovalFlowConstants::IN_APPROVAZIONE));
             $res = $this->dbContext->ExecuteStatement();
 
             $query = 
@@ -145,15 +146,23 @@ class ApprovalFlowApi {
         }
         if($args->needsUserValidation) {
             if($args->currentUser) {
-                $query = sprintf($query, "AND (id_utente_approvatore = ? AND id_utente_approvatore is not NULL)");
+                $query = sprintf($query, "AND (id_utente_approvatore = ? AND id_utente_approvatore is not NULL) %s");
             } else {
-                $query = sprintf($query, "AND (id_utente_approvatore <> ? OR id_utente_approvatore is NULL)");
+                $query = sprintf($query, "AND (id_utente_approvatore <> ? OR id_utente_approvatore is NULL) %s");
             }
             $parametersTypes .= "d";
             $parameters[] = $id_utente;
         } else {
+            $query = sprintf($query, "%s");
+        }
+        if($this->loginContext->delega_codice == PermissionsConstants::CAPOREDATTORE) {
+            $query = sprintf($query, "AND data_flusso <= ?");
+            $parametersTypes .= "s"; 
+            $parameters[] = self::GetDateForRecipeApproval();
+        } else {
             $query = sprintf($query, "");
         }
+
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters($parametersTypes, $parameters);
         $res = $this->dbContext->ExecuteStatement();
@@ -162,6 +171,13 @@ class ApprovalFlowApi {
             $array[] = $row;
         }
         exit(json_encode($array));
+    }
+
+    private function GetDateForRecipeApproval() {
+        $today = time();
+        $daysForRecipeApproval = ($today / (60 * 60 * 24)) - 30;
+        $daysForRecipeApproval = $daysForRecipeApproval * (60 * 60 * 24);
+        return date("Y-m-d H:i:s", $daysForRecipeApproval);
     }
 
     public function GetRejectedRecipes() {

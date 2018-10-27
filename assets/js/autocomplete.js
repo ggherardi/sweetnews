@@ -41,8 +41,11 @@ function autocomplete(inp, arr) {
         $(`.ingredient_id_${controlNumber}`).get(0).value = ingredient.id_ingrediente;
         inp.value = ingredient.nome_ingrediente;
         var quantity = $(`.ingredient_quantita_${controlNumber}`).val() ? parseFloat($(`.ingredient_quantita_${controlNumber}`).val()) : 1;
-        $(`.ingredient_calorie_${controlNumber}`).get(0).value = parseFloat(ingredient.calorie) * quantity;
-        $(`.ingredient_calorie_hidden_${controlNumber}`).get(0).value = parseFloat(ingredient.calorie);
+        caloriesControl = $(`.ingredient_calorie_${controlNumber}`);
+        if(caloriesControl.length) {
+          caloriesControl.get(0).value = parseFloat(ingredient.calorie) * quantity;
+          $(`.ingredient_calorie_hidden_${controlNumber}`).get(0).value = parseFloat(ingredient.calorie);
+        }
         closeAllLists();
     }
 
