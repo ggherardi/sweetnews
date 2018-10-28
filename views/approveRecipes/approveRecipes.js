@@ -4,6 +4,7 @@ var approvalDTOptions = {
     buttons: true,
     select: true,
     columns: [
+        { data: "data_flusso_orderable" },
         { data: "id_ricetta" },
         { data: "id_utente_creatore" },
         { data: "id_utente_approvatore" },
@@ -16,10 +17,13 @@ var approvalDTOptions = {
         { data: "data_flusso" }
     ],
     columnDefs: [{
-        targets: [ 0, 1, 2, 3 ],
+        targets: [ 0, 1, 2, 3, 4 ],
         visible: false,
         searchable: false
     }],
+    order: [
+        [0, "asc"]
+    ],
     language: dataTableLanguage.italian,
     responsive: {
         details: {
@@ -51,10 +55,11 @@ var tablesMapping = {
             needed: true,
             currentUser: false
         },
+        dateValidation: true,
         tableName: "daPrendereInCaricoTable",
         tableContainer: daPrendereInCaricoContainer,
         buttons: [
-            { extend: "selectedSingle", text: "Visualizza e prendi in carico ricetta", action: viewRecipe }
+            { extend: "selectedSingle", text: "Visualizza e prendi in carico ricetta", action: viewRecipe.bind("daPrendereInCarico") }
         ]
     },
     inCarico: {
@@ -71,10 +76,11 @@ var tablesMapping = {
             needed: true,
             currentUser: true
         },
+        dateValidation: true,
         tableName: "inCaricoTable",
         tableContainer: inCaricoContainer,
         buttons: [
-            { extend: "selectedSingle", text: "Approva/Rifiuta Ricetta", action: viewRecipe }
+            { extend: "selectedSingle", text: "Approva/Rifiuta Ricetta", action: viewRecipe.bind("inCarico") }
         ]
     },
     tutte: {
@@ -91,10 +97,11 @@ var tablesMapping = {
             needed: false,
             currentUser: true
         },
+        dateValidation: false,
         tableName: "tutteTable",
         tableContainer: tutteContainer,
         buttons: [
-            { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe }
+            { extend: "selectedSingle", text: "Visualizza ricetta", action: viewRecipe.bind("tutte") }
         ]
     },
     rifiutate: {
@@ -111,6 +118,7 @@ var tablesMapping = {
             needed: null,
             currentUser: null
         },
+        dateValidation: false,
         tableName: "rifiutateTable",
         tableContainer: rifiutateContainer,
         buttons: [
@@ -120,14 +128,30 @@ var tablesMapping = {
 };
 var tableMapping;
 
-function initApprovals() {
+function initApprovals(table) {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var tableId = e.relatedTarget.dataset["relatedtableid"]; // previous active tab
         $(tableId).html("");
         var mapping = e.target.dataset["tablemapping"]; // previous active tab
         initTabs(eval(mapping));
-      })
-    initTabs(tablesMapping.daPrendereInCarico);
+    })
+    delete window.TableSource;
+    var tableMapping;
+    switch(table) {
+        case "daPrendereInCarico":
+            tableMapping = tablesMapping.daPrendereInCarico;
+            break;
+        case "inCarico":
+            tableMapping = tablesMapping.inCarico;
+            break;
+        case "tutte":
+            tableMapping = tablesMapping.tutte;
+            break;
+        default:
+            tableMapping = tablesMapping.daPrendereInCarico;
+            break;
+    }
+    initTabs(tableMapping);
 }
 
 function initTabs(tableMapping) {
@@ -138,7 +162,8 @@ function initTabs(tableMapping) {
         minState: statePermissions.minState,
         maxState: statePermissions.maxState,
         needsUserValidation: tableMapping.userValidation.needed,
-        currentUser: tableMapping.userValidation.currentUser
+        currentUser: tableMapping.userValidation.currentUser,
+        dateValidation: tableMapping.dateValidation
     };
     var approvalFlowApi = new ApprovalFlowApi();
     approvalFlowApi.getAllRecipesWithStateInRange(args)
@@ -155,7 +180,9 @@ function getAllRecipesWithStateSuccess(data) {
     for(var i = 0; i < recipes.length; i++) {
         var recipe = recipes[i];
         var dateCell = formatDateCell(recipe.data_flusso);
+        var orderableDate = new Date(recipe.data_flusso).toDateString();
             html +=     `<tr>
+                            <td>${orderableDate}</td>
                             <td>${recipe.id_ricetta}</td>
                             <td>${recipe.id_utente_creatore}</td>
                             <td>${recipe.id_utente_approvatore}</td>
@@ -210,6 +237,7 @@ function editRecipe(e, dt, node, config) {
 
 function viewRecipe(e, dt, node, config) {
     var row = dt.rows({ selected: true }).data()[0];
+    window.TableSource = this.toString();
     window.RecipeId = row.id_ricetta;
     window.RecipeApprovaFlowState = row.codice_stato_approvativo;
     window.RecipeAuthor = row.id_utente_creatore;

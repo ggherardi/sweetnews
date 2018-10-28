@@ -1,7 +1,7 @@
 function initAccount() {
     if(shared.loginContext.delega_codice > 0) {
         $("#account__username").text(shared.loginContext.username);
-        $("#account__delega").text(`(${shared.loginContext.delega_nome})`);
+        $("#account__delega").text(` (${shared.loginContext.delega_nome})`);
         $("#loginAccountIcon").addClass(ImagesUtilities.getAccountImage(shared.loginContext.delega_codice));
     } else {
         var container = $("#account__username");

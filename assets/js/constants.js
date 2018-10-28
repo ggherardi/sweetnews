@@ -25,6 +25,10 @@ class ImagesUtilities {
         }
         return icon;
     }
+
+    static getTopologyImageUrl(name) {
+        return `/images/topologies/${name}.jpg`;
+    }
 }
 
 class Approval {    

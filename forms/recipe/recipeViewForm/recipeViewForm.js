@@ -34,7 +34,8 @@ function startApprovalValidationSuccess(data) {
         window.RecipeApprover = data.id_utente_approvatore;
         window.RecipeApprovaFlowState = data.codice_stato_approvativo;
         pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
-        initApprovals();
+        pageContentController.switch();
+        initApprovals(window.TableSource);
     } else {
         flowError();
     }
@@ -66,7 +67,8 @@ function approveRejectSuccess(data) {
         window.RecipeApprover = data.id_utente_approvatore;
         window.RecipeApprovaFlowState = data.codice_stato_approvativo;
         pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.viewForm);
-        initApprovals();
+        pageContentController.switch();
+        initApprovals(window.TableSource);
     } else {
         flowError();
     }

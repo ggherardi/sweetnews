@@ -155,13 +155,15 @@ class ApprovalFlowApi {
         } else {
             $query = sprintf($query, "%s");
         }
-        if($this->loginContext->delega_codice == PermissionsConstants::CAPOREDATTORE) {
-            $query = sprintf($query, "AND data_flusso <= ?");
+        Logger::Write("DATE VALIDATION: ".$args->dateValidation, $GLOBALS["CorrelationID"]);
+        if($this->loginContext->delega_codice == PermissionsConstants::CAPOREDATTORE && $args->dateValidation) {
+            $query = sprintf($query, "AND data_flusso <= ? %s");
             $parametersTypes .= "s"; 
             $parameters[] = self::GetDateForRecipeApproval();
         } else {
-            $query = sprintf($query, "");
+            $query = sprintf($query, "%s");
         }
+        $query = sprintf($query, "ORDER BY data_flusso ASC");
 
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters($parametersTypes, $parameters);

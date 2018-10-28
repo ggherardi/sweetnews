@@ -65,7 +65,7 @@ function autocomplete(inp, arr) {
           currentFocus--;
           /*and and make the current item more visible:*/
           addActive(x);
-        } else if (e.keyCode == 13) {
+        } else if (e.keyCode == 13 || (document.getElementsByClassName("autocomplete-items").length && e.keyCode == 9)) {
           /*If the ENTER key is pressed, prevent the form from being submitted,*/
           e.preventDefault();
           if (currentFocus > -1) {

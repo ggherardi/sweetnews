@@ -127,7 +127,19 @@ function getFilters() {
 }
 
 function getRecipesAbstractsWithFiltersSuccess(data) {
-    console.log(data);
+    if(data && JSON.parse(data)) {
+        var recipesAbstracts = JSON.parse(data);
+        var html = ``;
+        for(var i = 0; i < recipesAbstracts.length; i++) {
+            var abstract = recipesAbstracts[i];
+            html += `<div>
+                        <div class="row">
+                            
+                        </div>
+                    </div>`; 
+            console.log(abstract);
+        }
+    }
 }
 
 /* Init */

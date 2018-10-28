@@ -165,7 +165,7 @@ class RecipesApi {
                 }
             }
         }
-
+        $query .= " GROUP BY id_ricetta";
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters($parametersTypes, $parameters);
         $res = $this->dbContext->ExecuteStatement();
@@ -234,16 +234,15 @@ class RecipesApi {
             $recipeForm = json_decode($_POST["recipeForm"]);
             $id_utente = $this->loginContext->id_utente;
             $ingredients = $recipeForm->lista_ingredienti;
-            Logger::Write("RECIPE ".json_encode($ingredients), $GLOBALS["CorrelationID"]);
             $this->dbContext->StartTransaction();
             $query = 
                 "INSERT INTO ricetta
                 (id_utente, id_tipologia, titolo_ricetta, difficolta, tempo_cottura, preparazione, porzioni, calorie_totali, note, messaggio)
                 VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $this->dbContext->PrepareStatement($query);
             $this->dbContext->BindStatementParameters("ddsddsddss", array($id_utente, $recipeForm->id_tipologia, $recipeForm->titolo_ricetta, 
-                $recipeForm->difficolta, $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipe->calorie_totali,
+                $recipeForm->difficolta, $recipeForm->tempo_cottura, $recipeForm->preparazione, $recipeForm->porzioni, $recipeForm->calorie_totali,
                 $recipeForm->note, $recipeForm->messaggio));
             $res = $this->dbContext->ExecuteStatement();
             $recipeId = $this->dbContext->GetLastId();
