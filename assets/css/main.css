@@ -499,7 +499,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 	font-size: 15px;
 }
 
-#filtersForm__calorie span:focus {
+.filterRange span:focus {
 	outline: 0;
 }
 

@@ -17,40 +17,51 @@ var recipesAbstractDTOptions = {
 
 function initFilters() {
     initCaloriesrange();
+    initCookingTimeRange();
     populateTipologiaSelect();
     retrieveIngredientsFromDBAndInitAutocomplete();
 }
 
 function initCaloriesrange() {
     var recipesApi = new RecipesApi();
-    recipesApi.getMaxCaloriesRecipe()
-        .done(getMaxCaloriesRecipeSuccess)
+    recipesApi.getMaxCalories()
+        .done(getMaxValueSuccess.bind("filtersForm__calorie"))
         .fail(RestClient.redirectAccordingToError);
 }
 
-function getMaxCaloriesRecipeSuccess(data) {
+function initCookingTimeRange() {
+    var recipesApi = new RecipesApi();
+    recipesApi.getMaxCookingTime()
+        .done(getMaxValueSuccess.bind("filtersForm__tempo_cottura"))
+        .fail(RestClient.redirectAccordingToError);
+}
+
+function getMaxValueSuccess(data) {
+    var selector = this.toString();
     if(data && JSON.parse(data)) {
-        var calories = JSON.parse(data);
-        var maxCalories = Math.ceil(calories.calorie_massime);
-        var slider = $("#filtersForm__calorie");
+        var maxValue = JSON.parse(data);
+        var celiedMaxValue = Math.ceil(Object.values(maxValue)[0]);
+        var slider = $(`#${selector}`);
         slider.slider({
             range: true,
             min: 0,
-            max: maxCalories,
-            values:[0, maxCalories],
-            slide: slideEvent
+            max: celiedMaxValue,
+            values:[0, celiedMaxValue],
+            slide: slideEvent.bind(selector)
         });
-        var textOverSliderLeft = $('<div class="sliderSpanText"><span id="sliderSpanTextLeft">0</span></div>');
-        var textOverSliderRight = $(`<div class="sliderSpanText"><span id="sliderSpanTextRight">${maxCalories}</span></div>`);
+        var textOverSliderLeft = $(`<div class="sliderSpanText"><span id="${selector}_Left">0</span></div>`);
+        var textOverSliderRight = $(`<div class="sliderSpanText"><span id="${selector}_Right">${celiedMaxValue}</span></div>`);
         $(slider.children("span")[0]).html(textOverSliderLeft);
         $(slider.children("span")[1]).html(textOverSliderRight);
     }
 }
 
+
+
 function slideEvent(event, ui) {
-    $("#sliderSpanTextLeft").text(ui.values[0]);
-    $("#sliderSpanTextRight").text(ui.values[1]);
-    // $("#amount").val("$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+    var selector = this.toString();
+    $(`#${selector}_Left`).text(ui.values[0]);
+    $(`#${selector}_Right`).text(ui.values[1]);
   }
 
 function populateTipologiaSelect() {
@@ -140,14 +151,17 @@ function findRecipes(sender, e) {
 function getFilters() {
     var ingredientsIds = getIngredientsIdsFromForm();
     var titolo = $("#filtersForm__titolo").val();
+    var cookingTime = $("#filtersForm__tempo_cottura").slider("values");
+    var calories = $("#filtersForm__calorie").slider("values");
     var filters = [
         { name: "titolo_ricetta", value: [ titolo ? `%${titolo}%` : "" ] },
         { name: "tipologia", value: [ $("#filtersForm__tipologia").val() ] },
-        { name: "tempo_cottura", value: [ $("#filtersForm__tempo_cottura").val() ] },
-        { name: "calorie_totali", value: [ $("#filtersForm__calorie").val() ] },
+        { name: "tempo_cottura", value: [ cookingTime[0], cookingTime[1] ] },
+        { name: "calorie_totali", value: [ calories[0], calories[1] ] },
         { name: "difficolta", value: [ $("#filtersForm__difficolta input:checked").val() ] },
-        { lista_ingredienti: ingredientsIds }
+        { name: "lista_ingredienti", value: ingredientsIds }
     ];    
+    filters.lista_ingredienti = ingredientsIds;
     return filters;
 }
 
@@ -213,6 +227,11 @@ function formatStarsCell(starsCount) {
         stars += "★";
     }
     return stars;
+}
+
+/* Aux */
+function removeCheckedStar() {
+
 }
 
 /* Init */

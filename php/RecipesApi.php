@@ -129,22 +129,23 @@ class RecipesApi {
     function GetRecipesAbstractsWithFilters() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         $clientFilters = json_decode($_POST["clientFilters"]);
-        // Logger::Write("POST ".json_encode($clientFilters), $GLOBALS["CorrelationID"]);        
         $query = 
             "SELECT *
             FROM abstract_ricette ar
             %s
             codice_stato_approvativo >= ?";
         $parametersTypes = "";
-        $parameters = array();
-        if(count($clientFilters->lista_ingredienti) > 0) {
+        $parameters = array();        
+        $ingredientsArray = self::GetIngredientsArrayFromFilters($clientFilters);
+        if(count($ingredientsArray->value) > 0) {
             $query = sprintf($query, " INNER JOIN lista_ingredienti li
                                       USING(id_ricetta)
                                       WHERE li.id_ingrediente IN (%s)
                                       AND ");
             $idsString = "";
-            foreach($clientFilters->lista_ingredienti as $ingredient) {   
+            foreach($ingredientsArray->value as $ingredient) {   
                 $idsString .= "?, ";
+                $parametersTypes .= "d";
                 $parameters[] = $ingredient;
             }
             $idsString = rtrim($idsString);
@@ -157,12 +158,11 @@ class RecipesApi {
         $parameters[] = ApprovalFlowConstants::APPROVATA;
         $filtersTemplates = self::GetFiltersTemplates();
         foreach($clientFilters as $clientFilter) {            
-            $serverFilter = $filtersTemplates[$clientFilter->name];
-            if(count($clientFilter->value) > 0 && $serverFilter) {                
+            $serverFilter = $filtersTemplates[$clientFilter->name];            
+            if(self::DoesArrayContainValues($clientFilter->value) && $serverFilter) {                
                 $parametersTypes .= $serverFilter->sqlType;
                 $query .= $serverFilter->condition;                
                 foreach($clientFilter->value as $clientFilterValue) {
-                    Logger::Write(json_encode($clientFilter->name)." !!!!!!VALUE!!!!!! COUNT ".json_encode(count($clientFilter->value)), $GLOBALS["CorrelationID"]);
                     $parameters[] = $clientFilterValue;
                 }
             }
@@ -177,14 +177,32 @@ class RecipesApi {
         exit(json_encode($array));
     }
 
+    private function GetIngredientsArrayFromFilters($filters) {
+        foreach($filters as $filter) {
+            if($filter->name == "lista_ingredienti") {
+                return $filter;
+            }
+        }
+        return $null;
+    }
+
     private function GetFiltersTemplates() {
         $filtersTemplates = array();
         $filtersTemplates["titolo_ricetta"] = new Filter("s", " AND titolo_ricetta LIKE ?");
         $filtersTemplates["tipologia"] = new Filter("d", " AND id_tipologia = ?");
-        $filtersTemplates["tempo_cottura"] = new Filter("d", " AND tempo_cottura = ?");
+        $filtersTemplates["tempo_cottura"] = new Filter("dd", " AND tempo_cottura >= ? AND tempo_cottura <= ?");
         $filtersTemplates["calorie_totali"] = new Filter("dd", " AND calorie_totali >= ? AND calorie_totali <= ?");
         $filtersTemplates["difficolta"] = new Filter("d", " AND difficolta = ?");
         return $filtersTemplates;
+    }
+
+    private function DoesArrayContainValues($array) {
+        foreach($array as $value) {
+            if($value) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function GetRecipeTopologies() {
@@ -218,10 +236,21 @@ class RecipesApi {
         exit(json_encode($array));
     }
 
-    function GetMaxCaloriesRecipe() {
+    function GetMaxCalories() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         $query = 
             "SELECT MAX(calorie_totali) as calorie_massime FROM ricetta";
+        $res = self::ExecuteQuery($query);
+        $array = array();
+        $row = $res->fetch_assoc();
+        exit(json_encode($row));
+    }
+
+    
+    function GetMaxCookingTime() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        $query = 
+            "SELECT MAX(tempo_cottura) as tempo_cottura_massimo FROM ricetta";
         $res = self::ExecuteQuery($query);
         $array = array();
         $row = $res->fetch_assoc();
@@ -364,8 +393,11 @@ class RecipesApi {
             case "getRecipesAbstractsWithFilters":
                 self::GetRecipesAbstractsWithFilters();
                 break;
-            case "getMaxCaloriesRecipe":
-                self::GetMaxCaloriesRecipe();
+            case "getMaxCalories":
+                self::GetMaxCalories();
+                break;
+            case "getMaxCookingTime":
+                self::GetMaxCookingTime();
                 break;
             case "insertRecipe":
                 self::InsertRecipe();

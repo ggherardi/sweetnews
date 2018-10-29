@@ -131,12 +131,20 @@ class RecipesApi extends RestClient {
         return super.execute();
     }
 
-    getMaxCaloriesRecipe() {
+    getMaxCalories() {
         this.data = {
-            action: "getMaxCaloriesRecipe"
+            action: "getMaxCalories"
         }
         return super.execute();
     }
+
+    getMaxCookingTime() {
+        this.data = {
+            action: "getMaxCookingTime"
+        }
+        return super.execute();
+    }
+    
     
     insertRecipe(recipeForm) {
         recipeForm = JSON.stringify(recipeForm);
