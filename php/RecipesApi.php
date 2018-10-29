@@ -129,6 +129,7 @@ class RecipesApi {
     function GetRecipesAbstractsWithFilters() {
         Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
         $clientFilters = json_decode($_POST["clientFilters"]);
+        // Logger::Write("POST ".json_encode($clientFilters), $GLOBALS["CorrelationID"]);        
         $query = 
             "SELECT *
             FROM abstract_ricette ar
@@ -137,7 +138,7 @@ class RecipesApi {
         $parametersTypes = "";
         $parameters = array();
         if(count($clientFilters->lista_ingredienti) > 0) {
-            $query = sprintf($query, "INNER JOIN lista_ingredienti li
+            $query = sprintf($query, " INNER JOIN lista_ingredienti li
                                       USING(id_ricetta)
                                       WHERE li.id_ingrediente IN (%s)
                                       AND ");
@@ -155,12 +156,13 @@ class RecipesApi {
         $parametersTypes .= "d";
         $parameters[] = ApprovalFlowConstants::APPROVATA;
         $filtersTemplates = self::GetFiltersTemplates();
-        foreach($clientFilters as $clientFilter) {
+        foreach($clientFilters as $clientFilter) {            
             $serverFilter = $filtersTemplates[$clientFilter->name];
-            if($serverFilter) {
+            if(count($clientFilter->value) > 0 && $serverFilter) {                
                 $parametersTypes .= $serverFilter->sqlType;
-                $query .= $serverFilter->condition;
-                foreach($clientFilter->values as $clientFilterValue) {
+                $query .= $serverFilter->condition;                
+                foreach($clientFilter->value as $clientFilterValue) {
+                    Logger::Write(json_encode($clientFilter->name)." !!!!!!VALUE!!!!!! COUNT ".json_encode(count($clientFilter->value)), $GLOBALS["CorrelationID"]);
                     $parameters[] = $clientFilterValue;
                 }
             }
@@ -177,11 +179,11 @@ class RecipesApi {
 
     private function GetFiltersTemplates() {
         $filtersTemplates = array();
-        $filtersTemplates["titolo_ricetta"] = new Filter("s", "AND titolo_ricetta LIKE '%?%'");
-        $filtersTemplates["tipologia"] = new Filter("d", "AND id_tipologia = ?");
-        $filtersTemplates["tempo_cottura"] = new Filter("d", "AND tempo_cottura = ?");
-        $filtersTemplates["calorie_totali"] = new Filter("dd", "AND calorie_totali >= ? AND calorie_totali <= ?");
-        $filtersTemplates["difficolta"] = new Filter("d", "AND difficolta = ?");
+        $filtersTemplates["titolo_ricetta"] = new Filter("s", " AND titolo_ricetta LIKE ?");
+        $filtersTemplates["tipologia"] = new Filter("d", " AND id_tipologia = ?");
+        $filtersTemplates["tempo_cottura"] = new Filter("d", " AND tempo_cottura = ?");
+        $filtersTemplates["calorie_totali"] = new Filter("dd", " AND calorie_totali >= ? AND calorie_totali <= ?");
+        $filtersTemplates["difficolta"] = new Filter("d", " AND difficolta = ?");
         return $filtersTemplates;
     }
 

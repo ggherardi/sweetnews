@@ -138,7 +138,31 @@ function findRecipes(sender, e) {
 }
 
 function getFilters() {
+    var ingredientsIds = getIngredientsIdsFromForm();
+    var titolo = $("#filtersForm__titolo").val();
+    var filters = [
+        { name: "titolo_ricetta", value: [ titolo ? `%${titolo}%` : "" ] },
+        { name: "tipologia", value: [ $("#filtersForm__tipologia").val() ] },
+        { name: "tempo_cottura", value: [ $("#filtersForm__tempo_cottura").val() ] },
+        { name: "calorie_totali", value: [ $("#filtersForm__calorie").val() ] },
+        { name: "difficolta", value: [ $("#filtersForm__difficolta input:checked").val() ] },
+        { lista_ingredienti: ingredientsIds }
+    ];    
+    return filters;
+}
 
+function getIngredientsIdsFromForm() {
+    var ingredients = [];
+    var ingredientsRows = $("#filtersForm__ingredients .ingredientRow");
+    for(var i = 0; i < ingredientsRows.length; i++) {
+        var ingredientRow = ingredientsRows[i];
+        var rowid = ingredientRow.dataset["rowid"];
+        ingredientId = $(`#filtersForm__ingredient_id_${rowid}`).val();
+        if(ingredientId) {
+            ingredients.push(ingredientId);
+        }        
+    }
+    return ingredients;
 }
 
 function getRecipesAbstractsWithFiltersSuccess(data) {
@@ -149,15 +173,15 @@ function getRecipesAbstractsWithFiltersSuccess(data) {
                             <tbody>`;
         for(var i = 0; i < recipesAbstracts.length; i++) {
             var abstract = recipesAbstracts[i];
-            html += `           <tr class="mt-1 p-3 recipeAbstract border">
+            html += `           <tr class="mt-1 p-4 recipeAbstract border">
                                     <td>
                                         <div>
                                             <h3>${abstract.titolo_ricetta}</h3>
                                             <div class="row" style="height:50px;">
-                                                <div class="col-2">
+                                                <div class="col-4 col-sm-2">
                                                     <img src="${ImagesUtilities.getTopologyImageUrl(abstract.nome_tipologia)}" height="75"  width="100"/>
                                                 </div>
-                                                <div class="col-10">
+                                                <div class="col-6 col-sm-10">
                                                     <div>
                                                         <span><strong>Tipologia: </strong></span>
                                                         <span>${abstract.nome_tipologia}</span>
