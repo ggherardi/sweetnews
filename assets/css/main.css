@@ -25,17 +25,18 @@ button:focus
 
 .pink {
 	color: #F56A6A!important;
-	fill: #F56A6A;
 }
 
 .grey {
 	color: #7f888f;
-	fill: #7f888f;
 }
 
 .purple {
 	color: #D25575;
-	fill: #D25575;
+}
+
+.yellow {
+	color: #ffc700;
 }
 
 .pink-hover:hover {
@@ -357,7 +358,7 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
     color: #ffc700!important;
 }
 
-/* Wizard */
+/* Flow Crumbs */
 #flowStepsCrumbContainer {
 
 	margin-left: -7px;
@@ -500,6 +501,23 @@ table.dataTable tbody>tr.selected, table.dataTable tbody>tr:hover {
 
 #filtersForm__calorie span:focus {
 	outline: 0;
+}
+
+/* Recipes Abstracts */
+#recipesAbstractsTable tbody tr:nth-child(2n + 1) {
+	background-color: transparent;
+}
+
+#recipesAbstractsTable tbody td:focus {
+	outline: 0!important;
+}
+
+#recipesAbstractsTable tbody tr:nth-child(2n + 1):hover {
+	background-color: #ffe6e6;
+}
+
+.recipeAbstract {
+	height: 150px;
 }
 
 /* Default */

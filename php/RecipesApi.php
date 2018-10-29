@@ -165,7 +165,6 @@ class RecipesApi {
                 }
             }
         }
-        $query .= " GROUP BY id_ricetta";
         $this->dbContext->PrepareStatement($query);
         $this->dbContext->BindStatementParameters($parametersTypes, $parameters);
         $res = $this->dbContext->ExecuteStatement();

@@ -1,4 +1,19 @@
 AllIngredients = [];
+var recipesAbstractDTOptions = {
+    dom: 'ftpil',
+    buttons: false,
+    select: false,
+    columns: [
+        { data: "data_flusso_orderable" }
+    ],
+    stripeClasses: [],
+    language: dataTableLanguage.italian,
+    responsive: {
+        details: {
+            type: "inline"
+        }
+    }
+};
 
 function initFilters() {
     initCaloriesrange();
@@ -129,17 +144,51 @@ function getFilters() {
 function getRecipesAbstractsWithFiltersSuccess(data) {
     if(data && JSON.parse(data)) {
         var recipesAbstracts = JSON.parse(data);
-        var html = ``;
+        var html = `<table id="recipesAbstractsTable">
+                        <thead><th></th></thead>
+                            <tbody>`;
         for(var i = 0; i < recipesAbstracts.length; i++) {
             var abstract = recipesAbstracts[i];
-            html += `<div>
-                        <div class="row">
-                            
-                        </div>
-                    </div>`; 
-            console.log(abstract);
+            html += `           <tr class="mt-1 p-3 recipeAbstract border">
+                                    <td>
+                                        <div>
+                                            <h3>${abstract.titolo_ricetta}</h3>
+                                            <div class="row" style="height:50px;">
+                                                <div class="col-2">
+                                                    <img src="${ImagesUtilities.getTopologyImageUrl(abstract.nome_tipologia)}" height="75"  width="100"/>
+                                                </div>
+                                                <div class="col-10">
+                                                    <div>
+                                                        <span><strong>Tipologia: </strong></span>
+                                                        <span>${abstract.nome_tipologia}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span><strong>Difficoltà: </strong></span>
+                                                        <span class="yellow">${formatStarsCell(abstract.difficolta)}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span><strong>Calorie: </strong></span>
+                                                        <span>${(new Number((parseFloat(abstract.calorie_totali)) / 1000).toFixed(3))} kcal.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>`; 
         }
+        html += `           </tbody>
+                        </table>`;
+        $("#publicRecipesContainer").html(html);
+        $("#recipesAbstractsTable").DataTable(recipesAbstractDTOptions);
     }
+}
+
+function formatStarsCell(starsCount) {
+    var stars = "";
+    for(var i = 0; i < starsCount; i++) {
+        stars += "★";
+    }
+    return stars;
 }
 
 /* Init */
