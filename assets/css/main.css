@@ -69,6 +69,12 @@ button:focus
 	text-align: center;
 }
 
+@media screen and (max-width: 1400px) {
+	input::placeholder {
+		font-size: 12px;
+	}
+}
+
 .c-pointer {
 	cursor: pointer;
 }

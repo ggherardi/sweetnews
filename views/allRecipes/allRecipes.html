@@ -1,6 +1,13 @@
 <section>
     <div class="row">
-        <div class="col-12 col-sm-12 col-md-3 mt-2">
+        <div class="col-12 col-sm-12 col-md-8">
+            <div id="publicRecipesContainer">
+                <div class="text-center">
+                    <span>I risultati verranno mostrati qui</span>
+                </div>
+            </div>
+        </div>  
+        <div class="col-12 col-sm-12 col-md-4 mt-2">
             <div class="p-4 border">
                 <div class="mb-2">
                     <span class="lead">Filtri di ricerca</span>
@@ -12,9 +19,7 @@
                     <select id="filtersForm__tipologia" class="form-control">
                         <option value="0">tutte</option>
                     </select>
-                    <!-- <label for="filtersForm__tempo_cottura" class="mt-2">Tempo di cottura (min.)</label>
-                    <input id="filtersForm__tempo_cottura" class="form-control" type="number" min="0" placeholder="tempo di cottura (min.)"> -->
-                    <label for="filtersForm__tempo_cottura" class="mt-2 pb-2">Calorie</label>
+                    <label for="filtersForm__tempo_cottura" class="mt-2 pb-2">Tempo di cottura (min.)</label>
                     <div id="filtersForm__tempo_cottura" class="filterRange mt-4"></div>
                     <label for="filtersForm__calorie" class="mt-2 pb-2">Calorie</label>
                     <div id="filtersForm__calorie" class="filterRange mt-4"></div>
@@ -44,12 +49,5 @@
                 </form>
             </div>
         </div>
-        <div class="col-12 col-sm-12 col-md-9">
-            <div id="publicRecipesContainer">
-                <div class="text-center">
-                    <span>I risultati verranno mostrati qui</span>
-                </div>
-            </div>
-        </div>  
     </div>  
 </section>

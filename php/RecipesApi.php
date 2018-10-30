@@ -137,11 +137,13 @@ class RecipesApi {
         $parametersTypes = "";
         $parameters = array();        
         $ingredientsArray = self::GetIngredientsArrayFromFilters($clientFilters);
-        if(count($ingredientsArray->value) > 0) {
-            $query = sprintf($query, " INNER JOIN lista_ingredienti li
-                                      USING(id_ricetta)
-                                      WHERE li.id_ingrediente IN (%s)
-                                      AND ");
+        $ingredientsCount = count($ingredientsArray->value);
+        if($ingredientsCount > 0) {
+            $query = sprintf($query, " INNER JOIN (select id_ricetta, count(id_ricetta) as count_ricette from lista_ingredienti
+                                        WHERE id_ingrediente IN (%s)
+                                        GROUP BY id_ricetta) as ricette_con_ingredienti
+                                        USING(id_ricetta)
+                                        WHERE ricette_con_ingredienti.count_ricette >= %d AND ");
             $idsString = "";
             foreach($ingredientsArray->value as $ingredient) {   
                 $idsString .= "?, ";
@@ -150,7 +152,7 @@ class RecipesApi {
             }
             $idsString = rtrim($idsString);
             $idsString = rtrim($idsString, ",");
-            $query = sprintf($query, $idsString);
+            $query = sprintf($query, $idsString, $ingredientsCount);
         } else {
             $query = sprintf($query, "WHERE ");
         }

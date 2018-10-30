@@ -16,6 +16,7 @@ var recipesAbstractDTOptions = {
 };
 
 function initFilters() {
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.displayForm);
     initCaloriesrange();
     initCookingTimeRange();
     populateTipologiaSelect();
