@@ -16,7 +16,7 @@ var recipesAbstractDTOptions = {
 };
 
 function initFilters() {
-    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.displayForm);
+    // pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.displayForm);
     initCaloriesrange();
     initCookingTimeRange();
     populateTipologiaSelect();
@@ -24,17 +24,23 @@ function initFilters() {
 }
 
 function initCaloriesrange() {
+    var loader = new Loader("#filtersForm__calorie_container", 25, 25);
+    loader.showLoader();
     var recipesApi = new RecipesApi();
     recipesApi.getMaxCalories()
         .done(getMaxValueSuccess.bind("filtersForm__calorie"))
-        .fail(RestClient.redirectAccordingToError);
+        .fail(RestClient.redirectAccordingToError)
+        .always(() => loader.hideLoader());
 }
 
 function initCookingTimeRange() {
+    var loader = new Loader("#filtersForm__tempo_cottura_container", 25, 25);
+    loader.showLoader();
     var recipesApi = new RecipesApi();
     recipesApi.getMaxCookingTime()
         .done(getMaxValueSuccess.bind("filtersForm__tempo_cottura"))
-        .fail(RestClient.redirectAccordingToError);
+        .fail(RestClient.redirectAccordingToError)
+        .always(() => loader.hideLoader());
 }
 
 function getMaxValueSuccess(data) {
@@ -85,6 +91,8 @@ function getRecipeTopologiesSuccess(data) {
 }
 
 function retrieveIngredientsFromDBAndInitAutocomplete() {
+    var loader = new Loader("#filtersForm__ingredients", 50, 50);
+    loader.showLoader();
     var recipesApi = new RecipesApi();
     recipesApi.getIngredients()
         .done((data) => { 
@@ -94,7 +102,8 @@ function retrieveIngredientsFromDBAndInitAutocomplete() {
                 createNewIngredientControl();
             }
         })
-        .fail(RestClient.reportError);
+        .fail(RestClient.reportError)
+        .always(() => loader.hideLoader());
 }
 
 function createNewIngredientControl() {
