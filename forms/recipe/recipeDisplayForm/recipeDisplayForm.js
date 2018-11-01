@@ -2,8 +2,8 @@ Recipe = {};
 
 /* FORM POPULATION */
 function init() {
+    initObserver();
     initDisplayFormCart();
-    initButtons();
     var loader = new Loader("#recipeDisplayForm");
     loader.showLoader();
     var recipesApi = new RecipesApi();
@@ -16,15 +16,27 @@ function init() {
         });
 }
 
+function initObserver() {
+    var observer = new MutationObserver(observerCallback)
+    observer.observe(document.getElementById("recipesCartContainer"), { childList: true, subtree: true });
+}
+
+function observerCallback(mutationList) {
+    if(mutationList && mutationList[0].addedNodes.length || mutationList[0].removedNodes) {
+        initDisplayFormCart();
+        initButtons();
+    }
+}
+
 function initDisplayFormCart() {
-    $("#recipesCartContainer").off();
-    $("#recipesCartContainer").on("DOMSubtreeModified", initDisplayFormCart);
-    $("#displayFormCartsContainer").html($("#recipesCartContainer").html());    
+    $("#displayFormCartsContainer").html($("#recipesCartContainer").html());
 }
 
 function initButtons() {
     if(window.SavedRecipes && window.SavedRecipes.filter(r => r.id_ricetta == Recipe.id_ricetta).length) {
         $("#btnSaveRecipe").prop("disabled", true);
+    } else {
+        $("#btnSaveRecipe").prop("disabled", false);
     }
 }
 
@@ -41,6 +53,7 @@ function initControlsPopulation(data) {
 }
 
 function populateTextControls() {
+    initButtons();
     var caloriesForPortion = new Number(parseFloat(Recipe.calorie_totali) / parseInt(Recipe.porzioni)).toFixed(2);
     $("#recipeDisplayForm__titolo").text(Recipe.titolo_ricetta);
     $("#recipeDisplayForm__tipologia").text(Recipe.nome_tipologia);
@@ -113,6 +126,7 @@ function addRecipeToCart() {
 function addRecipeToCartSuccess() {
     initRecipesCart();
     initDisplayFormCart();
+    // setTimeout(() => initButtons(), 200);
 }
 
 /* Init */
