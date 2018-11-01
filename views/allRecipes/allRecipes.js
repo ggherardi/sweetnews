@@ -1,4 +1,5 @@
 AllIngredients = [];
+RecipeId = -1;
 var recipesAbstractDTOptions = {
     dom: 'ftpil',
     buttons: false,
@@ -197,15 +198,16 @@ function getRecipesAbstractsWithFiltersSuccess(data) {
                             <tbody>`;
         for(var i = 0; i < recipesAbstracts.length; i++) {
             var abstract = recipesAbstracts[i];
-            html += `           <tr class="mt-1 p-4 recipeAbstract border">
+            html += `           <tr class="mt-1 p-4 recipeAbstract border" onclick="showDisplayForm(this);">
+                                    <input class="recipeId" type="hidden" value="${abstract.id_ricetta}">
                                     <td>
                                         <div>
                                             <h3>${abstract.titolo_ricetta}</h3>
                                             <div class="row" style="height:50px;">
-                                                <div class="col-4 col-sm-2">
+                                                <div class="col-6 col-sm-4">
                                                     <img src="${ImagesUtilities.getTopologyImageUrl(abstract.nome_tipologia)}" height="75"  width="100"/>
                                                 </div>
-                                                <div class="col-6 col-sm-10">
+                                                <div class="col-6 col-sm-8">
                                                     <div>
                                                         <span><strong>Tipologia: </strong></span>
                                                         <span>${abstract.nome_tipologia}</span>
@@ -240,8 +242,10 @@ function formatStarsCell(starsCount) {
 }
 
 /* Aux */
-function removeCheckedStar() {
-
+function showDisplayForm(sender) {
+    RecipeId = $(sender).children().first().val();
+    pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.displayForm);
+    pageContentController.switch();
 }
 
 /* Init */

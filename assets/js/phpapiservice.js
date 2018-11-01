@@ -108,6 +108,14 @@ class RecipesApi extends RestClient {
         return super.execute(); 
     }
 
+    getPublicRecipe(id_ricetta) {
+        this.data = {
+            action: "getPublicRecipe",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
+    }
+
     getRecipesAbstractsWithFilters(clientFilters) {
         clientFilters = JSON.stringify(clientFilters);
         this.data = {
@@ -279,4 +287,18 @@ class AccountsApi extends RestClient {
         }
         return super.execute(); 
     }     
+}
+
+class RecipesCartApi extends RestClient {
+    constructor() {
+        super();
+        this.endpoint = "php/RecipesCartApi.php";
+    }
+
+    getRecipesInCart() {
+        this.data = {
+            action: "getRecipesInCart"
+        }
+        return super.execute(); 
+    }    
 }

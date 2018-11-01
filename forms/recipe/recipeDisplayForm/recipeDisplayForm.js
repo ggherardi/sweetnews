@@ -1,49 +1,25 @@
 Recipe = {};
-FormInitialState = [];
-WarningIds = [];
-AllIngredients = [];
-InitialIngredientsCount = 0;
-WarningMessages = {
-    approvalFlowWarning: "approvalFlowWarning",
-    saveWarning: "saveWarning",
-    noIngredientsWarning: "noIngredientsWarning",
-    loadingError: "loadingError"
-}
 
 /* FORM POPULATION */
 function init() {
-    initErrorMessages();
-    var loader = new Loader("#recipreViewForm");
+    var loader = new Loader("#recipeDisplayForm");
     loader.showLoader();
     var recipesApi = new RecipesApi();
-    recipesApi.getRecipe(window.RecipeId)
+    recipesApi.getPublicRecipe(window.RecipeId)
         .done(initControlsPopulation)
         .fail(RestClient.reportError)
-        .always(() => loader.hideLoader());
-
-    if(window.RecipeApprovaFlowState && window.RecipeApprovaFlowState >= Approval.getStates().inviata) {
-        var recipeAuthorController = new Controller("#authorView");
-        recipeAuthorController.loadComponent(views.AllComponents.author);
-    }
-}
-
-function initErrorMessages() {
-    if(window.ButtonEnablingWarningMessages) {
-        for(var i = 0; i < window.ButtonEnablingWarningMessages.length; i ++) {
-            Ribbon.setMessage(window.ButtonEnablingWarningMessages[i]);        
-        }
-        delete window.ButtonEnablingWarningMessages;
-    }
+        .always(() => { 
+            loader.hideLoader();
+            hideEmptyFields();
+        });
 }
 
 function initControlsPopulation(data) {
     if(data && JSON.parse(data)) {
         Recipe = JSON.parse(data);
         populateTextControls();
-        populateRadioControl();
-        populateTipologiaSelect();
+        formatIngredientsField();
         // populateIngredientsControl();
-        initFlowSteps();
     }
     else {
         var messageId = Ribbon.setMessage(`Si è verificato un errore durante il caricamento.`);
@@ -52,52 +28,47 @@ function initControlsPopulation(data) {
 }
 
 function populateTextControls() {
-    $("#recipreViewForm__titolo").val(Recipe.titolo_ricetta);
-    $("#recipreViewForm__tempo_cottura").val(Recipe.tempo_cottura);
-    $("#recipreViewForm__preparazione").val(Recipe.preparazione);
-    $("#recipreViewForm__porzioni").val(Recipe.porzioni);
-    $("#recipreViewForm__note").val(Recipe.note);
-    $("#recipreViewForm__messaggio").val(Recipe.messaggio);
+    var caloriesForPortion = new Number(parseFloat(Recipe.calorie_totali) / parseInt(Recipe.porzioni)).toFixed(2);
+    $("#recipeDisplayForm__titolo").text(Recipe.titolo_ricetta);
+    $("#recipeDisplayForm__tipologia").text(Recipe.nome_tipologia);
+    $("#recipeDisplayForm__difficolta").text(formatStarsDifficulty());
+    $("#recipeDisplayForm__tempo_cottura").text(Recipe.tempo_cottura);
+    $("#recipeDisplayForm__porzioni").text(Recipe.porzioni);
+    $("#recipeDisplayForm__calorie").text(caloriesForPortion);
+    $("#recipeDisplayForm__preparazione").text(Recipe.preparazione);
+    $("#recipeDisplayForm__note").text(Recipe.note);
 }
 
-function populateRadioControl() {
-    $(`#star${Recipe.difficolta}`).prop("checked", true);
-}
-
-function populateTipologiaSelect() {
-    var recipesApi = new RecipesApi();
-    recipesApi.getRecipeTopologies()
-        .done(getRecipeTopologiesSuccess)
-        .fail(RestClient.redirectAccordingToError);
-}
-
-function getRecipeTopologiesSuccess(data) {
-    topologies = JSON.parse(data);
-    var topologiesSelect = document.getElementById("recipreViewForm__tipologia");
-    for(var i = 0; i < topologies.length; i++) {
-        let topology = topologies[i];
-        let option = document.createElement("option");
-        option.value = topology.id_tipologia;
-        option.text = topology.nome_tipologia;
-        option.defaultSelected = topology.id_tipologia == Recipe.id_tipologia;
-        topologiesSelect.add(option);
+function hideEmptyFields() {
+    if(!Recipe.note) {
+        $("#noteSection").hide();
     }
 }
 
-/* Ingredients controls */
-// function populateIngredientsControl() {
-//     for(var i = 0; i < Recipe.ingredienti.length; i++) {
-//         var ingredient = Recipe.ingredienti[i];
-//         var controlNumber = i + 1;
-//         var ingredientCalories = parseFloat(ingredient.quantita) * parseFloat(ingredient.calorie);
-//         createNewIngredientControl();
-//         $(`#recipreViewForm__ingredient_id_${controlNumber}`).val(ingredient.id_ingrediente);
-//         $(`#recipreViewForm__ingredient_nome_${controlNumber}`).val(ingredient.nome_ingrediente);
-//         $(`#recipreViewForm__ingredient_quantita_${controlNumber}`).val(ingredient.quantita);
-//         $(`#recipreViewForm__ingredient_calorie_${controlNumber}`).val(ingredientCalories);
-//     }
-//     $("#recipeViewForm__ingredient_calorie_totali").val(parseFloat(Recipe.calorie_totali));
-// }
+function formatStarsDifficulty() {
+    var stars = "";
+    for(var i = 0; i < Recipe.difficolta; i++) {
+        stars += "★";
+    }
+    return stars;
+}
+
+function formatIngredientsField() {
+    var html = ``;
+    for(var i = 0; i < Recipe.ingredienti.length; i++) {
+        var ingredient = Recipe.ingredienti[i];
+        if(!i % 5) {
+            if(i > 0) {
+                html += `   </div>`;
+            }
+            html += `       <div class="row">`;
+        }
+        html += `               <div class="col-12 col-sm-2">
+                                    <span>${ingredient.nome_ingrediente}</span>: <span>${ingredient.quantita} g.</span>
+                                </div>`;
+    }
+    $("#recipeDisplayForm__ingredienti").html(html);
+}
 
 /* AUX */
 function removeWarning(warning) {
@@ -111,16 +82,11 @@ function removeWarning(warning) {
 function resetVariables() {
     delete window.RecipeId;
     delete Recipe;
-    delete FormInitialState;
-    delete WarningIds;
-    delete AllIngredients;
-    delete InitialIngredientsCount;
-    delete WarningMessages;
 }
 
-function flowError() {
-    var messageId = Ribbon.setMessage("Si è verificato un errore durante l'avanzamento del flusso.");
-    WarningIds[WarningMessages.approvalFlowWarning] = messageId;
+function goBackToRecipes() {
+    resetVariables();
+    pageContentController.switch();
 }
 
 /* Init */

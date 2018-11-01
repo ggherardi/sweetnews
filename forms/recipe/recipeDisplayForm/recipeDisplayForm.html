@@ -1,62 +1,52 @@
 <section>
-    <div id="flowStepsCrumbContainer">
-        <span class="ml-2">Stato approvazione ricetta:</span>
-        <div id="flowStepsCrumb" class="mt-2"></div>
-    </div>
-    <div id="authorView" class="mt-4 mb-2 text-left"></div>
-    <div id="approverView" class="mt-2 mb-2 text-left"></div>
-    <div>
-        <form id="recipreViewForm" class="form mt-3 recipeForm">
-            <label for="recipreViewForm__titolo">Titolo</label>
-            <input id="recipreViewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" disabled>
-            <label for="recipreViewForm__tipologia" class="mt-2">Tipologia</label>
-            <select id="recipreViewForm__tipologia" class="form-control" type="select" placeholder="tipologia" disabled></select>
-            <label class="mt-2">Difficoltà</label>
-            <div class="d-inlineblock">
-                <div id="recipreViewForm__difficolta" class="rate mb-2 box rate-disabled rate-displayOnly recipeForm__difficolta" disabled>
-                    <input type="radio" id="star5" name="rate" value="5" disabled />
-                    <label for="star5" title="text">5 stars</label>
-                    <input type="radio" id="star4" name="rate" value="4" disabled />
-                    <label for="star4" title="text">4 stars</label>
-                    <input type="radio" id="star3" name="rate" value="3" disabled />
-                    <label for="star3" title="text">3 stars</label>
-                    <input type="radio" id="star2" name="rate" value="2" disabled />
-                    <label for="star2" title="text">2 stars</label>
-                    <input type="radio" id="star1" name="rate" value="1" disabled />
-                    <label for="star1" title="text">1 star</label>
+    <button class="primary mt-1 mb-1 f-size-10" onclick="goBackToRecipes();">Torna alle ricette</button>
+    <div id="recipeDisplayForm" class="mt-3">
+        <section>
+            <h1 id="recipeDisplayForm__titolo"></h1>
+        </section>
+        <section id="caratteristicheSection">
+            <h3>Caratteristiche ricetta</h3>
+            <div class="row">
+                <div class="col-12 col-sm-2">
+                    <label for="recipeDisplayForm__tipologia">Tipologia:</label>
+                    <span id="recipeDisplayForm__tipologia" ></span>                    
+                </div>
+                <div class="col-12 col-sm-2">
+                    <label for="recipeDisplayForm__difficolta">Difficoltà:</label>
+                    <span id="recipeDisplayForm__difficolta" class="yellow"></span>                    
+                </div>
+                <div class="col-12 col-sm-2">
+                    <label for="recipeDisplayForm__tipologia">Tempo di cottura:</label>
+                    <span id="recipeDisplayForm__tempo_cottura"></span><span> min.</span>                    
+                </div>
+                <div class="col-12 col-sm-2">
+                    <label for="recipeDisplayForm__porzioni">Porzioni per:</label>
+                    <span id="recipeDisplayForm__porzioni"></span><span> persone</span>                    
+                </div>
+                <div class="col-12 col-sm-2">
+                    <label for="recipeDisplayForm__calorie">Calorie:</label>
+                    <span id="recipeDisplayForm__calorie"></span><span> per porzione</span>             
                 </div>
             </div>
-            <label for="recipreViewForm__tempo_cottura">Tempo di cottura (min)</label>
-            <input id="recipreViewForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" disabled>
-            <label for="recipreViewForm__preparazione" class="mt-2">Preparazione</label>
-            <textarea id="recipreViewForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*" disabled></textarea>
-            <label for="recipreViewForm__porzioni" class="mt-2">Porzioni</label>
-            <input id="recipreViewForm__porzioni" class="form-control" type="number" placeholder="numero porzioni*" min="0" max="20" disabled>
-            <label for="recipreViewForm__note" class="mt-2">Note</label>
-            <textarea id="recipreViewForm__note" class="form-control" row="6" placeholder="note" disabled></textarea>
-            <label for="recipreViewForm__messaggio" class="mt-2">Messaggio per la redazione</label>
-            <textarea id="recipreViewForm__messaggio" class="form-control" row="6" placeholder="messaggio per la redazione (richiesta aggiunta ingredienti mancanti, ecc.)" disabled></textarea>
-            <div id="recipreViewForm__ingredients" class="recipeForm__ingredients">
-                <div class="form-row mt-2">
-                    <div class="col-sm-6">
-                        <span>Ingrediente</span>
-                    </div>
-                    <div class="col-sm-3">
-                        <span>Grammi</span>
-                    </div>
-                    <div class="col-sm-3">
-                        <span>Calorie</span>
-                    </div>
-                </div>
+        </section>
+        <section id="ingredientiSection" class="mt-3">
+            <h3>Ingredienti</h3>
+            <div>
+                <span id="recipeDisplayForm__ingredienti"></span>
             </div>
-            <div class="form-row mt-2">
-                <div class="col-sm-9 text-right pt-1">
-                    <span>Calorie totali</span>
-                </div>
-                <div class="col-sm-3">
-                    <input id="recipeViewForm__ingredient_calorie_totali" type="number" class="form-control" disabled>
-                </div>
+        </section>
+        <section id="preparazioneSection" class="mt-3">
+            <h3>Preparazione</h3>
+            <div>
+                <span id="recipeDisplayForm__preparazione"></span>
             </div>
-        </form>
+        </section>
+        <section id="noteSection" class="mt-3">
+            <h3>Note</h3>
+            <div>
+                <span id="recipeDisplayForm__note"></span>
+            </div>
+        </section>
+        <div>
     </div>
 </section>

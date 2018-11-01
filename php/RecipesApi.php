@@ -122,6 +122,47 @@ class RecipesApi {
         }
     }
 
+    public function GetPublicRecipe() {
+        try {
+            Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+            $id_ricetta = $_POST["id_ricetta"];
+            $query = 
+                "SELECT *
+                FROM ricetta ri
+                INNER JOIN tipologia ti
+                ON ri.id_tipologia = ti.id_tipologia
+                INNER JOIN stato_flusso_approvativo sfa
+                ON ri.id_ricetta = sfa.id_ricetta      
+                WHERE ri.id_ricetta = ?
+                AND sfa.codice_stato_approvativo >= ?";
+            $this->dbContext->PrepareStatement($query);
+            $this->dbContext->BindStatementParameters("dd", array($id_ricetta, ApprovalFlowConstants::APPROVATA));
+            $res = $this->dbContext->ExecuteStatement();
+            $recipeRow = $res->fetch_assoc();
+            if($recipeRow) {
+                $query = 
+                    "SELECT li.id_ricetta, li.quantita, ing.id_ingrediente, ing.nome_ingrediente, ing.calorie                    
+                    FROM lista_ingredienti li
+                    INNER JOIN ingrediente ing
+                    ON li.id_ingrediente = ing.id_ingrediente
+                    WHERE li.id_ricetta = %s";
+                $idsString = "";
+                $query = sprintf($query, $id_ricetta);
+                $res = self::ExecuteQuery($query);
+                while($row = $res->fetch_assoc()) {         
+                    $ingredient = new Ingredient($row);                                
+                    $recipeRow["ingredienti"][] = $ingredient;
+                }
+            }            
+            exit(json_encode($recipeRow));
+        } 
+        catch (Throwable $ex) {          
+            Logger::Write(sprintf("Error occured in " . __FUNCTION__. " code -> ".$ex->getMessage()), $GLOBALS["CorrelationID"]);                     
+            http_response_code(500); 
+        }
+    }
+
+
     function SortByRicettaId($a, $b) {
         return $a->id_ricetta > $b->id_ricetta;
     }
@@ -391,6 +432,9 @@ class RecipesApi {
                 break;
             case "getRecipe":
                 self::GetRecipe();
+                break;
+            case "getPublicRecipe":
+                self::GetPublicRecipe();
                 break;
             case "getRecipesAbstractsWithFilters":
                 self::GetRecipesAbstractsWithFilters();
