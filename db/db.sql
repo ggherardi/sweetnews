@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `sweetnews` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `sweetnews`;
--- MySQL dump 10.13  Distrib 5.5.60, for Win64 (AMD64)
+-- MySQL dump 10.13  Distrib 5.5.61, for Win64 (AMD64)
 --
 -- Host: localhost    Database: sweetnews
 -- ------------------------------------------------------
--- Server version	5.5.60
+-- Server version	5.5.61
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -65,6 +65,22 @@ SET character_set_client = utf8;
   `username_utente_creatore` tinyint NOT NULL,
   `id_utente_approvatore` tinyint NOT NULL,
   `username_utente_approvatore` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `carrello_ricette`
+--
+
+DROP TABLE IF EXISTS `carrello_ricette`;
+/*!50001 DROP VIEW IF EXISTS `carrello_ricette`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `carrello_ricette` (
+  `id_utente` tinyint NOT NULL,
+  `id_ricetta` tinyint NOT NULL,
+  `calorie_totali` tinyint NOT NULL,
+  `titolo_ricetta` tinyint NOT NULL
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
@@ -356,32 +372,6 @@ INSERT INTO `lista_ingredienti` VALUES (234,33,700),(234,46,750),(234,49,1000),(
 UNLOCK TABLES;
 
 --
--- Table structure for table `lista_ricerche`
---
-
-DROP TABLE IF EXISTS `lista_ricerche`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lista_ricerche` (
-  `id_utente` int(11) NOT NULL,
-  `id_ricetta` int(11) NOT NULL,
-  PRIMARY KEY (`id_utente`,`id_ricetta`),
-  KEY `fk_lista_ricerche_ricetta_idx` (`id_ricetta`),
-  CONSTRAINT `fk_lista_ricerche_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_lista_ricerche_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `lista_ricerche`
---
-
-LOCK TABLES `lista_ricerche` WRITE;
-/*!40000 ALTER TABLE `lista_ricerche` DISABLE KEYS */;
-/*!40000 ALTER TABLE `lista_ricerche` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `ricetta`
 --
 
@@ -438,6 +428,32 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `ricetta_salvata`
+--
+
+DROP TABLE IF EXISTS `ricetta_salvata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ricetta_salvata` (
+  `id_utente` int(11) NOT NULL,
+  `id_ricetta` int(11) NOT NULL,
+  PRIMARY KEY (`id_utente`,`id_ricetta`),
+  KEY `fk_lista_ricerche_ricetta_idx` (`id_ricetta`),
+  CONSTRAINT `fk_lista_ricerche_ricetta` FOREIGN KEY (`id_ricetta`) REFERENCES `ricetta` (`id_ricetta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_lista_ricerche_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id_utente`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ricetta_salvata`
+--
+
+LOCK TABLES `ricetta_salvata` WRITE;
+/*!40000 ALTER TABLE `ricetta_salvata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ricetta_salvata` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Temporary table structure for view `ruoli_utente`
@@ -692,6 +708,25 @@ DELIMITER ;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `carrello_ricette`
+--
+
+/*!50001 DROP TABLE IF EXISTS `carrello_ricette`*/;
+/*!50001 DROP VIEW IF EXISTS `carrello_ricette`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `carrello_ricette` AS select `rs`.`id_utente` AS `id_utente`,`ri`.`id_ricetta` AS `id_ricetta`,`ri`.`calorie_totali` AS `calorie_totali`,`ri`.`titolo_ricetta` AS `titolo_ricetta` from (`ricetta_salvata` `rs` join `ricetta` `ri` on((`rs`.`id_ricetta` = `ri`.`id_ricetta`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `deleghe_utente`
 --
 
@@ -776,4 +811,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-30 16:26:32
+-- Dump completed on 2018-11-01 14:25:49
