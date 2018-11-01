@@ -1,9 +1,19 @@
 <section>
-    <button class="primary mt-1 mb-1 f-size-10" onclick="goBackToRecipes();">Torna alle ricette</button>
+    <div id="displayFormCartsContainer"></div>
+    <div class="buttons mt-2">
+        <button class="secondary mt-1 mb-1 f-size-10" onclick="goBackToRecipes();">
+            <span class="icon fa-arrow-left"></span>
+            <span>Indietro</span>
+        </button>
+        <button id="btnSaveRecipe" class="primary mt-1 mb-1 f-size-10" onclick="addRecipeToCart();">
+            <span class="icon fa-bookmark"></span>
+            <span>Salva ricetta</span>
+        </button>
+    </div>
     <div id="recipeDisplayForm" class="mt-3">
-        <section>
+        <header class="major">
             <h1 id="recipeDisplayForm__titolo"></h1>
-        </section>
+        </header>
         <section id="caratteristicheSection">
             <h3>Caratteristiche ricetta</h3>
             <div class="row">

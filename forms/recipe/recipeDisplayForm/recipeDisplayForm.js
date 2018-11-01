@@ -2,6 +2,8 @@ Recipe = {};
 
 /* FORM POPULATION */
 function init() {
+    initDisplayFormCart();
+    initButtons();
     var loader = new Loader("#recipeDisplayForm");
     loader.showLoader();
     var recipesApi = new RecipesApi();
@@ -14,12 +16,23 @@ function init() {
         });
 }
 
+function initDisplayFormCart() {
+    $("#recipesCartContainer").off();
+    $("#recipesCartContainer").on("DOMSubtreeModified", initDisplayFormCart);
+    $("#displayFormCartsContainer").html($("#recipesCartContainer").html());    
+}
+
+function initButtons() {
+    if(window.SavedRecipes && window.SavedRecipes.filter(r => r.id_ricetta == Recipe.id_ricetta).length) {
+        $("#btnSaveRecipe").prop("disabled", true);
+    }
+}
+
 function initControlsPopulation(data) {
     if(data && JSON.parse(data)) {
         Recipe = JSON.parse(data);
         populateTextControls();
-        formatIngredientsField();
-        // populateIngredientsControl();
+        formatIngredientsField();        
     }
     else {
         var messageId = Ribbon.setMessage(`Si è verificato un errore durante il caricamento.`);
@@ -84,9 +97,22 @@ function resetVariables() {
     delete Recipe;
 }
 
+/* EVENTS */
 function goBackToRecipes() {
     resetVariables();
     pageContentController.switch();
+}
+
+function addRecipeToCart() {
+    var recipesCartApi = new RecipesCartApi();
+    recipesCartApi.addRecipeToCart(Recipe.id_ricetta)
+        .done(addRecipeToCartSuccess)
+        .fail(RestClient.redirectAccordingToError);
+}
+
+function addRecipeToCartSuccess() {
+    initRecipesCart();
+    initDisplayFormCart();
 }
 
 /* Init */

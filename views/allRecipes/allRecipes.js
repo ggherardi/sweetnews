@@ -17,11 +17,18 @@ var recipesAbstractDTOptions = {
 };
 
 function initFilters() {
-    // pageContentController.setSwitchableSecondaryPage(views.allForms.recipes.displayForm);
+    initRecipesCart();
     initCaloriesrange();
     initCookingTimeRange();
     populateTipologiaSelect();
     retrieveIngredientsFromDBAndInitAutocomplete();
+}
+
+function initRecipesCart() {
+    if(shared.loginContext.delega_codice == permissions.levels.visitatore) {
+        var recipesCartController = new Controller("#recipesCartContainer");
+        recipesCartController.loadComponent(views.AllComponents.recipesCart);
+    }
 }
 
 function initCaloriesrange() {
@@ -204,10 +211,10 @@ function getRecipesAbstractsWithFiltersSuccess(data) {
                                         <div>
                                             <h3>${abstract.titolo_ricetta}</h3>
                                             <div class="row" style="height:50px;">
-                                                <div class="col-6 col-sm-4">
+                                                <div class="col-6 col-sm-4 col-md-2">
                                                     <img src="${ImagesUtilities.getTopologyImageUrl(abstract.nome_tipologia)}" height="75"  width="100"/>
                                                 </div>
-                                                <div class="col-6 col-sm-8">
+                                                <div class="col-6 col-sm-8 col-md-10">
                                                     <div>
                                                         <span><strong>Tipologia: </strong></span>
                                                         <span>${abstract.nome_tipologia}</span>

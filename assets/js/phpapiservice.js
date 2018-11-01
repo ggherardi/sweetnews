@@ -300,5 +300,21 @@ class RecipesCartApi extends RestClient {
             action: "getRecipesInCart"
         }
         return super.execute(); 
+    }   
+
+    addRecipeToCart(id_ricetta) {
+        this.data = {
+            action: "addRecipeToCart",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
+    }     
+
+    removeRecipeFromCart(id_ricetta) {
+        this.data = {
+            action: "removeRecipeFromCart",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
     }    
 }

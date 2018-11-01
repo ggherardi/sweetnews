@@ -19,13 +19,15 @@ class Shared {
         
             login(stringLoginContext) {
                 initTopologies();
-                // shared.loginContext = JSON.parse(stringLoginContext);
                 shared.loginContext = new LoginContext(stringLoginContext);
-                mainContentController.loadView(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal);
-                setTimeout(() => menu.setMenuItemActive(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.personal), 100);
+                mainContentController.loadView(shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.manageRecipes);
+                setTimeout(() => { 
+                    var redirectView = shared.loginContext.isDipendente ? views.allViews.approveRecipes : views.allViews.manageRecipes;
+                    menu.setMenuItemActive(redirectView);
+                    breadcrumb.rebuildBreadcrumb(redirectView);
+                }, 100);
                 logoutController.loadComponent(views.AllComponents.logout);                
                 accountController.loadComponent(views.AllComponents.account);
-                breadcrumb.rebuildBreadcrumb(views.allViews.personal);
                 menu.buildMenu();
             }
 

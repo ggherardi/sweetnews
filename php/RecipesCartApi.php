@@ -51,7 +51,7 @@ class RecipesApi {
             $id_ricetta = $_POST["id_ricetta"];          
             $id_utente = $this->loginContext->id_utente;
             $query = 
-                "INSERT INTO ricetta_salvata rs (id_utente, id_ricetta)
+                "INSERT INTO ricetta_salvata (id_utente, id_ricetta)
                 VALUES(?, ?)";
             $this->dbContext->PrepareStatement($query);
             $this->dbContext->BindStatementParameters("dd", array($id_utente, $id_ricetta));
@@ -71,7 +71,7 @@ class RecipesApi {
             $id_ricetta = $_POST["id_ricetta"];          
             $id_utente = $this->loginContext->id_utente;
             $query = 
-                "DELETE FROM ricetta_salvata rs
+                "DELETE FROM ricetta_salvata
                 WHERE id_utente = ?
                 AND id_ricetta = ?";
             $this->dbContext->PrepareStatement($query);

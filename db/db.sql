@@ -452,6 +452,7 @@ CREATE TABLE `ricetta_salvata` (
 
 LOCK TABLES `ricetta_salvata` WRITE;
 /*!40000 ALTER TABLE `ricetta_salvata` DISABLE KEYS */;
+INSERT INTO `ricetta_salvata` VALUES (1,29),(1,30),(1,31),(1,41);
 /*!40000 ALTER TABLE `ricetta_salvata` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -811,4 +812,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-01 14:25:49
+-- Dump completed on 2018-11-01 19:34:44

@@ -163,8 +163,8 @@ class Views {
         class AllViews {
             constructor() {
                 this.home = { title: "Home", name: "home", path: "views/home/home" };
-                this.personal = { title: "Pagina personale", name: "personal", path: "views/personal/personal", maxPermissions: permissions.levels.visitatore };
-                this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false, parent: this.personal};
+                this.personal = { title: "Pagina personale", name: "personal", path: "views/personal/personal", showInMenu: false, maxPermissions: permissions.levels.visitatore };
+                this.login = { title: "Login", name: "login", path: "views/login/login", showInMenu: false };
                 this.identities = { title: "Deleghe utente", name: "identities", path: "views/identities/identities", showInMenu: false, parent: this.login, ribbon: [ ribbon.buttons.back ]};
                 this.registration = { title: "Registrazione", name: "registration", path: "views/registration/registration", showInMenu: false, parent: this.personal };
                 this.approveRecipes = { title: "Approvazione ricette", name: "approveRecipes", path: "views/approveRecipes/approveRecipes", needPermissions: permissions.levels.redattore };
@@ -204,6 +204,7 @@ class Views {
                 this.logout = { title: "Logout", name: "logout", path: "components/account/logout" };
                 this.account = { title: "Account", name: "account", path: "components/account/account" };
                 this.author = { title: "Author", name: "author", path: "components/author/author" };
+                this.recipesCart = { title: "RecipesCart", name: "recipesCart", path: "components/recipesCart/recipesCart" };
             }
         }
         this.AllComponents = new AllComponents();

@@ -12,7 +12,6 @@ WarningMessages = {
 
 /* RIBBON ACTIONS */
 function back() {
-    // mainContentController.loadView(views.allViews.approveRecipes);
     pageContentController.switch();
 }
 
@@ -85,7 +84,7 @@ function init() {
         .fail(RestClient.reportError)
         .always(() => loader.hideLoader());
 
-    if(window.RecipeApprovaFlowState && window.RecipeApprovaFlowState >= Approval.getStates().inviata) {
+    if(window.RecipeApprovaFlowState && window.RecipeApprovaFlowState >= Approval.getStates().inviata && shared.loginContext.isDipendente) {
         var recipeAuthorController = new Controller("#authorView");
         recipeAuthorController.loadComponent(views.AllComponents.author);
     }
