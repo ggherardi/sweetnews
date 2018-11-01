@@ -27,7 +27,7 @@ function initFilters() {
 function initRecipesCart() {
     if(shared.loginContext.delega_codice == permissions.levels.visitatore) {
         var recipesCartController = new Controller("#recipesCartContainer");
-        recipesCartController.loadComponent(views.AllComponents.recipesCart);
+        recipesCartController.loadComponent(views.AllComponents.cart);
     }
 }
 

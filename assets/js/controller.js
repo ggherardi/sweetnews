@@ -204,7 +204,7 @@ class Views {
                 this.logout = { title: "Logout", name: "logout", path: "components/account/logout" };
                 this.account = { title: "Account", name: "account", path: "components/account/account" };
                 this.author = { title: "Author", name: "author", path: "components/author/author" };
-                this.recipesCart = { title: "RecipesCart", name: "recipesCart", path: "components/recipesCart/recipesCart" };
+                this.cart = { title: "RecipesCart", name: "cart", path: "components/cart/cart" };
             }
         }
         this.AllComponents = new AllComponents();
