@@ -19,13 +19,22 @@ class Ribbon {
                 order: 2,
                 permissions: permissions.levels.visitatore
             },
+            delete: {
+                title: `Cancella ricetta`,
+                label: `Elimina`,
+                action: `remove();`,
+                icon: `fas fa-times`,
+                cssClass: `deleteButton`,
+                order: 3,
+                permissions: permissions.levels.visitatore
+            },
             send: {
                 title: `Invia in approvazione`,
                 label: `Invia`,
                 action: `send();`,
                 icon: `fas fa-code-branch`,
                 cssClass: `startApprovalButton`,
-                order: 3,
+                order: 4,
                 permissions: permissions.levels.visitatore
             },
             takeCharge: {

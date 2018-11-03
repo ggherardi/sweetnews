@@ -416,6 +416,21 @@ class RecipesApi {
         }
     }
 
+    function DeleteRecipe() {
+        Logger::Write("Processing ". __FUNCTION__ ." request.", $GLOBALS["CorrelationID"]);
+        TokenGenerator::CheckPermissions(array(PermissionsConstants::VISITATORE, PermissionsConstants::VISITATORE), "delega_codice");
+        $id_ricetta = $_POST["id_ricetta"];
+        $id_utente = $this->loginContext->id_utente;
+        $this->dbContext->StartTransaction();
+        $query = 
+            "CALL deleteRecipe(?, ?)";
+        $this->dbContext->PrepareStatement($query);
+        $this->dbContext->BindStatementParameters("dd", array($id_ricetta, $id_utente));
+        $res = $this->dbContext->ExecuteStatement();
+        $this->dbContext->CommitTransaction();
+        exit(json_encode($res));
+    }
+
     // Switcha l'operazione richiesta lato client
     function Init(){
         $this->dbContext = new DBConnection();
@@ -450,6 +465,9 @@ class RecipesApi {
                 break;
             case "editRecipe":
                 self::EditRecipe();
+                break;
+            case "deleteRecipe":
+                self::DeleteRecipe();
                 break;
             default: 
                 exit(json_encode($_POST));

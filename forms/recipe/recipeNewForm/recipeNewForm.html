@@ -6,7 +6,7 @@
     <div>
             <form id="recipeNewForm" class="form mt-3 recipeForm" onsubmit="insertRecipe(this, event);return false;">
             <label for="recipeNewForm__titolo">Titolo</label>
-            <input id="recipeNewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*">
+            <input id="recipeNewForm__titolo" class="form-control" type="text" placeholder="titolo ricetta*" required>
             <label for="recipeNewForm__tipologia" class="mt-2">Tipologia</label>
             <select id="recipeNewForm__tipologia" class="form-control" type="select" placeholder="tipologia"></select>
             <label class="mt-2">Difficoltà</label>
@@ -25,9 +25,9 @@
                 </div>
             </div>
             <label for="recipeNewForm__tempo_cottura">Tempo di cottura (min)</label>
-            <input id="recipeNewForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200">
+            <input id="recipeNewForm__tempo_cottura" class="form-control" type="number" placeholder="tempo cottura (in minuti)*" min="5" max="1200" required>
             <label for="recipeNewForm__preparazione" class="mt-2">Preparazione</label>
-            <textarea id="recipeNewForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*"></textarea>
+            <textarea id="recipeNewForm__preparazione" class="form-control" rows="6" placeholder="preparazione ricetta*" required></textarea>
             <label for="recipeNewForm__porzioni" class="mt-2">Porzioni</label>
             <input id="recipeNewForm__porzioni" class="form-control" type="number" placeholder="numero porzioni*" min="0" max="20" required>
             <label for="recipeNewForm__note" class="mt-2">Note</label>

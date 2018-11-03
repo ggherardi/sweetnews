@@ -41,9 +41,11 @@ class AuthenticationApi {
                 (id_utente, indirizzo, telefono_abitazione, telefono_cellulare, email, data_nascita, liberatoria)
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?)";
+                Logger::Write("LIBERATORIA: ".$registrationForm->liberatoria, $GLOBALS["CorrelationID"]);
             $this->dbContext->PrepareStatement($query);
-            $this->dbContext->BindStatementParameters("dssssss", array($insertId, $registrationForm->indirizzo, $registrationForm->telefono_abitazione,
-                $registrationForm->telefono_cellulare, $registrationForm->email, $registrationForm->data_nascita, ($fileData != null ? "'$fileData'" : "DEFAULT")));
+            $this->dbContext->BindStatementParameters("dsssssd", array($insertId, $registrationForm->indirizzo, $registrationForm->telefono_abitazione,
+                $registrationForm->telefono_cellulare, $registrationForm->email, (strlen($registrationForm->data_nascita) > 0 ? $registrationForm->data_nascita : null), 
+                ($registrazionForm->liberatoria ? 1 : 0)));
             $this->dbContext->ExecuteStatement();   
 
             $this->dbContext->CommitTransaction();

@@ -17,6 +17,20 @@ function save() {
     } 
 }
 
+function remove() {
+    if(window.confirm("Sicuro di voler procedere con la cancellazione della ricetta? L'azione è irreversibile.")) {
+        var recipesApi = new RecipesApi();
+        recipesApi.deleteRecipe(window.RecipeId)
+            .done(deleteRecipeSuccess)
+            .fail(RestClient.reportError);
+    }
+}
+
+function deleteRecipeSuccess() {
+    initPersonalRecipes();
+    pageContentController.switch();
+}
+
 function back() {
     if(WarningIds[WarningMessages.saveWarning]) { 
         if(!window.confirm(`Attenzione, tornando indietro verranno perse le modifiche non salvate.`)) {

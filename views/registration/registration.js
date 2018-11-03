@@ -111,7 +111,8 @@ function getRegistrationInputValues() {
         indirizzo: $("#registrationForm__indirizzo").val(),
         data_nascita: $("#registrationForm__data_nascita").val(),
         username: $("#registrationForm__username").val(),
-        password: $("#registrationForm__password").val()
+        password: $("#registrationForm__password").val(),
+        liberatoria: $("#registrationForm__liberatoria").prop("checked")
     }
     return registrationForm;
 }

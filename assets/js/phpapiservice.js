@@ -171,6 +171,14 @@ class RecipesApi extends RestClient {
         }
         return super.execute();
     }
+
+    deleteRecipe(id_ricetta) {
+        this.data = {
+            action: "deleteRecipe",
+            id_ricetta: id_ricetta
+        }
+        return super.execute(); 
+    }
 }
 
 class ApprovalFlowApi extends RestClient {
