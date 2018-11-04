@@ -33,6 +33,9 @@ function initDisplayFormCart() {
 }
 
 function initButtons() {
+    if(shared.loginContext.delega_codice == 0) {
+        $("#btnSaveRecipe").hide();
+    }
     if(window.SavedRecipes && window.SavedRecipes.filter(r => r.id_ricetta == Recipe.id_ricetta).length) {
         $("#btnSaveRecipe").prop("disabled", true);
     } else {
