@@ -244,7 +244,7 @@ function getRecipeFromForm() {
     var recipe = {
         id_tipologia : $("#recipeNewForm__tipologia").val(),
         titolo_ricetta : $("#recipeNewForm__titolo").val(),
-        difficolta : $("#recipeNewForm__difficolta input:checked").val(),
+        difficolta : $("#recipeNewForm__difficolta input:checked").val() ? $("#recipeNewForm__difficolta input:checked").val() : 1,
         tempo_cottura : $("#recipeNewForm__tempo_cottura").val(),
         preparazione : $("#recipeNewForm__preparazione").val(),
         porzioni : $("#recipeNewForm__porzioni").val(),
